@@ -271,6 +271,97 @@ CATALOG_SPECS = {
         "variants": {
             "DEFAULT": {"wattage": "10W"}
         }
+    },
+    "GS-T2-TRACK": {
+        "page": 137,
+        "name": "T2 Track Rail",
+        "description_template": "Housing - Extruded Aluminium Profile, white/black finish, length as specified, standard accessories, IP20.",
+        "led_make": "NA",
+        "driver_make": "NA",
+        "unit": "Nos",
+        "accessories": "Live End & End Cap",
+        "variants": {
+            "DEFAULT": {"wattage": "NA"}
+        }
+    },
+    "GS-T2-I": {
+        "page": 137,
+        "name": "T2 Track I Jointer",
+        "description_template": "Housing - T2 Track I Jointer, white/black finish, for inline track connectivity, IP20.",
+        "led_make": "NA",
+        "driver_make": "NA",
+        "unit": "Nos",
+        "accessories": "None",
+        "variants": {
+            "DEFAULT": {"wattage": "NA"}
+        }
+    },
+    "GS-T2-POWER": {
+        "page": 137,
+        "name": "T2 Track Power Adapter",
+        "description_template": "Housing - T2 Track Power Adapter / Live End, white/black finish, for track electrical feed, IP20.",
+        "led_make": "NA",
+        "driver_make": "NA",
+        "unit": "Nos",
+        "accessories": "None",
+        "variants": {
+            "DEFAULT": {"wattage": "NA"}
+        }
+    },
+    "GS-T2-END": {
+        "page": 137,
+        "name": "T2 Track End Cap",
+        "description_template": "Housing - T2 Track End Cap, white/black finish, to cover track rail terminals, IP20.",
+        "led_make": "NA",
+        "driver_make": "NA",
+        "unit": "Nos",
+        "accessories": "None",
+        "variants": {
+            "DEFAULT": {"wattage": "NA"}
+        }
+    },
+    "GS-MDL": {
+        "page": 81,
+        "name": "Movable Downlight",
+        "description_template": "Housing - Die-Cast Aluminum, Reflector and Clear Glass, Dimensions - Dia - {D}mm, Height - {H}mm, Cutout - {C}mm, IP20.",
+        "led_make": "Bridgelux",
+        "driver_make": "Fulham",
+        "unit": "Nos",
+        "accessories": "Toggle clips",
+        "variants": {
+            "5W": {"D": 60, "C": 52, "H": 35, "wattage": "5W"},
+            "8W": {"D": 70, "C": 64, "H": 58, "wattage": "8W"},
+            "12W": {"D": 83, "C": 75, "H": 68, "wattage": "12W"},
+            "20W": {"D": 112, "C": 105, "H": 82, "wattage": "20W"},
+            "30W": {"D": 119, "C": 111, "H": 100, "wattage": "30W"}
+        }
+    },
+    "GS-GIMBLE": {
+        "page": 84,
+        "name": "Gimble Downlight",
+        "description_template": "Housing - Die-Cast Aluminum, Reflector and Clear Glass, Dimensions - {D}, Height - {H}mm, Cutout - {C}mm, IP20.",
+        "led_make": "Bridgelux",
+        "driver_make": "Fulham",
+        "unit": "Nos",
+        "accessories": "Toggle clips",
+        "variants": {
+            "30W": {"D": "140 x 140mm", "C": "132 x 132", "H": 100, "wattage": "30W"},
+            "2X25W": {"D": "280 x 140mm", "C": "260 x 132", "H": 110, "wattage": "2X25W"},
+            "2X30W": {"D": "280 x 140mm", "C": "260 x 132", "H": 110, "wattage": "2X30W"}
+        }
+    },
+    "GS-LED-T8": {
+        "page": 237,
+        "name": "LED Tube T8",
+        "description_template": "Housing - PC Tube, Opal Diffuser, Dimensions - L - 1200mm, Dia - 26mm, IP20.",
+        "led_make": "SMD LED",
+        "driver_make": "Constant Current",
+        "unit": "Nos",
+        "accessories": "Mounting Clamps",
+        "variants": {
+            "20W": {"wattage": "20W"},
+            "DEFAULT": {"wattage": "20W"}
+        }
     }
 }
 
@@ -295,6 +386,17 @@ ALIASES = {
     "GS-T4-I JOINTER": ("GS-T4-I", "DEFAULT"),
     "GS-T4-POWER ADAPTER": ("GS-T4-POWER", "DEFAULT"),
     "GS-T4-END CAP": ("GS-T4-END", "DEFAULT"),
+    
+    # T2 Track & Accessories
+    "GS-TRACK PATTI-T2": ("GS-T2-TRACK", "DEFAULT"),
+    "GS-T2-EAN CAP": ("GS-T2-END", "DEFAULT"),
+    "GS-T2-POWER ADAPTOR": ("GS-T2-POWER", "DEFAULT"),
+    "GS-T2-I JOINTE": ("GS-T2-I", "DEFAULT"),
+    
+    # MDL, Gimble, T8 Tube
+    "GS-MDL": ("GS-MDL", ""),
+    "GS-GIMBLE": ("GS-GIMBLE", ""),
+    "GS-LED-T8": ("GS-LED-T8", ""),
     
     "SUSPENSION WIRE": ("SUSPENSION", "DEFAULT"),
     "GS-DECORATIVE-10W": ("GS-DECORATIVE", "DEFAULT"),
@@ -328,8 +430,8 @@ def parse_product_code(text):
     if cct_match:
         cct = cct_match.group(1).upper()
         
-    # Extract Wattage (usually matches digits + W e.g. 30W or 36W or 10W/MTR)
-    watt_match = re.search(r'(\d+W(?:/MTR)?)', text, re.IGNORECASE)
+    # Extract Wattage (usually matches digits + W or multiplier e.g. 30W or 2x25W)
+    watt_match = re.search(r'((?:\d+\s*[xX]\s*)?\d+W(?:/MTR)?)', text, re.IGNORECASE)
     if watt_match:
         wattage = watt_match.group(1).upper()
         
@@ -365,6 +467,7 @@ def parse_product_code(text):
 
     return {
         "raw_code": raw_code,
+        "original_text": text,
         "model": model,
         "size_code": size_code,
         "wattage": wattage,
@@ -380,12 +483,13 @@ def lookup_catalog_database(parsed_info, catalog_json_path=None):
     wattage = parsed_info.get("wattage", "")
     cct = parsed_info.get("cct", "4000K")
     raw_code = parsed_info.get("raw_code", "")
+    original_text = parsed_info.get("original_text", "").upper()
     
     # Try alias first
     alias_key = f"{model}-{size}" if size else model
     # Clean up alias key to check loose aliases (like GS-T4-TRACK-2 MTR -> GS-T4-TRACK)
     for k_alias in list(ALIASES.keys()):
-        if alias_key.startswith(k_alias) or raw_code.upper().startswith(k_alias):
+        if alias_key.startswith(k_alias) or raw_code.upper().startswith(k_alias) or k_alias in original_text:
             model, size = ALIASES[k_alias]
             break
             
