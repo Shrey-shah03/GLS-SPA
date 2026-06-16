@@ -191,7 +191,7 @@ CATALOG_SPECS = {
     "GS-T4-TRACK": {
         "page": 137,
         "name": "T4 Track Rail",
-        "description_template": "Housing - Extruded Aluminium Profile, white/black finish, length as specified, standard accessories, IP20.",
+        "description_template": "Housing - Extruded Aluminium Profile, white/black finish, length as specified, standard accessories.",
         "led_make": "NA",
         "driver_make": "NA",
         "unit": "Nos",
@@ -203,7 +203,7 @@ CATALOG_SPECS = {
     "GS-T4-I": {
         "page": 137,
         "name": "T4 Track I Jointer",
-        "description_template": "Housing - T4 Track I Jointer, white/black finish, for inline track connectivity, IP20.",
+        "description_template": "Housing - T4 Track I Jointer, white/black finish, for inline track connectivity.",
         "led_make": "NA",
         "driver_make": "NA",
         "unit": "Nos",
@@ -215,7 +215,7 @@ CATALOG_SPECS = {
     "GS-T4-POWER": {
         "page": 137,
         "name": "T4 Track Power Adapter",
-        "description_template": "Housing - T4 Track Power Adapter / Live End, white/black finish, for track electrical feed, IP20.",
+        "description_template": "Housing - T4 Track Power Adapter / Live End, white/black finish, for track electrical feed.",
         "led_make": "NA",
         "driver_make": "NA",
         "unit": "Nos",
@@ -227,7 +227,7 @@ CATALOG_SPECS = {
     "GS-T4-END": {
         "page": 137,
         "name": "T4 Track End Cap",
-        "description_template": "Housing - T4 Track End Cap, white/black finish, to cover track rail terminals, IP20.",
+        "description_template": "Housing - T4 Track End Cap, white/black finish, to cover track rail terminals.",
         "led_make": "NA",
         "driver_make": "NA",
         "unit": "Nos",
@@ -275,7 +275,7 @@ CATALOG_SPECS = {
     "GS-T2-TRACK": {
         "page": 137,
         "name": "T2 Track Rail",
-        "description_template": "Housing - Extruded Aluminium Profile, white/black finish, length as specified, standard accessories, IP20.",
+        "description_template": "Housing - Extruded Aluminium Profile, white/black finish, length as specified, standard accessories.",
         "led_make": "NA",
         "driver_make": "NA",
         "unit": "Nos",
@@ -287,7 +287,7 @@ CATALOG_SPECS = {
     "GS-T2-I": {
         "page": 137,
         "name": "T2 Track I Jointer",
-        "description_template": "Housing - T2 Track I Jointer, white/black finish, for inline track connectivity, IP20.",
+        "description_template": "Housing - T2 Track I Jointer, white/black finish, for inline track connectivity.",
         "led_make": "NA",
         "driver_make": "NA",
         "unit": "Nos",
@@ -299,7 +299,7 @@ CATALOG_SPECS = {
     "GS-T2-POWER": {
         "page": 137,
         "name": "T2 Track Power Adapter",
-        "description_template": "Housing - T2 Track Power Adapter / Live End, white/black finish, for track electrical feed, IP20.",
+        "description_template": "Housing - T2 Track Power Adapter / Live End, white/black finish, for track electrical feed.",
         "led_make": "NA",
         "driver_make": "NA",
         "unit": "Nos",
@@ -311,7 +311,7 @@ CATALOG_SPECS = {
     "GS-T2-END": {
         "page": 137,
         "name": "T2 Track End Cap",
-        "description_template": "Housing - T2 Track End Cap, white/black finish, to cover track rail terminals, IP20.",
+        "description_template": "Housing - T2 Track End Cap, white/black finish, to cover track rail terminals.",
         "led_make": "NA",
         "driver_make": "NA",
         "unit": "Nos",
