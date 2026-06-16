@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLS SPA - BOQ to IWO Workspace</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="glass-bg"></div>
+    
+    <header class="navbar">
+        <div class="logo">
+            <span class="brand-text">GLS <span class="light-text">SPA</span></span>
+            <span class="badge">Workspace v1.2</span>
+        </div>
+        <div class="header-tagline">
+            <i class="fa-solid fa-lightbulb icon-glow"></i> Architecture & Engineering Work Order Dashboard
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Upload Section -->
+        <section class="upload-section">
+            <div class="card glass-card" id="drop-zone">
+                <input type="file" id="file-input" accept=".xlsx" style="display: none;">
+                <div class="upload-icon">
+                    <i class="fa-solid fa-file-excel"></i>
+                </div>
+                <h3>Drag & Drop BOQ Excel here</h3>
+                <p>or <span class="highlight-link" onclick="document.getElementById('file-input').click()">browse your files</span></p>
+                <div class="supported-formats">Supports .xlsx spreadsheets</div>
+            </div>
+            
+            <!-- Metadata Form Card -->
+            <div class="card glass-card metadata-card disabled" id="meta-card">
+                <h3><i class="fa-solid fa-file-invoice"></i> IWO Metadata</h3>
+                <div class="grid-form">
+                    <div class="form-group">
+                        <label for="client-name">Client / Project Name</label>
+                        <input type="text" id="client-name" placeholder="e.g. Food Square">
+                    </div>
+                    <div class="form-group">
+                        <label for="iwo-number">IWO Number</label>
+                        <input type="text" id="iwo-number" placeholder="e.g. P176">
+                    </div>
+                    <div class="form-group">
+                        <label for="iwo-date">IWO Date</label>
+                        <input type="text" id="iwo-date" placeholder="DD/MM/YY">
+                    </div>
+                    <div class="form-group">
+                        <label for="delivery-date">Delivery Date</label>
+                        <input type="text" id="delivery-date" placeholder="e.g. 24/06/26">
+                    </div>
+                    <div class="form-group">
+                        <label for="sales-name">Salesperson Name</label>
+                        <input type="text" id="sales-name" value="Sales-01" placeholder="e.g. Sales-01">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section hidden" id="stats-area">
+            <div class="stat-card glass-card">
+                <div class="stat-num" id="stat-total-items">0</div>
+                <div class="stat-label">Total BOQ Items</div>
+            </div>
+            <div class="stat-card glass-card text-success">
+                <div class="stat-num" id="stat-exact-matches">0</div>
+                <div class="stat-label">Exact Catalog Matches</div>
+            </div>
+            <div class="stat-card glass-card text-warning">
+                <div class="stat-num" id="stat-search-matches">0</div>
+                <div class="stat-label">Fuzzy/Text Matches</div>
+            </div>
+            <div class="stat-card glass-card text-info">
+                <div class="stat-num" id="stat-total-qty">0</div>
+                <div class="stat-label">Total Fixtures Quantity</div>
+            </div>
+        </section>
+
+        <!-- Table Workspace -->
+        <section class="workspace-section hidden" id="workspace-area">
+            <div class="workspace-header">
+                <h2><i class="fa-solid fa-list-check"></i> Interactive Work Order Items</h2>
+                <div class="workspace-actions">
+                    <button class="btn btn-secondary" onclick="resetWorkspace()"><i class="fa-solid fa-arrow-rotate-left"></i> Reset</button>
+                    <button class="btn btn-primary" onclick="generateIWO()"><i class="fa-solid fa-file-export"></i> Export IWO Excel</button>
+                </div>
+            </div>
+            
+            <div class="table-container glass-card">
+                <table class="data-table" id="items-table">
+                    <thead>
+                        <tr>
+                            <th>Sr.</th>
+                            <th>BOQ Raw Item</th>
+                            <th>GLS Code</th>
+                            <th>Matched Specs / Catalog Description</th>
+                            <th>Body Color</th>
+                            <th>Qty</th>
+                            <th>Unit</th>
+                            <th>Driver Make & Wattage</th>
+                            <th>Driver Qty</th>
+                            <th>LED Make & CCT</th>
+                            <th>Accessories</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Remap Catalog Page Modal -->
+    <div class="modal hidden" id="remap-modal">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-magnifying-glass"></i> Search PDF Catalogue Database</h3>
+                <span class="close-btn" onclick="closeModal('remap-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Search text keywords in the 325-page catalog to bind item spec sheet to this row.</p>
+                <div class="search-box-container">
+                    <input type="text" id="catalog-search-input" placeholder="Enter product series code (e.g. FDL, 1714, SK-15W)...">
+                    <button class="btn btn-primary" onclick="searchCatalog()"><i class="fa-solid fa-search"></i> Search</button>
+                </div>
+                <div class="search-results" id="search-results-list">
+                    <!-- Results dynamically loaded -->
+                    <div class="empty-state">Enter a term and click search to view pages</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Driver Helper Modal -->
+    <div class="modal hidden" id="driver-modal">
+        <div class="modal-content glass-card small-modal">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-calculator"></i> Driver Splitter Helper</h3>
+                <span class="close-btn" onclick="closeModal('driver-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Calculate and split driver load for linear strip profiles.</p>
+                <input type="hidden" id="driver-helper-row-id">
+                <div class="form-group">
+                    <label>Total Length of Strip (meters)</label>
+                    <input type="number" id="driver-strip-length" step="0.1" value="20">
+                </div>
+                <div class="form-group">
+                    <label>Strip Wattage per Meter (Watts/m)</label>
+                    <input type="number" id="driver-strip-wattage" step="0.5" value="10">
+                </div>
+                <div class="form-group">
+                    <label>Select Driver Wattage Option</label>
+                    <select id="driver-split-wattage">
+                        <option value="75">24V / 75W (Max load 60W recommended)</option>
+                        <option value="100">24V / 100W (Max load 80W recommended)</option>
+                        <option value="150" selected>24V / 150W (Max load 120W recommended)</option>
+                    </select>
+                </div>
+                <div class="calculation-result" id="driver-calc-result">
+                    <!-- Calculated output -->
+                </div>
+                <button class="btn btn-primary btn-block" onclick="applyDriverCalculation()"><i class="fa-solid fa-check"></i> Apply Split Calculations</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Datalist for custom color selection with autocompletion -->
+    <datalist id="colors-list">
+        <option value="Black">
+        <option value="White">
+        <option value="Mil Finish">
+        <option value="Grey">
+    </datalist>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 Speciality Value Lighting & Design. All rights reserved.</p>
+    </footer>
+
+    <!-- Custom Script -->
+    <script src="/static/script.js"></script>
+</body>
+</html>

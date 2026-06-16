@@ -1,0 +1,21 @@
+# Ignore the massive catalog PDF
+INDOOR SERIES 2026.pdf
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Local runtime directories
+uploads/
+generated/
+
+# Excel spreadsheets
+*.xlsx
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE configuration directories
+.vscode/
+.idea/
