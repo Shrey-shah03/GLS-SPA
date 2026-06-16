@@ -7,7 +7,7 @@ CATALOG_SPECS = {
     "GS-DE-FDL": {
         "page": 69,
         "name": "Deep Recessed Fixed Downlight",
-        "description_template": "Housing - Die-Cast Aluminum, Dimensions - Dia - {D}mm, Height - {H}mm, Cutout - {C}mm, COB Led - Bridgelux, Driver - Fulham, IP20.",
+        "description_template": "Housing - Die-Cast Aluminum, Reflector and Clear Glass, Dimensions - Dia - {D}mm, Height - {H}mm, Cutout - {C}mm, IP20.",
         "led_make": "Bridgelux",
         "driver_make": "Fulham",
         "unit": "Nos",
@@ -23,7 +23,7 @@ CATALOG_SPECS = {
     "GS-DE-INT": {
         "page": 77,
         "name": "Deep Recessed Intersecting / Adjustable Downlight",
-        "description_template": "Housing - Die-Cast Aluminum, Dimensions - Cutout - {C}mm, Height - {H}mm, COB Led - Bridgelux, Driver - Fulham, IP20.",
+        "description_template": "Housing - Die-Cast Aluminum, Reflector and Clear Glass, Dimensions - Cutout - {C}mm, Height - {H}mm, IP20.",
         "led_make": "Bridgelux",
         "driver_make": "Fulham",
         "unit": "Nos",
@@ -37,20 +37,20 @@ CATALOG_SPECS = {
     "GS-DE-MGL": {
         "page": 75,
         "name": "Movable General Light",
-        "description_template": "Housing - Die-Cast Aluminum, Dimensions - Cutout - 265*135mm, Outer - 300*170mm, Cob Led - Bridgelux, Driver - Fulham, IP20.",
+        "description_template": "Housing - Die-Cast Aluminum, Reflector and Clear Glass, Dimensions - Cutout - 265*135mm, Outer - 300*170mm, IP20.",
         "led_make": "Bridgelux",
         "driver_make": "Fulham",
         "unit": "Nos",
         "accessories": "Toggle clips",
         "variants": {
-            "84": {"wattage": "2X19W", "description_template": "CUT OUT 265*135 , OUTER 300*170 , 90CRI LED AND THD LESS THEN 5 DRIVER, 40 DEGREE"},
+            "84": {"wattage": "2X19W", "description_template": "Housing - Die-Cast Aluminum, Reflector and Clear Glass, Dimensions - Cutout - 265*135mm, Outer - 300*170mm, 40 Degree, IP20."},
             "100": {"wattage": "2X20W"}
         }
     },
     "GS-FDL": {
         "page": 82,
         "name": "Fixed Downlight",
-        "description_template": "Housing - Die-Cast Aluminum, Dimensions - Dia - {D}mm, Height - {H}mm, Cutout - {C}mm, COB Led - Bridgelux, Driver - Fulham, IP20.",
+        "description_template": "Housing - Die-Cast Aluminum, Reflector and Clear Glass, Dimensions - Dia - {D}mm, Height - {H}mm, Cutout - {C}mm, IP20.",
         "led_make": "Bridgelux",
         "driver_make": "Fulham",
         "unit": "Nos",
@@ -66,7 +66,7 @@ CATALOG_SPECS = {
     "GS-DR-SK": {
         "page": 88,
         "name": "Deep Recessed Spot Downlight",
-        "description_template": "Housing - Die-Cast Aluminum, Dimensions - Dia - {D}mm, Height - {H}mm, Cutout - {C}mm, COB Led - Bridgelux, Driver - Fulham, IP20.",
+        "description_template": "Housing - Die-Cast Aluminum, Reflector and Clear Glass, Dimensions - Dia - {D}mm, Height - {H}mm, Cutout - {C}mm, IP20.",
         "led_make": "Bridgelux",
         "driver_make": "Fulham",
         "unit": "Nos",
@@ -83,13 +83,13 @@ CATALOG_SPECS = {
     "GS-IP-BL": {
         "page": 116,
         "name": "IP54 Backlit Panel Light",
-        "description_template": "CRCA Powder Coated Body, 0.4mm Single Piece Deep drawn, Opal Diffuser, Dimensions - {D}mm, LED - SMD, Driver - Constant Current, IP54.",
+        "description_template": "Housing - CRCA Powder Coated Body, Opal Diffuser, Dimensions - {D}mm, IP54.",
         "led_make": "SMD LED",
         "driver_make": "Constant Current",
         "unit": "Nos",
         "accessories": "Recessed Clips",
         "variants": {
-            "2X2": {"D": "595 x 595 x 35", "wattage": "36W", "description_template": "CRCA Powder Coated Body, 0.4mm Single Piece Deep drawn, Opal Diffuser, Dimensions - 595 x 595 x 35mm, LED - SMD, Driver - Constant Current, IP54."},
+            "2X2": {"D": "595 x 595 x 35", "wattage": "36W", "description_template": "Housing - CRCA Powder Coated Body, Opal Diffuser, Dimensions - 595 x 595 x 35mm, IP54."},
             "1X4": {"D": "1195 x 295 x 35", "wattage": "36W"},
             "2X4": {"D": "1195 x 595 x 35", "wattage": "72W"},
         }
@@ -97,7 +97,7 @@ CATALOG_SPECS = {
     "GS-SMART-BL-RD": {
         "page": 115,
         "name": "Smart Backlit Round Panel",
-        "description_template": "Housing - Die-Cast Aluminum, Dimensions - Dia - {D}mm, Height - {H}mm, Cutout - {C}mm, LED - SMD, Driver - Constant Current, IP20.",
+        "description_template": "Housing - Die-Cast Aluminum, Opal Diffuser, Dimensions - Dia - {D}mm, Height - {H}mm, Cutout - {C}mm, IP20.",
         "led_make": "SMD LED",
         "driver_make": "Constant Current",
         "unit": "Nos",
@@ -111,7 +111,7 @@ CATALOG_SPECS = {
     "GS-SMART-BL-SQ": {
         "page": 115,
         "name": "Smart Backlit Square Panel",
-        "description_template": "Housing - Die-Cast Aluminum, Dimensions - {D}x{D}mm, Height - {H}mm, Cutout - {C}x{C}mm, LED - SMD, Driver - Constant Current, IP20.",
+        "description_template": "Housing - Die-Cast Aluminum, Opal Diffuser, Dimensions - {D}x{D}mm, Height - {H}mm, Cutout - {C}x{C}mm, IP20.",
         "led_make": "SMD LED",
         "driver_make": "Constant Current",
         "unit": "Nos",
@@ -125,7 +125,7 @@ CATALOG_SPECS = {
     "GS-SMART-SF-RD": {
         "page": 115,
         "name": "Smart Surface Round Panel",
-        "description_template": "Housing - Die-Cast Aluminum, Dimensions - Dia - 145mm, Height - 50mm, LED - SMD, Driver - Constant Current, IP20.",
+        "description_template": "Housing - Die-Cast Aluminum, Opal Diffuser, Dimensions - Dia - 145mm, Height - 50mm, IP20.",
         "led_make": "SMD LED",
         "driver_make": "Constant Current",
         "unit": "Nos",
@@ -140,7 +140,7 @@ CATALOG_SPECS = {
     "GS-SF-80X150": {
         "page": 149,
         "name": "Surface Cylinder Downlight",
-        "description_template": "Housing - Aluminum Extruded, Reflector + Clear Glass, Dimensions - Dia - 80mm, Height - 150mm, COB LED - Bridgelux, Driver - Fulham, IP20.",
+        "description_template": "Housing - Extruded Aluminum, Reflector and Clear Glass, Dimensions - Dia - 80mm, Height - 150mm, IP20.",
         "led_make": "Bridgelux",
         "driver_make": "Fulham",
         "unit": "Nos",
@@ -154,7 +154,7 @@ CATALOG_SPECS = {
     "GS-1714": {
         "page": 178,
         "name": "Aluminium Profile 17x14mm",
-        "description_template": "Aluminium Extruded Profile, Dimensions - 17mm x 14mm, Diffuser - PMMA, Finish - Silver Anodized, with End caps and Mounting Clips, LED - 24V Stripe - 10W/mtr, IP20.",
+        "description_template": "Housing - Extruded Aluminium Profile, PMMA Opal Diffuser, Finish - Silver Anodized, with End caps and Mounting Clips, Dimensions - 17mm x 14mm, IP20.",
         "led_make": "Bridgelux SMD 2835",
         "driver_make": "Constant Voltage 24V",
         "unit": "Mtr",
@@ -166,7 +166,7 @@ CATALOG_SPECS = {
     "GS-LINEA-5275": {
         "page": 194,
         "name": "Linear Extruded Profile 52x75mm",
-        "description_template": "Aluminum Extruded Profile, Dimensions - Width 52mm, Height 75mm, Diffuser - Opal / Prismatic, with Endcaps and Suspension wires, LED - SMD, Driver - Constant Current, IP20.",
+        "description_template": "Housing - Extruded Aluminum Profile, Opal / Prismatic Diffuser, with Endcaps and Suspension wires, Dimensions - Width 52mm, Height 75mm, IP20.",
         "led_make": "SMD LED",
         "driver_make": "Constant Current",
         "unit": "Nos",
@@ -178,7 +178,7 @@ CATALOG_SPECS = {
     "GS-LED-T5": {
         "page": 237,
         "name": "LED Batten T5",
-        "description_template": "PC Body, Dimensions - L - 1200mm, W - 20mm, H - 35mm, LED - SMD, Driver - Constant Current.",
+        "description_template": "Housing - PC Body, Opal Diffuser, Dimensions - L - 1200mm, W - 20mm, H - 35mm, IP20.",
         "led_make": "SMD LED",
         "driver_make": "Constant Current",
         "unit": "Nos",
@@ -191,7 +191,7 @@ CATALOG_SPECS = {
     "GS-T4-TRACK": {
         "page": 137,
         "name": "T4 Track Rail",
-        "description_template": "T4 Track Rail, extruded aluminium profile, white/black finish, length as specified, standard accessories, IP20.",
+        "description_template": "Housing - Extruded Aluminium Profile, white/black finish, length as specified, standard accessories, IP20.",
         "led_make": "NA",
         "driver_make": "NA",
         "unit": "Nos",
@@ -203,7 +203,7 @@ CATALOG_SPECS = {
     "GS-T4-I": {
         "page": 137,
         "name": "T4 Track I Jointer",
-        "description_template": "T4 Track I Jointer, white/black finish, for inline track connectivity.",
+        "description_template": "Housing - T4 Track I Jointer, white/black finish, for inline track connectivity, IP20.",
         "led_make": "NA",
         "driver_make": "NA",
         "unit": "Nos",
@@ -215,7 +215,7 @@ CATALOG_SPECS = {
     "GS-T4-POWER": {
         "page": 137,
         "name": "T4 Track Power Adapter",
-        "description_template": "T4 Track Power Adapter / Live End, white/black finish, for track electrical feed.",
+        "description_template": "Housing - T4 Track Power Adapter / Live End, white/black finish, for track electrical feed, IP20.",
         "led_make": "NA",
         "driver_make": "NA",
         "unit": "Nos",
@@ -227,7 +227,7 @@ CATALOG_SPECS = {
     "GS-T4-END": {
         "page": 137,
         "name": "T4 Track End Cap",
-        "description_template": "T4 Track End Cap, white/black finish, to cover track rail terminals.",
+        "description_template": "Housing - T4 Track End Cap, white/black finish, to cover track rail terminals, IP20.",
         "led_make": "NA",
         "driver_make": "NA",
         "unit": "Nos",
@@ -251,7 +251,7 @@ CATALOG_SPECS = {
     "GS-STRETCH": {
         "page": 11,
         "name": "Stretch Fabric Light Box",
-        "description_template": "GS Stretch Fabric light box, custom dimensions, with high efficiency LED modules, driver and mounting frame.",
+        "description_template": "Housing - Aluminium Mounting Frame, Stretch Fabric Diffuser, custom dimensions, IP20.",
         "led_make": "SMD LED Modules",
         "driver_make": "Constant Voltage 24V",
         "unit": "Nos",
@@ -263,7 +263,7 @@ CATALOG_SPECS = {
     "GS-DECORATIVE": {
         "page": 144,
         "name": "GS Decorative Pendant Light",
-        "description_template": "Decorative Round Ball with Surface Mounted Canopy with Led Bulb.",
+        "description_template": "Housing - Decorative Round Ball with Surface Mounted Canopy, Opal Glass Diffuser, IP20.",
         "led_make": "LED Bulb",
         "driver_make": "NA",
         "unit": "Nos",
@@ -473,7 +473,7 @@ def lookup_catalog_database(parsed_info, catalog_json_path=None):
                 return {
                     "page": int(best_page),
                     "gls_code": raw_code,
-                    "product_description": f"GLS SPA Architectural Light Fitting. High efficiency LED, CCT: {cct}, standard driver.",
+                    "product_description": f"GLS-SPA Luminaire, IP20.",
                     "led_make": led_make,
                     "driver_make": driver_make,
                     "driver_wattage": wattage or "10W",
@@ -488,7 +488,7 @@ def lookup_catalog_database(parsed_info, catalog_json_path=None):
     return {
         "page": 0,
         "gls_code": raw_code,
-        "product_description": f"GLS SPA Architectural Light Fitting. High efficiency LED, CCT: {cct}, standard driver.",
+        "product_description": f"GLS-SPA Luminaire, IP20.",
         "led_make": "Bridgelux",
         "driver_make": "Fulham",
         "driver_wattage": wattage or "10W",
