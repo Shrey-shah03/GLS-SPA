@@ -6,8 +6,6 @@ import datetime
 import openpyxl
 from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
 from openpyxl.utils import get_column_letter
-from PIL import Image as PILImage
-from openpyxl.drawing.image import Image as OpenpyxlImage
 import matching_engine
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
@@ -18,61 +16,6 @@ CATALOG_JSON_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ca
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(GENERATED_FOLDER, exist_ok=True)
-
-def find_product_image_path(page, gls_code):
-    db_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GLS_SPA_Product_Database", "images")
-    catalog_json_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GLS_SPA_Product_Database", "catalog.json")
-    
-    if os.path.exists(db_dir):
-        if page and page > 0 and os.path.exists(catalog_json_path):
-            try:
-                with open(catalog_json_path, "r", encoding="utf-8") as f:
-                    catalog_items = json.load(f)
-                for item in catalog_items:
-                    if item.get("pdf_page") == page:
-                        img_path = os.path.join(db_dir, item.get("filename"))
-                        if os.path.exists(img_path):
-                            return img_path
-            except Exception as e:
-                print("Error reading catalog.json:", e)
-                
-        try:
-            files = os.listdir(db_dir)
-        except Exception:
-            files = []
-            
-        clean_code = str(gls_code).strip().upper()
-        parsed = matching_engine.parse_product_code(gls_code)
-        clean_model = parsed.get("model", "").upper()
-        
-        for f in files:
-            f_upper = f.upper()
-            if clean_code in f_upper:
-                return os.path.join(db_dir, f)
-                
-        if clean_model and clean_model != "GS":
-            for f in files:
-                f_upper = f.upper()
-                if clean_model in f_upper:
-                    return os.path.join(db_dir, f)
-                    
-        code_parts = clean_code.split("-")
-        if len(code_parts) >= 3:
-            prefix = "-".join(code_parts[:3])
-            if prefix and prefix != "GS":
-                for f in files:
-                    if prefix in f.upper():
-                        return os.path.join(db_dir, f)
-                        
-        for f in files:
-            name_without_ext = os.path.splitext(f)[0].upper()
-            norm_name = re.sub(r'[^A-Z0-9]', '', name_without_ext)
-            norm_code = re.sub(r'[^A-Z0-9]', '', clean_code)
-            if norm_code and norm_code != "GS" and (norm_code in norm_name or norm_name in norm_code):
-                return os.path.join(db_dir, f)
-                
-    return None
-
 
 @app.route("/")
 def index():
@@ -274,7 +217,7 @@ def generate_iwo():
         col_widths = {
             "A": 3,   # Buffer column
             "B": 8,   # SR. NO.
-            "C": 18,  # Image column (wider for images)
+            "C": 12,  # Image placeholder (kept empty)
             "D": 25,  # GLS product code
             "E": 45,  # product description
             "F": 12,  # Body Color
@@ -329,7 +272,7 @@ def generate_iwo():
             
             vals = [
                 item.get("id"),
-                "", # Image placeholder
+                "", # Image column remains empty as requested
                 item.get("gls_code"),
                 item.get("product_description"),
                 item.get("body_color"),
@@ -352,27 +295,6 @@ def generate_iwo():
                     cell.alignment = align_center
                 else:
                     cell.alignment = align_left
-            
-            # Embed image if available
-            img_path = find_product_image_path(item.get("page"), item.get("gls_code"))
-            if img_path and os.path.exists(img_path):
-                try:
-                    with PILImage.open(img_path) as pil_img:
-                        orig_w, orig_h = pil_img.size
-                    max_h = 75
-                    max_w = 120
-                    scale = min(max_w / orig_w, max_h / orig_h)
-                    new_w = int(orig_w * scale)
-                    new_h = int(orig_h * scale)
-                    
-                    xl_img = OpenpyxlImage(img_path)
-                    xl_img.width = new_w
-                    xl_img.height = new_h
-                    ws.add_image(xl_img, f"C{curr_row}")
-                    ws.row_dimensions[curr_row].height = 80 # Extra height for image spacing
-                except Exception as e:
-                    print(f"Error embedding image for row {curr_row}: {e}")
-                    ws.row_dimensions[curr_row].height = 35
                     
             curr_row += 1
             
