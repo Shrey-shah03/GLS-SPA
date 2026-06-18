@@ -72,6 +72,36 @@ def detect_columns(row_vals):
                 
     return desc_col_idx, qty_col_idx
 
+def clean_gls_code(desc_str, specs_gls_code):
+    descriptive_words = [
+        "mounted", "downlight", "down light", "linear", "profile", "cylinder", 
+        "track", "jointer", "adapter", "cap", "suspension", "wire", "strip", 
+        "driver", "cabinet", "shelf", "fabric", "light", "pendant", "decorative", 
+        "reflector", "diffuser", "glass", "housing", "aluminum", "channel", "attachment"
+    ]
+    desc_clean = str(desc_str).strip()
+    desc_lower = desc_clean.lower()
+    
+    # Rule 1: If it starts with GS- and is short, keep it as is
+    if desc_lower.startswith("gs-") and len(desc_clean) < 28:
+        return desc_clean
+        
+    has_descriptive_word = any(dw in desc_lower for dw in descriptive_words)
+    
+    # Rule 2: If it has no descriptive words and is relatively short, keep it
+    if not has_descriptive_word and len(desc_clean) < 45:
+        return desc_clean
+        
+    # Rule 3: Extract code using regex
+    match = re.search(r'\b(GS-[A-Z0-9\-xX/*_]+)\b', desc_clean, re.IGNORECASE)
+    if match:
+        code = match.group(1).strip()
+        code = re.sub(r'[\-\s]+$', '', code)
+        return code
+        
+    return specs_gls_code
+
+
 
 @app.route("/")
 def index():
@@ -183,7 +213,7 @@ def upload_boq():
                     "boq_description": desc_str,
                     "boq_qty": qty,
                     "unit": unit,
-                    "gls_code": desc_str, # Keep the WHOLE product code as mentioned in BOQ
+                    "gls_code": clean_gls_code(desc_str, specs["gls_code"]),
                     "product_description": product_description,
                     "body_color": body_color,
                     "driver_details": driver_details,
