@@ -51,10 +51,16 @@ def upload_boq():
                 for c_idx, val in enumerate(row_vals):
                     if val:
                         val_lower = str(val).lower()
-                        if "description" in val_lower or "product" in val_lower or "code" in val_lower:
+                        # Prioritize description column
+                        if "description" in val_lower:
                             desc_col_idx = c_idx + 1
-                        elif "qty" in val_lower or "quantity" in val_lower:
-                            qty_col_idx = c_idx + 1
+                        elif ("product" in val_lower or "code" in val_lower) and desc_col_idx is None:
+                            desc_col_idx = c_idx + 1
+                            
+                        # Prioritize quantity column
+                        if "qty" in val_lower or "quantity" in val_lower:
+                            if qty_col_idx is None or val_lower == "qty" or val_lower == "quantity":
+                                qty_col_idx = c_idx + 1
                 break
                 
         if not header_row_idx:
