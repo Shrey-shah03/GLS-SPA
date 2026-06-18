@@ -73,33 +73,207 @@ def detect_columns(row_vals):
     return desc_col_idx, qty_col_idx
 
 def clean_gls_code(desc_str, specs_gls_code):
-    descriptive_words = [
-        "mounted", "downlight", "down light", "linear", "profile", "cylinder", 
-        "track", "jointer", "adapter", "cap", "suspension", "wire", "strip", 
-        "driver", "cabinet", "shelf", "fabric", "light", "pendant", "decorative", 
-        "reflector", "diffuser", "glass", "housing", "aluminum", "channel", "attachment"
-    ]
+    desc_clean = str(desc_str).strip()
+    
+    # Find start of GS- or GS code
+    match = re.search(r'\b(GS[- ].*)', desc_clean, re.IGNORECASE)
+    if not match:
+        # If no GS code, let's see if we can find any other code or just return first part
+        parts = re.split(r'\s*-\s*|\s*,\s*', desc_clean)
+        code = parts[0].strip()
+    else:
+        gs_part = match.group(1).strip()
+        # Split by common separators and specifications keywords to isolate the code part
+        parts = re.split(r'\s+-\s+|\s*,\s*|\b(?:wattage|size|material|length|dia|aluminium|special|beam|color|temp|uom|qty|hsn)\b', gs_part, flags=re.IGNORECASE)
+        code = parts[0].strip()
+        
+    # Clean up any trailing hyphens, slashes, or spaces
+    code = re.sub(r'[\-\s/]+$', '', code)
+    
+    # If specs_gls_code is a clean, standard code and is a substring of code, prefer specs_gls_code
+    if specs_gls_code:
+        specs_upper = str(specs_gls_code).strip().upper()
+        code_upper = code.upper()
+        if specs_upper in code_upper:
+            return specs_gls_code
+            
+    if len(code) > 2:
+        return code
+        
+    return specs_gls_code or desc_clean
+
+def generate_description_from_boq(desc_str):
     desc_clean = str(desc_str).strip()
     desc_lower = desc_clean.lower()
     
-    # Rule 1: If it starts with GS- and is short, keep it as is
-    if desc_lower.startswith("gs-") and len(desc_clean) < 28:
-        return desc_clean
+    # 1. Handle Accessories / non-luminaires first (wires, caps, adapters, joints, drivers)
+    # Check for End Cap
+    if "end cap" in desc_lower or "endcap" in desc_lower or "ean cap" in desc_lower:
+        if "track" in desc_lower or "channel" in desc_lower or "gs-mt" in desc_lower:
+            return "End Cap for Magnetic Track Channel."
+        return "End Cap."
         
-    has_descriptive_word = any(dw in desc_lower for dw in descriptive_words)
-    
-    # Rule 2: If it has no descriptive words and is relatively short, keep it
-    if not has_descriptive_word and len(desc_clean) < 45:
-        return desc_clean
+    # Check for Live End / Power Adapter / Power Feed
+    if "live end" in desc_lower or "power adapter" in desc_lower or "power adaptor" in desc_lower or "liveend" in desc_lower:
+        if "track" in desc_lower or "channel" in desc_lower or "gs-mt" in desc_lower:
+            return "Power Feed / Live End for Magnetic Track."
+        return "Power Feed Adapter."
         
-    # Rule 3: Extract code using regex
-    match = re.search(r'\b(GS-[A-Z0-9\-xX/*_]+)\b', desc_clean, re.IGNORECASE)
-    if match:
-        code = match.group(1).strip()
-        code = re.sub(r'[\-\s]+$', '', code)
-        return code
+    # Check for Jointer / Joint
+    if "jointer" in desc_lower or "joint" in desc_lower or "connector" in desc_lower:
+        # Check type (I, L, T, corner, inline)
+        type_str = ""
+        if "i jointer" in desc_lower or "i-jointer" in desc_lower or "i joint" in desc_lower or "inline" in desc_lower:
+            type_str = "I-Jointer "
+        elif "l jointer" in desc_lower or "l-jointer" in desc_lower or "l joint" in desc_lower or "corner" in desc_lower:
+            type_str = "L-Jointer "
+        elif "t jointer" in desc_lower or "t-jointer" in desc_lower or "t joint" in desc_lower:
+            type_str = "T-Jointer "
         
-    return specs_gls_code
+        if "track" in desc_lower or "channel" in desc_lower or "gs-mt" in desc_lower:
+            return f"{type_str}Connector / Jointer for Magnetic Track Channel."
+        return f"{type_str}Connector / Jointer."
+        
+    # Check for Suspension wire
+    if "suspension" in desc_lower or "wire" in desc_lower:
+        # Check length
+        length_str = "2Mtr"
+        len_match = re.search(r'(\d+)\s*(?:MTR|M|METERS)', desc_clean, re.IGNORECASE)
+        if len_match:
+            length_str = f"{len_match.group(1)}Mtr"
+        return f"Suspension wire kit, length {length_str} with ceiling canopy and mounting clips."
+        
+    # Check for Power Supply / LED Driver
+    if "power supply" in desc_lower or "driver" in desc_lower or "supply" in desc_lower:
+        # Extract voltage
+        voltage_str = "24V" # Default
+        volt_match = re.search(r'(\d+V)', desc_clean, re.IGNORECASE)
+        if volt_match:
+            voltage_str = volt_match.group(1).upper()
+            
+        # Extract wattage
+        wattage_str = ""
+        watt_match = re.search(r'(\d+W)', desc_clean, re.IGNORECASE)
+        if watt_match:
+            wattage_str = watt_match.group(1).upper()
+            
+        volt_detail = f" {voltage_str}," if voltage_str else ""
+        watt_detail = f" {wattage_str}" if wattage_str else ""
+        
+        # Check if IP67/waterproof
+        ip_str = ""
+        if "ip67" in desc_lower or "waterproof" in desc_lower or "outdoor" in desc_lower:
+            ip_str = ", IP67"
+            
+        return f"Constant Voltage Power Supply,{volt_detail}{watt_detail}{ip_str}."
+        
+    # Check for Track Rail / Channel
+    if "channel" in desc_lower or "track patti" in desc_lower or "track rail" in desc_lower or "track" in desc_lower:
+        # Extract width
+        width_str = "26"
+        width_match = re.search(r'(\d+)\s*mm', desc_lower)
+        if width_match:
+            width_str = width_match.group(1)
+            
+        # Extract length
+        length_str = "1000" # Default
+        len_match = re.search(r'(\d+)\s*mm\s*length', desc_lower)
+        if len_match:
+            length_str = len_match.group(1)
+        else:
+            len_match2 = re.search(r'length\s*[-:\s]*\s*(\d+)', desc_lower)
+            if len_match2:
+                length_str = len_match2.group(1)
+                
+        # Check mounting type (suspended, recessed, surface)
+        mount_str = "Suspended / Surface"
+        if "recessed" in desc_lower or "concealed" in desc_lower:
+            mount_str = "Recessed"
+        elif "suspended" in desc_lower or "sus" in desc_lower:
+            mount_str = "Suspended"
+            
+        return f"Housing - Extruded Aluminium Profile Magnetic Track Channel, Black Finish, width {width_str}mm, length {length_str}mm, {mount_str} Mounting."
+
+    # 2. Handle standard luminaires
+    # Extract Housing/Material
+    housing = "Die-Cast Aluminum" # Default
+    if "extruded" in desc_lower or "extruded aluminum" in desc_lower:
+        housing = "Extruded Aluminum"
+    elif "pc" in desc_lower or "polycarbonate" in desc_lower:
+        housing = "Polycarbonate"
+    elif "crca" in desc_lower:
+        housing = "CRCA Powder Coated Body"
+        
+    # Extract Optics/Diffuser
+    optics = "Reflector and Clear Glass" # Default
+    if "opal" in desc_lower or "diffuser" in desc_lower or "bwf" in desc_lower:
+        optics = "Opal Diffuser"
+    elif "special optics" in desc_lower or "lens" in desc_lower:
+        optics = "Special Optics"
+        
+    # Extract IP Rating
+    ip = "IP20" # Default
+    ip_match = re.search(r'(IP\d{2})', desc_clean, re.IGNORECASE)
+    if ip_match:
+        ip = ip_match.group(1).upper()
+    elif "ig-" in desc_lower or "inground" in desc_lower or "insert" in desc_lower:
+        ip = "IP67"
+        
+    # Extract Beam Angle
+    beam = ""
+    beam_match = re.search(r'beam\s*angle\s*[-:\s]*\s*(\d+)', desc_lower)
+    if beam_match:
+        beam = f"Beam Angle - {beam_match.group(1)}°"
+    elif "1degree" in desc_lower or "1 degree" in desc_lower:
+        beam = "Beam Angle - 1°"
+    elif "30 degree" in desc_lower or "30degree" in desc_lower:
+        beam = "Beam Angle - 30°"
+        
+    # Extract Dimensions (Dia, Height, Cutout)
+    dimensions = ""
+    # Check for D - XX X H - YY
+    d_h_match = re.search(r'd\s*[-:\s]*\s*(\d+)\s*mm\s*[xX]\s*h\s*[-:\s]*\s*(\d+)', desc_lower)
+    if d_h_match:
+        dimensions = f"Dimensions - Dia - {d_h_match.group(1)}mm, Height - {d_h_match.group(2)}mm"
+    else:
+        # Check cut out size
+        cutout_match = re.search(r'cut\s*out\s*size\s*[-:\s]*\s*(\d+)', desc_lower)
+        height_match = re.search(r'height\s*[-:\s]*\s*(\d+)', desc_lower)
+        if cutout_match and height_match:
+            dimensions = f"Dimensions - Cutout - {cutout_match.group(1)}mm, Height - {height_match.group(1)}mm"
+        elif cutout_match:
+            dimensions = f"Dimensions - Cutout - {cutout_match.group(1)}mm"
+            
+    if not dimensions:
+        # Try generic size match: size - A: 63 x B: 150
+        size_match = re.search(r'size\s*[-:\s]*\s*a:\s*(\d+)\s*x\s*b:\s*(\d+)', desc_lower)
+        if size_match:
+            dimensions = f"Dimensions - {size_match.group(1)} x {size_match.group(2)}mm"
+        else:
+            # Check dia match
+            dia_match = re.search(r'dia\s*[-:\s]*\s*(\d+)\s*[x*]\s*(\d+)', desc_lower)
+            if dia_match:
+                dimensions = f"Dimensions - Dia - {dia_match.group(1)} x {dia_match.group(2)}mm"
+            else:
+                dia_match_2 = re.search(r'dia\s*[-:\s]*\s*(\d+)\s*mm', desc_lower)
+                if dia_match_2:
+                    dimensions = f"Dimensions - Dia - {dia_match_2.group(1)}mm"
+                    
+    # Construct premium description
+    parts = []
+    if housing:
+        parts.append(f"Housing - {housing}")
+    if optics:
+        parts.append(optics)
+    if dimensions:
+        parts.append(dimensions)
+    if beam:
+        parts.append(beam)
+    if ip:
+        parts.append(ip)
+        
+    return ", ".join(parts) + "."
+
 
 
 
@@ -183,6 +357,8 @@ def upload_boq():
                 specs = matching_engine.lookup_catalog_database(parsed_info, CATALOG_JSON_PATH)
                 
                 product_description = specs["product_description"]
+                if product_description == "GLS-SPA Luminaire, IP20.":
+                    product_description = generate_description_from_boq(desc_str)
                 
                 # Determine default body color
                 body_color = "Black"

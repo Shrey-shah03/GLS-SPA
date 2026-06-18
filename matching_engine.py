@@ -362,6 +362,76 @@ CATALOG_SPECS = {
             "20W": {"wattage": "20W"},
             "DEFAULT": {"wattage": "20W"}
         }
+    },
+    "GS-LED-AL-T5": {
+        "page": 237,
+        "name": "LED Batten Aluminum T5",
+        "description_template": "Housing - Aluminum Body, PMMA Opal Diffuser, Dimensions - L - {L}mm, W - {W}mm, H - {H}mm, IP20.",
+        "led_make": "SMD LED",
+        "driver_make": "Constant Current",
+        "unit": "Nos",
+        "accessories": "Mounting Clamps",
+        "variants": {
+            "20W": {"L": "1200", "W": "22", "H": "33", "wattage": "20W"},
+            "40W": {"L": "1200", "W": "22", "H": "33", "wattage": "40W"},
+            "DEFAULT": {"L": "1200", "W": "22", "H": "33", "wattage": "20W"}
+        }
+    },
+    "GS-MT-TRACK": {
+        "page": 317,
+        "name": "Magnetic Track Channel",
+        "description_template": "Housing - Extruded Aluminium Profile Magnetic Track Channel, Black Finish, width {W}mm, length {L}mm.",
+        "led_make": "NA",
+        "driver_make": "NA",
+        "unit": "Mtr",
+        "accessories": "End caps and Suspension Kit",
+        "variants": {
+            "36-SUS": {"W": "36", "L": "1000", "wattage": "NA"},
+            "26-SUS": {"W": "26", "L": "1000", "wattage": "NA"},
+            "DEFAULT": {"W": "26", "L": "1000", "wattage": "NA"}
+        }
+    },
+    "GS-MT-END": {
+        "page": 317,
+        "name": "Magnetic Track End Cap",
+        "description_template": "End Cap for Magnetic Track Channel.",
+        "led_make": "NA",
+        "driver_make": "NA",
+        "unit": "Nos",
+        "accessories": "None",
+        "variants": {
+            "DEFAULT": {"wattage": "NA"}
+        }
+    },
+    "GS-MT-POWER": {
+        "page": 317,
+        "name": "Magnetic Track Power Adapter / Live End",
+        "description_template": "Power Feed / Live End for Magnetic Track.",
+        "led_make": "NA",
+        "driver_make": "NA",
+        "unit": "Nos",
+        "accessories": "None",
+        "variants": {
+            "DEFAULT": {"wattage": "NA"}
+        }
+    },
+    "GS-MT-TL": {
+        "page": 319,
+        "name": "Magnetic Track Light",
+        "description_template": "Housing - Aluminum Extruded, Reflector and Clear Glass, Dimensions - {D}mm, IP20.",
+        "led_make": "Bridgelux",
+        "driver_make": "Fulham",
+        "unit": "Nos",
+        "accessories": "Magnetic adapter",
+        "variants": {
+            "01": {"D": "A: 63 x B: 150", "wattage": "18W"},
+            "02": {"D": "A: 63 x B: 93", "wattage": "12W"},
+            "04": {"D": "A: 40 x B: 110", "wattage": "8W"},
+            "05": {"D": "A: 40 x B: 120", "wattage": "2X5W"},
+            "06": {"D": "A: 35 x B: 74", "wattage": "8W"},
+            "07": {"D": "A: 45 x B: 100", "wattage": "12W"},
+            "DEFAULT": {"D": "A: 63 x B: 150", "wattage": "18W"}
+        }
     }
 }
 
@@ -393,6 +463,25 @@ ALIASES = {
     "GS-T2-POWER ADAPTOR": ("GS-T2-POWER", "DEFAULT"),
     "GS-T2-I JOINTE": ("GS-T2-I", "DEFAULT"),
     
+    # Magnetic Track & Accessories
+    "GS-LED-AL-T5": ("GS-LED-AL-T5", "DEFAULT"),
+    "GS-MT-36-SUS": ("GS-MT-TRACK", "36-SUS"),
+    "GS-MT-26-SUS": ("GS-MT-TRACK", "26-SUS"),
+    "GS-MT-36-SUS-2653": ("GS-MT-TRACK", "36-SUS"),
+    "GS-MT-26-SUS-2653": ("GS-MT-TRACK", "26-SUS"),
+    "GS-MT-END CAP": ("GS-MT-END", "DEFAULT"),
+    "GS-MT-END": ("GS-MT-END", "DEFAULT"),
+    "GS-MT-LIVE END": ("GS-MT-POWER", "DEFAULT"),
+    "GS-MT-POWER ADAPTER": ("GS-MT-POWER", "DEFAULT"),
+    "GS-MT-POWER ADAPTOR": ("GS-MT-POWER", "DEFAULT"),
+    "GS-MT-TL-01": ("GS-MT-TL", "01"),
+    "GS-MT-TL-02": ("GS-MT-TL", "02"),
+    "GS-MT-TL-04": ("GS-MT-TL", "04"),
+    "GS-MT-TL-05": ("GS-MT-TL", "05"),
+    "GS-MT-TL-06": ("GS-MT-TL", "06"),
+    "GS-MT-TL-07": ("GS-MT-TL", "07"),
+    "GS-MT-TL": ("GS-MT-TL", "DEFAULT"),
+    
     # MDL, Gimble, T8 Tube
     "GS-MDL": ("GS-MDL", ""),
     "GS-GIMBLE": ("GS-GIMBLE", ""),
@@ -414,9 +503,15 @@ def parse_product_code(text):
     text = str(text).strip()
     
     # Try to extract a product code like pattern: GS-XXX-XXX-XXX
-    code_match = re.search(r'(GS-[A-Z0-9\-]+(?:MTR|M|FT|W|K)?)', text, re.IGNORECASE)
+    # Support spaces in accessories (e.g. GS-MT-End Cap, GS-MT-LIVE END, GS-MT-POWER ADAPTER, GS POWER SUPPLY 48V/100W)
+    match = re.search(r'\b(GS[- ][A-Z0-9\-xX/*_]+(?:\s+(?:End\s+Cap|LIVE\s+END|POWER\s+ADAPTER|POWER\s+ADAPTOR|SUPPLY\s+48V/100W|End|Cap|Live|End|Power|Adapter|Supply))?)\b', text, re.IGNORECASE)
     
-    raw_code = code_match.group(1) if code_match else text.split()[0]
+    if match:
+        raw_code = match.group(1).strip()
+    else:
+        # Fallback to simple pattern or first word
+        code_match = re.search(r'(GS-[A-Z0-9\-]+(?:MTR|M|FT|W|K)?)', text, re.IGNORECASE)
+        raw_code = code_match.group(1) if code_match else text.split()[0]
     
     parts = raw_code.split("-")
     
@@ -438,7 +533,7 @@ def parse_product_code(text):
     # Rebuild model and size
     if len(parts) >= 3:
         if parts[0].upper() == "GS":
-            if parts[1].upper() in ["DE", "IP", "SF", "LINEA", "DR", "SMART", "T4", "LED"]:
+            if parts[1].upper() in ["DE", "IP", "SF", "LINEA", "DR", "SMART", "T4", "LED", "MT"]:
                 model = "-".join(parts[0:3]).upper()
                 if len(parts) >= 4:
                     if not re.search(r'\d+W', parts[3]) and not re.search(r'\d+K', parts[3]):
@@ -488,7 +583,7 @@ def lookup_catalog_database(parsed_info, catalog_json_path=None):
     # Try alias first
     alias_key = f"{model}-{size}" if size else model
     # Clean up alias key to check loose aliases (like GS-T4-TRACK-2 MTR -> GS-T4-TRACK)
-    for k_alias in list(ALIASES.keys()):
+    for k_alias in sorted(ALIASES.keys(), key=len, reverse=True):
         if alias_key.startswith(k_alias) or raw_code.upper().startswith(k_alias) or k_alias in original_text:
             model, size = ALIASES[k_alias]
             break
@@ -523,7 +618,19 @@ def lookup_catalog_database(parsed_info, catalog_json_path=None):
         placeholders = re.findall(r'\{([A-Za-z0-9_]+)\}', desc_temp)
         format_args = {}
         for ph in placeholders:
-            if ph in variant_info:
+            if ph in ["L", "l", "length", "Length"]:
+                len_match = re.search(r'length\s*[-:\s]*\s*(\d+)', original_text, re.IGNORECASE)
+                if len_match:
+                    format_args[ph] = len_match.group(1)
+                else:
+                    len_match2 = re.search(r'(\d+)\s*(?:mm)?\s*length', original_text, re.IGNORECASE)
+                    if len_match2:
+                        format_args[ph] = len_match2.group(1)
+                    elif ph in variant_info:
+                        format_args[ph] = variant_info[ph]
+                    else:
+                        format_args[ph] = "?"
+            elif ph in variant_info:
                 format_args[ph] = variant_info[ph]
             elif ph == "CCT":
                 format_args[ph] = cct
