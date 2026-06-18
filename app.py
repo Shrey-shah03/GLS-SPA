@@ -17,6 +17,62 @@ CATALOG_JSON_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ca
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(GENERATED_FOLDER, exist_ok=True)
 
+def detect_columns(row_vals):
+    desc_col_idx = None
+    qty_col_idx = None
+    
+    exclude_desc = [
+        "hsn", "mat code", "material code", "color", "angle", "qty", "quantity", 
+        "unit", "uom", "price", "rate", "amount", "cost", "make", "brand", 
+        "manufacturer", "driver", "led", "image", "picture", "photo", 
+        "location", "area", "sr.", "s.no", "serial", "remark", "status", 
+        "inspection", "packing", "stickering", "branding", "watt", "temp", 
+        "cct", "dimension", "size", "height", "cutout", "dia", "voltage"
+    ]
+    
+    desc_priority_1 = ["description", "item name", "item description", "particulars", "specification"]
+    desc_priority_2 = ["item", "luminaire", "product description", "particular"]
+    desc_priority_3 = ["product", "name", "model", "code", "type"]
+    
+    # First, find Qty column
+    for c_idx, val in enumerate(row_vals):
+        if val:
+            val_lower = str(val).lower().strip()
+            if val_lower == "qty" or val_lower == "quantity":
+                qty_col_idx = c_idx + 1
+                break
+                
+    if qty_col_idx is None:
+        for c_idx, val in enumerate(row_vals):
+            if val:
+                val_lower = str(val).lower().strip()
+                if "qty" in val_lower or "quantity" in val_lower:
+                    qty_col_idx = c_idx + 1
+                    break
+
+    # Now, find Description column
+    for priority in [desc_priority_1, desc_priority_2, desc_priority_3]:
+        for c_idx, val in enumerate(row_vals):
+            if val:
+                val_lower = str(val).lower().strip()
+                is_excluded = any(ex in val_lower for ex in exclude_desc)
+                if not is_excluded:
+                    if any(kw in val_lower for kw in priority):
+                        desc_col_idx = c_idx + 1
+                        return desc_col_idx, qty_col_idx
+                        
+    # Fallback to first non-excluded column
+    for c_idx, val in enumerate(row_vals):
+        if val:
+            val_lower = str(val).lower().strip()
+            is_excluded = any(ex in val_lower for ex in exclude_desc)
+            if not is_excluded and c_idx + 1 != qty_col_idx:
+                desc_col_idx = c_idx + 1
+                break
+                
+    return desc_col_idx, qty_col_idx
+
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -46,22 +102,13 @@ def upload_boq():
         for r_idx in range(1, 16):
             row_vals = [sheet.cell(row=r_idx, column=c_idx).value for c_idx in range(1, sheet.max_column + 1)]
             row_str = " ".join([str(v).lower() for v in row_vals if v is not None])
-            if ("description" in row_str or "product" in row_str or "code" in row_str) and ("qty" in row_str or "quantity" in row_str or "quantity/qty" in row_str):
-                header_row_idx = r_idx
-                for c_idx, val in enumerate(row_vals):
-                    if val:
-                        val_lower = str(val).lower()
-                        # Prioritize description column
-                        if "description" in val_lower:
-                            desc_col_idx = c_idx + 1
-                        elif ("product" in val_lower or "code" in val_lower) and desc_col_idx is None:
-                            desc_col_idx = c_idx + 1
-                            
-                        # Prioritize quantity column
-                        if "qty" in val_lower or "quantity" in val_lower:
-                            if qty_col_idx is None or val_lower == "qty" or val_lower == "quantity":
-                                qty_col_idx = c_idx + 1
-                break
+            if "qty" in row_str or "quantity" in row_str:
+                d_col, q_col = detect_columns(row_vals)
+                if d_col and q_col:
+                    header_row_idx = r_idx
+                    desc_col_idx = d_col
+                    qty_col_idx = q_col
+                    break
                 
         if not header_row_idx:
             header_row_idx = 4
