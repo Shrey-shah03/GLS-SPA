@@ -747,7 +747,15 @@ def lookup_catalog_database(parsed_info, catalog_json_path=None):
         }
 
     if best_page:
-        page_text = catalog[str(best_page)]
+        page_text = ""
+        if catalog_json_path and os.path.exists(catalog_json_path):
+            try:
+                with open(catalog_json_path, "r", encoding="utf-8") as f:
+                    catalog_data = json.load(f)
+                    page_text = catalog_data.get(str(best_page), "")
+            except Exception:
+                pass
+                
         driver_make = "Fulham" if "fulham" in page_text.lower() else "Constant Current"
         led_make = "Bridgelux" if "bridgelux" in page_text.lower() else "SMD LED"
         unit = "Mtr" if "mtr" in page_text.lower() or "linear" in page_text.lower() else "Nos"
