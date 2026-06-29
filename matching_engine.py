@@ -652,6 +652,7 @@ def lookup_catalog_database(parsed_info, catalog_json_path=None):
             "driver_make": specs["driver_make"],
             "driver_wattage": driver_watt,
             "unit": specs["unit"],
+            "accessories": specs.get("accessories", "Standard"),
             "matched_by": "exact_catalog_specs"
         }
         
