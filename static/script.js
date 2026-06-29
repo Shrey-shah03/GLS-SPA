@@ -524,3 +524,285 @@ function generateInvoice() {
         alert('Failed to generate Proforma Invoice.');
     });
 }
+
+// Invoice view navigation & management
+let savedBuyersList = [];
+
+function switchView(view) {
+    const navBoq = document.getElementById('nav-boq');
+    const navInvoice = document.getElementById('nav-invoice');
+    const viewBoq = document.getElementById('boq-generator-view');
+    const viewInvoice = document.getElementById('invoice-generator-view');
+    const titleHeader = document.getElementById('view-title-header');
+    const descHeader = document.getElementById('view-desc-header');
+    
+    if (view === 'boq') {
+        navBoq.classList.add('active');
+        navInvoice.classList.remove('active');
+        viewBoq.classList.remove('hidden');
+        viewInvoice.classList.add('hidden');
+        titleHeader.innerText = 'COMMAND CENTER';
+        descHeader.innerText = 'Architecture & Engineering Work Order Dashboard';
+    } else {
+        navBoq.classList.remove('active');
+        navInvoice.classList.add('active');
+        viewBoq.classList.add('hidden');
+        viewInvoice.classList.remove('hidden');
+        titleHeader.innerText = 'PROFORMA INVOICE GENERATOR';
+        descHeader.innerText = 'Live Billing Editor & GST Quotation Workspace';
+        
+        loadSavedBuyersDropdown();
+        renderInvoiceTable();
+        updateInvoiceTotals();
+    }
+}
+
+function loadSavedBuyersDropdown() {
+    fetch('/api/buyers')
+    .then(r => r.json())
+    .then(data => {
+        savedBuyersList = data;
+        const select = document.getElementById('saved-buyer-select');
+        select.innerHTML = '<option value="">-- Select Saved Buyer --</option>';
+        data.forEach(buyer => {
+            select.innerHTML += `<option value="${buyer.name}">${buyer.name}</option>`;
+        });
+    })
+    .catch(err => console.error('Failed to load buyers:', err));
+}
+
+function loadSavedBuyer(buyerName) {
+    if (!buyerName) {
+        document.getElementById('inv-buyer-name').value = '';
+        document.getElementById('inv-buyer-address').value = '';
+        document.getElementById('inv-buyer-gstin').value = '';
+        document.getElementById('inv-buyer-contact').value = '';
+        return;
+    }
+    const buyer = savedBuyersList.find(b => b.name === buyerName);
+    if (buyer) {
+        document.getElementById('inv-buyer-name').value = buyer.name;
+        document.getElementById('inv-buyer-address').value = buyer.address;
+        document.getElementById('inv-buyer-gstin').value = buyer.gstin;
+        document.getElementById('inv-buyer-contact').value = buyer.contact;
+    }
+}
+
+function saveBuyerProfile() {
+    const payload = {
+        name: document.getElementById('inv-buyer-name').value.trim(),
+        address: document.getElementById('inv-buyer-address').value.trim(),
+        gstin: document.getElementById('inv-buyer-gstin').value.trim(),
+        contact: document.getElementById('inv-buyer-contact').value.trim()
+    };
+    
+    if (!payload.name) {
+        alert('Please fill in the Buyer Name to save.');
+        return;
+    }
+    
+    fetch('/api/buyers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(r => r.json())
+    .then(data => {
+        alert('Buyer profile saved successfully!');
+        loadSavedBuyersDropdown();
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Failed to save buyer profile.');
+    });
+}
+
+function renderInvoiceTable() {
+    const invTableBody = document.getElementById('invoice-table-body');
+    invTableBody.innerHTML = '';
+    
+    if (workspaceItems.length === 0) {
+        invTableBody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: var(--color-text-muted); padding: 24px;">No items in workspace. Upload a BOQ sheet first.</td></tr>`;
+        return;
+    }
+    
+    workspaceItems.forEach((item, idx) => {
+        const rate = parseFloat(item.rate) || 1200;
+        const qty = parseInt(item.boq_qty) || 0;
+        const hsn = item.hsn_code || '9405';
+        
+        const lineAmount = qty * rate;
+        const lineGst = lineAmount * 0.18;
+        const lineGrand = lineAmount + lineGst;
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${idx + 1}</td>
+            <td style="font-family: monospace; font-size: 0.72rem; font-weight: 600; color: #ffffff;">${item.gls_code}</td>
+            <td style="font-size: 0.75rem;">${item.product_description}</td>
+            <td>
+                <input type="text" class="table-input" style="width: 80px;" value="${hsn}" onchange="updateInvoiceItemField(${item.id}, 'hsn_code', this.value)">
+            </td>
+            <td>
+                <input type="number" class="table-input" style="width: 70px;" value="${qty}" onchange="updateInvoiceItemField(${item.id}, 'boq_qty', this.value)">
+            </td>
+            <td>
+                <select class="table-select" style="width: 80px;" onchange="updateInvoiceItemField(${item.id}, 'unit', this.value)">
+                    <option value="Nos" ${item.unit === 'Nos' ? 'selected' : ''}>Nos</option>
+                    <option value="Mtr" ${item.unit === 'Mtr' ? 'selected' : ''}>Mtr</option>
+                    <option value="Set" ${item.unit === 'Set' ? 'selected' : ''}>Set</option>
+                </select>
+            </td>
+            <td>
+                <input type="number" class="table-input" style="width: 100px;" value="${rate}" onchange="updateInvoiceItemField(${item.id}, 'rate', this.value)">
+            </td>
+            <td style="font-weight: 500;">₹${lineAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td style="color: var(--color-text-muted);">₹${lineGst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td style="font-weight: 600; color: var(--color-primary);">₹${lineGrand.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td>
+                <button class="btn btn-secondary btn-action" onclick="deleteInvoiceItem(${item.id})" title="Delete Item">
+                    <i class="fa-solid fa-trash-can" style="color: #ff4a4a;"></i>
+                </button>
+            </td>
+        `;
+        invTableBody.appendChild(tr);
+    });
+}
+
+function updateInvoiceItemField(itemId, field, value) {
+    updateItemField(itemId, field, value);
+    renderInvoiceTable();
+    updateInvoiceTotals();
+}
+
+function deleteInvoiceItem(itemId) {
+    if (confirm('Remove this item from invoice?')) {
+        workspaceItems = workspaceItems.filter(i => i.id !== itemId);
+        renderInvoiceTable();
+        updateInvoiceTotals();
+        renderTable();
+        updateStats();
+    }
+}
+
+function updateInvoiceTotals() {
+    let totalAmount = 0;
+    let totalGst = 0;
+    let totalGrand = 0;
+    
+    workspaceItems.forEach(item => {
+        const rate = parseFloat(item.rate) || 1200;
+        const qty = parseInt(item.boq_qty) || 0;
+        const amount = qty * rate;
+        const gst = amount * 0.18;
+        const grand = amount + gst;
+        
+        totalAmount += amount;
+        totalGst += gst;
+        totalGrand += grand;
+    });
+    
+    document.getElementById('inv-total-amount').innerText = `₹${totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    document.getElementById('inv-total-gst').innerText = `₹${totalGst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    document.getElementById('inv-total-grand').innerText = `₹${totalGrand.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function generateInvoicePDF() {
+    if (workspaceItems.length === 0) {
+        alert('Workspace is empty. Please upload a BOQ sheet.');
+        return;
+    }
+    
+    const payload = {
+        buyer_name: document.getElementById('inv-buyer-name').value.trim(),
+        buyer_address: document.getElementById('inv-buyer-address').value.trim(),
+        buyer_gstin: document.getElementById('inv-buyer-gstin').value.trim(),
+        buyer_contact: document.getElementById('inv-buyer-contact').value.trim(),
+        invoice_no: document.getElementById('inv-invoice-no').value.trim(),
+        invoice_date: document.getElementById('inv-invoice-date').value.trim(),
+        payment_terms: document.getElementById('inv-payment-terms').value.trim(),
+        validity: document.getElementById('inv-validity-period').value.trim(),
+        destination: document.getElementById('inv-destination').value.trim(),
+        items: workspaceItems
+    };
+    
+    const exportBtn = document.querySelector('#invoice-items-area .btn-primary');
+    const originalText = exportBtn.innerHTML;
+    exportBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generating PDF...`;
+    exportBtn.disabled = true;
+    
+    fetch('/api/generate-invoice-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(r => r.json())
+    .then(data => {
+        exportBtn.innerHTML = originalText;
+        exportBtn.disabled = false;
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+        window.location.href = data.download_url;
+    })
+    .catch(err => {
+        console.error(err);
+        exportBtn.innerHTML = originalText;
+        exportBtn.disabled = false;
+        alert('Failed to generate PDF Invoice.');
+    });
+}
+
+function generateInvoiceExcelLegacy() {
+    if (workspaceItems.length === 0) {
+        alert('Workspace is empty. Please upload a BOQ sheet.');
+        return;
+    }
+    
+    const payload = {
+        buyer_name: document.getElementById('inv-buyer-name').value.trim(),
+        buyer_address: document.getElementById('inv-buyer-address').value.trim(),
+        buyer_gstin: document.getElementById('inv-buyer-gstin').value.trim(),
+        buyer_contact: document.getElementById('inv-buyer-contact').value.trim(),
+        invoice_no: document.getElementById('inv-invoice-no').value.trim(),
+        invoice_date: document.getElementById('inv-invoice-date').value.trim(),
+        payment_terms: document.getElementById('inv-payment-terms').value.trim(),
+        validity: document.getElementById('inv-validity-period').value.trim(),
+        destination: document.getElementById('inv-destination').value.trim(),
+        items: workspaceItems
+    };
+    
+    const exportBtn = document.querySelector('#invoice-items-area .btn-success');
+    const originalText = exportBtn.innerHTML;
+    exportBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generating Excel...`;
+    exportBtn.disabled = true;
+    
+    fetch('/api/generate-invoice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(r => r.json())
+    .then(data => {
+        exportBtn.innerHTML = originalText;
+        exportBtn.disabled = false;
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+        window.location.href = data.download_url;
+    })
+    .catch(err => {
+        console.error(err);
+        exportBtn.innerHTML = originalText;
+        exportBtn.disabled = false;
+        alert('Failed to generate Excel Invoice.');
+    });
+}
+
+// Prefill initial buyer fields on load
+document.addEventListener('DOMContentLoaded', () => {
+    loadSavedBuyersDropdown();
+});
+

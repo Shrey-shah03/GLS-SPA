@@ -8,6 +8,13 @@ from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
 from openpyxl.utils import get_column_letter
 import matching_engine
 
+# ReportLab imports for PDF generation
+from reportlab.lib.pagesizes import letter, A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
+from reportlab.lib.units import inch
+
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
@@ -1001,6 +1008,348 @@ def generate_invoice():
         import traceback
         traceback.print_exc()
         return jsonify({"error": f"Failed to generate Invoice: {str(e)}"}), 500
+
+BUYERS_DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "buyers_db.json")
+
+@app.route("/api/buyers", methods=["GET", "POST"])
+def manage_buyers():
+    if request.method == "POST":
+        try:
+            new_buyer = request.json
+            if not new_buyer.get("name"):
+                return jsonify({"error": "Buyer name is required"}), 400
+                
+            buyers = []
+            if os.path.exists(BUYERS_DB_PATH):
+                with open(BUYERS_DB_PATH, "r", encoding="utf-8") as f:
+                    try:
+                        buyers = json.load(f)
+                    except Exception:
+                        buyers = []
+            
+            # Check if exists, update or append
+            exists = False
+            for idx, b in enumerate(buyers):
+                if b.get("name").strip().lower() == new_buyer.get("name").strip().lower():
+                    buyers[idx] = new_buyer
+                    exists = True
+                    break
+            if not exists:
+                buyers.append(new_buyer)
+                
+            with open(BUYERS_DB_PATH, "w", encoding="utf-8") as f:
+                json.dump(buyers, f, indent=2)
+                
+            return jsonify({"success": True, "buyers": buyers})
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    else:
+        buyers = []
+        if os.path.exists(BUYERS_DB_PATH):
+            with open(BUYERS_DB_PATH, "r", encoding="utf-8") as f:
+                try:
+                    buyers = json.load(f)
+                except Exception:
+                    buyers = []
+        return jsonify(buyers)
+
+@app.route("/api/generate-invoice-pdf", methods=["POST"])
+def generate_invoice_pdf():
+    try:
+        req_data = request.json
+        items = req_data.get("items", [])
+        
+        # Buyer details
+        buyer_name = req_data.get("buyer_name", "").strip()
+        buyer_address = req_data.get("buyer_address", "").strip()
+        buyer_gstin = req_data.get("buyer_gstin", "").strip()
+        buyer_contact = req_data.get("buyer_contact", "").strip()
+        
+        # Invoice metadata
+        invoice_no = req_data.get("invoice_no", "SOR/26-27/001").strip()
+        invoice_date = req_data.get("invoice_date", "").strip()
+        payment_terms = req_data.get("payment_terms", "100% Advance").strip()
+        validity = req_data.get("validity", "7 days").strip()
+        destination = req_data.get("destination", "").strip()
+        
+        # Build PDF path
+        filename = f"PI-{invoice_no.replace('/', '_')}-{buyer_name.replace(' ', '_')}.pdf"
+        pdf_path = os.path.join(GENERATED_FOLDER, filename)
+        
+        # Setup document
+        doc = SimpleDocTemplate(
+            pdf_path,
+            pagesize=A4,
+            leftMargin=30,
+            rightMargin=30,
+            topMargin=30,
+            bottomMargin=30
+        )
+        
+        styles = getSampleStyleSheet()
+        
+        # Custom styles
+        style_title = ParagraphStyle(
+            'InvoiceTitle',
+            parent=styles['Heading1'],
+            fontName='Helvetica-Bold',
+            fontSize=22,
+            textColor=colors.HexColor('#8BC34A'), # Apple green
+            alignment=1, # Center
+            spaceAfter=5
+        )
+        style_subtitle = ParagraphStyle(
+            'InvoiceSubtitle',
+            parent=styles['Normal'],
+            fontName='Helvetica',
+            fontSize=9,
+            textColor=colors.HexColor('#535b6d'),
+            alignment=1, # Center
+            spaceAfter=15
+        )
+        style_section_title = ParagraphStyle(
+            'SectionTitle',
+            parent=styles['Heading2'],
+            fontName='Helvetica-Bold',
+            fontSize=12,
+            textColor=colors.white,
+            backColor=colors.HexColor('#151924'),
+            borderPadding=6,
+            spaceAfter=12,
+            alignment=1
+        )
+        style_label = ParagraphStyle(
+            'Label',
+            parent=styles['Normal'],
+            fontName='Helvetica-Bold',
+            fontSize=9,
+            textColor=colors.HexColor('#151924')
+        )
+        style_val = ParagraphStyle(
+            'Value',
+            parent=styles['Normal'],
+            fontName='Helvetica',
+            fontSize=9,
+            textColor=colors.HexColor('#333333')
+        )
+        style_table_header = ParagraphStyle(
+            'TableHeader',
+            parent=styles['Normal'],
+            fontName='Helvetica-Bold',
+            fontSize=8,
+            textColor=colors.HexColor('#8BC34A'),
+            alignment=1
+        )
+        style_table_cell = ParagraphStyle(
+            'TableCell',
+            parent=styles['Normal'],
+            fontName='Helvetica',
+            fontSize=8,
+            alignment=1
+        )
+        style_table_cell_left = ParagraphStyle(
+            'TableCellLeft',
+            parent=styles['Normal'],
+            fontName='Helvetica',
+            fontSize=8,
+            alignment=0
+        )
+        style_table_cell_bold = ParagraphStyle(
+            'TableCellBold',
+            parent=styles['Normal'],
+            fontName='Helvetica-Bold',
+            fontSize=8,
+            alignment=1
+        )
+        
+        story = []
+        
+        # Company Info Header
+        story.append(Paragraph("GLS-SPA LIGHTING", style_title))
+        story.append(Paragraph("Gala No. 202, Bliss Nirman Industrial Estate, Building No. 5, Gokhiware, Vasai East, Palghar, Maharashtra - 401208 | enquiry@svldpl.net", style_subtitle))
+        story.append(Paragraph("PROFORMA INVOICE", style_section_title))
+        
+        # Meta Block: Buyer vs PI details
+        meta_data = [
+            [
+                Paragraph("<b>Buyer (Bill to)</b>", style_label), "",
+                Paragraph("<b>Voucher Details</b>", style_label), ""
+            ],
+            [
+                Paragraph("Name:", style_label), Paragraph(buyer_name, style_val),
+                Paragraph("Voucher No:", style_label), Paragraph(invoice_no, style_val)
+            ],
+            [
+                Paragraph("Address:", style_label), Paragraph(buyer_address, style_val),
+                Paragraph("Date:", style_label), Paragraph(invoice_date, style_val)
+            ],
+            [
+                Paragraph("GSTIN:", style_label), Paragraph(buyer_gstin, style_val),
+                Paragraph("Payment Terms:", style_label), Paragraph(payment_terms, style_val)
+            ],
+            [
+                Paragraph("Contact:", style_label), Paragraph(buyer_contact, style_val),
+                Paragraph("Validity:", style_label), Paragraph(validity, style_val)
+            ],
+            [
+                "", "",
+                Paragraph("Destination:", style_label), Paragraph(destination, style_val)
+            ]
+        ]
+        
+        meta_table = Table(meta_data, colWidths=[65, 200, 95, 175])
+        meta_table.setStyle(TableStyle([
+            ('SPAN', (0, 0), (1, 0)),
+            ('SPAN', (2, 0), (3, 0)),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+            ('TOPPADDING', (0, 0), (-1, -1), 4),
+            ('LINEBELOW', (0, 0), (1, 0), 1, colors.HexColor('#CCCCCC')),
+            ('LINEBELOW', (2, 0), (3, 0), 1, colors.HexColor('#CCCCCC')),
+        ]))
+        
+        story.append(meta_table)
+        story.append(Spacer(1, 15))
+        
+        # Items Table
+        table_data = [[
+            Paragraph("Sr.", style_table_header),
+            Paragraph("Description", style_table_header),
+            Paragraph("HSN Code", style_table_header),
+            Paragraph("Qty", style_table_header),
+            Paragraph("Price", style_table_header),
+            Paragraph("Amount", style_table_header),
+            Paragraph("GST (%)", style_table_header),
+            Paragraph("GST Amt", style_table_header),
+            Paragraph("Grand Total", style_table_header)
+        ]]
+        
+        total_qty = 0
+        total_amount = 0
+        total_gst_amt = 0
+        total_grand = 0
+        
+        for idx, item in enumerate(items):
+            rate_val = 0
+            try:
+                rate_val = float(item.get("rate", item.get("price", 0)))
+            except Exception:
+                pass
+                
+            qty_val = 0
+            try:
+                qty_val = int(item.get("boq_qty", 0))
+            except Exception:
+                pass
+                
+            amount_val = qty_val * rate_val
+            gst_val = amount_val * 0.18
+            grand_val = amount_val + gst_val
+            
+            total_qty += qty_val
+            total_amount += amount_val
+            total_gst_amt += gst_val
+            total_grand += grand_val
+            
+            hsn = item.get("hsn_code", "9405").strip() or "9405"
+            
+            table_data.append([
+                Paragraph(str(idx + 1), style_table_cell),
+                Paragraph(item.get("gls_code", ""), style_table_cell_left),
+                Paragraph(hsn, style_table_cell),
+                Paragraph(str(qty_val), style_table_cell),
+                Paragraph(f"Rs. {rate_val:,.2f}", style_table_cell),
+                Paragraph(f"Rs. {amount_val:,.2f}", style_table_cell),
+                Paragraph("18%", style_table_cell),
+                Paragraph(f"Rs. {gst_val:,.2f}", style_table_cell),
+                Paragraph(f"Rs. {grand_val:,.2f}", style_table_cell)
+            ])
+            
+        # Totals Row
+        table_data.append([
+            Paragraph("<b>Total</b>", style_table_cell_bold), "", "",
+            Paragraph(f"<b>{total_qty}</b>", style_table_cell_bold), "",
+            Paragraph(f"<b>Rs. {total_amount:,.2f}</b>", style_table_cell_bold), "",
+            Paragraph(f"<b>Rs. {total_gst_amt:,.2f}</b>", style_table_cell_bold),
+            Paragraph(f"<b>Rs. {total_grand:,.2f}</b>", style_table_cell_bold)
+        ])
+        
+        # ColWidths sum: 30 + 175 + 50 + 35 + 55 + 55 + 35 + 50 + 50 = 535
+        items_table = Table(table_data, colWidths=[25, 150, 45, 30, 55, 60, 35, 60, 75])
+        items_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#070812')),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#CCCCCC')),
+            ('SPAN', (0, -1), (2, -1)), # Merge Totals header
+            ('TOPPADDING', (0, 0), (-1, -1), 5),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+        ]))
+        
+        story.append(items_table)
+        story.append(Spacer(1, 15))
+        
+        # Grand Total in words & Bank & Terms KeepTogether block
+        lower_block = []
+        lower_block.append(Paragraph(f"<b>Amount Chargeable (in words):</b> {num_to_words_indian(int(total_grand))}", style_val))
+        lower_block.append(Spacer(1, 15))
+        
+        # Bank & Signature & Terms grid
+        bank_terms_data = [
+            [
+                Paragraph("<b>Company's Bank Details</b>", style_label), "",
+                Paragraph("<b>For GLS-SPA LIGHTING</b>", style_label)
+            ],
+            [
+                Paragraph("Bank Name: HDFC Bank", style_val), "",
+                ""
+            ],
+            [
+                Paragraph("A/c No: 50200034798292", style_val), "",
+                ""
+            ],
+            [
+                Paragraph("Branch & IFSC: Vasai East & HDFC0000038", style_val), "",
+                Paragraph("Authorised Signatory", style_label)
+            ]
+        ]
+        
+        bank_terms_table = Table(bank_terms_data, colWidths=[200, 135, 200])
+        bank_terms_table.setStyle(TableStyle([
+            ('SPAN', (0, 0), (1, 0)),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('TOPPADDING', (0, 0), (-1, -1), 2),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+        ]))
+        
+        lower_block.append(bank_terms_table)
+        lower_block.append(Spacer(1, 15))
+        
+        # Terms and conditions
+        lower_block.append(Paragraph("<b>Terms and Conditions:</b>", style_label))
+        terms_text = (
+            "1. 2 years warranty from date of dispatch against manufacturing defects.<br/>"
+            "2. Cancellation: Orders cannot be cancelled once confirmed.<br/>"
+            "3. Title of goods: Transfers to buyer only upon full payment.<br/>"
+            "4. No returns without prior written approval.<br/>"
+            "5. These custom orders are non-returnable."
+        )
+        lower_block.append(Paragraph(terms_text, style_val))
+        
+        story.append(KeepTogether(lower_block))
+        
+        # Build document
+        doc.build(story)
+        
+        return jsonify({
+            "success": True,
+            "filename": filename,
+            "download_url": f"/api/download-iwo/{filename}"
+        })
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": f"Failed to generate PDF Invoice: {str(e)}"}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)

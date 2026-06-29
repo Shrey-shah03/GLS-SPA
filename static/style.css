@@ -549,3 +549,104 @@ body.light-theme .data-table th {
 }
 
 .hidden { display: none !important; }
+
+/* Sidebar Layout styles */
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+.sidebar {
+    width: 260px;
+    background-color: var(--bg-card);
+    border-right: 1px solid var(--border-glass);
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    flex-shrink: 0;
+    transition: background-color 0.3s, border-right 0.3s;
+}
+.sidebar-brand {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 40px;
+    letter-spacing: 1px;
+    display: flex;
+    justify-content: center;
+}
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
+}
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s;
+    font-family: var(--font-sans);
+}
+.nav-item:hover {
+    color: var(--color-text-main);
+    background: rgba(139, 195, 74, 0.1);
+}
+.nav-item.active {
+    color: #151924;
+    background-color: var(--color-primary); /* Apple green active color */
+    font-weight: 600;
+}
+body.light-theme .nav-item.active {
+    color: #ffffff;
+}
+.sidebar-footer {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-align: center;
+    border-top: 1px solid var(--border-glass);
+    padding-top: 16px;
+}
+.main-content {
+    flex-grow: 1;
+    overflow-x: hidden;
+}
+
+/* Form items styling inside Invoice generator view */
+.select-container {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.table-totals-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 32px;
+    padding: 16px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    border: 1px solid var(--border-glass);
+    margin-top: 16px;
+}
+.total-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.total-val {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+.total-lbl {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+}
+

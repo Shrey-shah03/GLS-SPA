@@ -16,24 +16,42 @@
 </head>
 <body>
 
-    <!-- Main Workspace Area -->
-    <main class="main-content">
-        <header class="dashboard-header">
-            <div class="header-left-wrap">
-                <div class="gls-spa-logo-pill" style="margin-bottom: 12px;">
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="gls-spa-logo-pill">
                     <span class="gls-text">GLS</span><span class="hyphen">-</span><span class="spa-text">SPA</span>
                 </div>
-                <div class="header-title-wrap">
-                    <h1 class="monospace-header">COMMAND CENTER</h1>
-                    <p>Architecture & Engineering Work Order Dashboard</p>
-                </div>
             </div>
-            <button onclick="toggleTheme(event)" class="btn theme-toggle-btn" id="theme-btn">
-                <i class="fa-solid fa-moon"></i> Dark Mode
-            </button>
-        </header>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" id="nav-boq" onclick="switchView('boq')">
+                    <i class="fa-solid fa-file-excel"></i> BOQ to IWO
+                </a>
+                <a href="#" class="nav-item" id="nav-invoice" onclick="switchView('invoice')">
+                    <i class="fa-solid fa-file-invoice-dollar"></i> Invoice Generator
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                Command Center v2.1
+            </div>
+        </aside>
 
-        <div class="workspace-section">
+        <!-- Main Workspace Area -->
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="header-left-wrap">
+                    <div class="header-title-wrap">
+                        <h1 class="monospace-header" id="view-title-header">COMMAND CENTER</h1>
+                        <p id="view-desc-header">Architecture & Engineering Work Order Dashboard</p>
+                    </div>
+                </div>
+                <button onclick="toggleTheme(event)" class="btn theme-toggle-btn" id="theme-btn">
+                    <i class="fa-solid fa-moon"></i> Dark Mode
+                </button>
+            </header>
+
+            <div class="workspace-section" id="boq-generator-view">
             <!-- Upload Section -->
             <section class="upload-section">
                 <div class="card drop-zone" id="drop-zone">
@@ -180,8 +198,131 @@
                     </table>
                 </div>
             </section>
-        </div>
-    </main>
+            </div>
+
+            <!-- View 2: Invoice Generator Workspace -->
+            <div class="workspace-section hidden" id="invoice-generator-view">
+                <section class="upload-section">
+                    <!-- Buyer Profile Card -->
+                    <div class="card metadata-card" id="buyer-profile-card">
+                        <h3>Buyer Profiles</h3>
+                        <div class="select-container" style="margin-bottom: 16px;">
+                            <label for="saved-buyer-select" style="font-weight: 600;">Load Saved Buyer:</label>
+                            <select id="saved-buyer-select" class="table-select" style="max-width: 200px; flex-grow: 1;" onchange="loadSavedBuyer(this.value)">
+                                <option value="">-- Select Saved Buyer --</option>
+                            </select>
+                        </div>
+                        <div class="grid-form">
+                            <div class="form-group">
+                                <label for="inv-buyer-name">Buyer Name</label>
+                                <input type="text" id="inv-buyer-name" placeholder="e.g. Shahi lites">
+                            </div>
+                            <div class="form-group">
+                                <label for="inv-buyer-address">Buyer Address</label>
+                                <input type="text" id="inv-buyer-address" placeholder="e.g. Lucknow">
+                            </div>
+                            <div class="form-group">
+                                <label for="inv-buyer-gstin">Buyer GSTIN</label>
+                                <input type="text" id="inv-buyer-gstin" placeholder="e.g. 09AEQPM4658E1Z1">
+                            </div>
+                            <div class="form-group">
+                                <label for="inv-buyer-contact">Buyer Contact</label>
+                                <input type="text" id="inv-buyer-contact" placeholder="e.g. Name - Phone">
+                            </div>
+                        </div>
+                        <div style="margin-top: 16px; text-align: right;">
+                            <button class="btn btn-secondary" onclick="saveBuyerProfile()">
+                                <i class="fa-solid fa-floppy-disk"></i> Save / Update Buyer
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Invoice Details Card -->
+                    <div class="card metadata-card" id="invoice-meta-card">
+                        <h3>Invoice Details</h3>
+                        <div class="grid-form">
+                            <div class="form-group">
+                                <label for="inv-invoice-no">PI Number</label>
+                                <input type="text" id="inv-invoice-no" placeholder="e.g. SOR/26-27/001">
+                            </div>
+                            <div class="form-group">
+                                <label for="inv-invoice-date">PI Date</label>
+                                <input type="text" id="inv-invoice-date" placeholder="DD/MM/YY">
+                            </div>
+                            <div class="form-group">
+                                <label for="inv-payment-terms">Payment Terms</label>
+                                <input type="text" id="inv-payment-terms" value="100% Advance" placeholder="e.g. 100% Advance">
+                            </div>
+                            <div class="form-group">
+                                <label for="inv-validity-period">Validity Period</label>
+                                <input type="text" id="inv-validity-period" value="7 days" placeholder="e.g. 7 days">
+                            </div>
+                            <div class="form-group">
+                                <label for="inv-destination">Destination</label>
+                                <input type="text" id="inv-destination" placeholder="e.g. Lucknow">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Invoice Items Workspace Table -->
+                <section class="card" id="invoice-items-area" style="margin-top: 24px;">
+                    <div class="workspace-header">
+                        <h2>Invoice Live Calculator</h2>
+                        <div class="workspace-actions">
+                            <button class="btn" onclick="addNewBOQRow()">
+                                <i class="fa-solid fa-plus"></i> Add Item
+                            </button>
+                            <button class="btn btn-primary" onclick="generateInvoicePDF()">
+                                <i class="fa-solid fa-file-pdf"></i> Export PDF Invoice
+                            </button>
+                            <button class="btn btn-success" onclick="generateInvoiceExcelLegacy()">
+                                <i class="fa-solid fa-file-excel"></i> Export Excel Invoice
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table" id="invoice-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">Sr.</th>
+                                    <th>GLS Code / Item</th>
+                                    <th>Product Specification</th>
+                                    <th style="width: 100px;">HSN Code</th>
+                                    <th style="width: 80px;">Qty</th>
+                                    <th style="width: 80px;">Unit</th>
+                                    <th style="width: 100px;">Rate (₹)</th>
+                                    <th style="width: 110px;">Amount</th>
+                                    <th style="width: 100px;">GST (18%)</th>
+                                    <th style="width: 120px;">Grand Total</th>
+                                    <th style="width: 80px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoice-table-body">
+                                <!-- Injected by script.js -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Live Sum Bill Calculator Bar -->
+                    <div class="table-totals-bar">
+                        <div class="total-block">
+                            <span class="total-lbl">Total Amount</span>
+                            <span class="total-val" id="inv-total-amount">₹0.00</span>
+                        </div>
+                        <div class="total-block">
+                            <span class="total-lbl">Total GST (18%)</span>
+                            <span class="total-val" id="inv-total-gst">₹0.00</span>
+                        </div>
+                        <div class="total-block">
+                            <span class="total-lbl">Grand Bill Total</span>
+                            <span class="total-val" id="inv-total-grand">₹0.00</span>
+                        </div>
+                    </div>
+            </div>
+        </main>
+    </div>
 
     <!-- Remap Catalog Search Modal -->
     <div class="modal-bg" id="remap-modal">
