@@ -105,6 +105,12 @@ function handleFileUpload(file) {
         
         // Update dashboard UI
         metaCard.classList.remove('disabled');
+        const invoiceCard = document.getElementById('invoice-card');
+        if (invoiceCard) {
+            invoiceCard.classList.remove('disabled');
+            document.getElementById('invoice-date').value = `${dd}/${mm}/${yy}`;
+            document.getElementById('invoice-no').value = `SOR/26-27/00${randomNum}`;
+        }
         statsArea.classList.remove('hidden');
         workspaceArea.classList.remove('hidden');
         
@@ -212,6 +218,9 @@ function renderTable() {
                     <option value="Mtr" ${item.unit === 'Mtr' ? 'selected' : ''}>Mtr</option>
                     <option value="Set" ${item.unit === 'Set' ? 'selected' : ''}>Set</option>
                 </select>
+            </td>
+            <td style="width: 100px;">
+                <input type="number" class="table-input" value="${item.rate || 1200}" onchange="updateItemField(${item.id}, 'rate', this.value)">
             </td>
             <td>
                 <input type="text" class="table-input" value="${item.driver_details || ''}" onchange="updateItemField(${item.id}, 'driver_details', this.value)">
@@ -437,5 +446,81 @@ function generateIWO() {
         exportBtn.innerHTML = originalText;
         exportBtn.disabled = false;
         alert('Failed to generate IWO workbook.');
+    });
+}
+
+function addNewBOQRow() {
+    const nextId = workspaceItems.length > 0 ? Math.max(...workspaceItems.map(i => i.id)) + 1 : 1;
+    const newItem = {
+        id: nextId,
+        boq_description: "Manual Entry Row",
+        gls_code: "GS-",
+        product_description: "GLS-SPA Luminaire, IP20.",
+        body_color: "Black",
+        boq_qty: 1,
+        unit: "Nos",
+        rate: 1200,
+        driver_details: "Fulham - 10W",
+        driver_qty: 1,
+        led_details: "Bridgelux - 4000K",
+        accessories: "Standard",
+        page: 0,
+        matched_by: "manual_entry"
+    };
+    workspaceItems.push(newItem);
+    renderTable();
+    updateStats();
+}
+
+function generateInvoice() {
+    if (workspaceItems.length === 0) {
+        alert('Workspace is empty. Please upload a BOQ sheet.');
+        return;
+    }
+    
+    const payload = {
+        buyer_name: document.getElementById('buyer-name').value.trim(),
+        buyer_address: document.getElementById('buyer-address').value.trim(),
+        buyer_gstin: document.getElementById('buyer-gstin').value.trim(),
+        buyer_contact: document.getElementById('buyer-contact').value.trim(),
+        invoice_no: document.getElementById('invoice-no').value.trim(),
+        invoice_date: document.getElementById('invoice-date').value.trim(),
+        payment_terms: document.getElementById('payment-terms').value.trim(),
+        validity: document.getElementById('validity-period').value.trim(),
+        destination: document.getElementById('destination').value.trim(),
+        items: workspaceItems
+    };
+    
+    // Change button to spinner
+    const exportBtn = document.querySelector('.workspace-actions .btn-success');
+    const originalText = exportBtn.innerHTML;
+    exportBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generating Invoice...`;
+    exportBtn.disabled = true;
+    
+    fetch('/api/generate-invoice', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(r => r.json())
+    .then(data => {
+        exportBtn.innerHTML = originalText;
+        exportBtn.disabled = false;
+        
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+        
+        // Trigger download
+        window.location.href = data.download_url;
+    })
+    .catch(err => {
+        console.error(err);
+        exportBtn.innerHTML = originalText;
+        exportBtn.disabled = false;
+        alert('Failed to generate Proforma Invoice.');
     });
 }

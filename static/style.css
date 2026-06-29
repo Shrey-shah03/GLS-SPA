@@ -247,11 +247,11 @@ body.light-theme .sidebar-btn {
 
 .upload-section {
     display: grid;
-    grid-template-columns: 1.5fr 1fr;
+    grid-template-columns: 1.2fr 1fr 1.2fr;
     gap: 24px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1200px) {
     .upload-section {
         grid-template-columns: 1fr;
     }

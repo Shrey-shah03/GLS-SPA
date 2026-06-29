@@ -46,7 +46,7 @@
                     <div class="supported-formats">Supports .xlsx spreadsheets</div>
                 </div>
                 
-                <!-- Metadata Form Card -->
+                <!-- Metadata Form Card (IWO) -->
                 <div class="card metadata-card disabled" id="meta-card">
                     <h3>IWO</h3>
                     <div class="grid-form">
@@ -69,6 +69,49 @@
                         <div class="form-group">
                             <label for="sales-name">Salesperson Name</label>
                             <input type="text" id="sales-name" value="Sales-01" placeholder="e.g. Sales-01">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Invoice Form Card -->
+                <div class="card metadata-card disabled" id="invoice-card">
+                    <h3>Proforma Invoice</h3>
+                    <div class="grid-form">
+                        <div class="form-group">
+                            <label for="buyer-name">Buyer Name</label>
+                            <input type="text" id="buyer-name" value="Shahi lites & Chandeliers" placeholder="e.g. Shahi lites">
+                        </div>
+                        <div class="form-group">
+                            <label for="buyer-address">Buyer Address</label>
+                            <input type="text" id="buyer-address" value="2nd floor, Sahara Shopping Center, Faizabad Road, Lucknow" placeholder="e.g. Lucknow">
+                        </div>
+                        <div class="form-group">
+                            <label for="buyer-gstin">Buyer GSTIN</label>
+                            <input type="text" id="buyer-gstin" value="09AEQPM4658E1Z1" placeholder="e.g. 09AEQPM4658E1Z1">
+                        </div>
+                        <div class="form-group">
+                            <label for="buyer-contact">Buyer Contact</label>
+                            <input type="text" id="buyer-contact" value="ZUBERUL HUSSAIN - 9307616605" placeholder="e.g. Name - Phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="invoice-no">PI Number</label>
+                            <input type="text" id="invoice-no" placeholder="e.g. SOR/26-27/001">
+                        </div>
+                        <div class="form-group">
+                            <label for="invoice-date">PI Date</label>
+                            <input type="text" id="invoice-date" placeholder="DD/MM/YY">
+                        </div>
+                        <div class="form-group">
+                            <label for="payment-terms">Payment Terms</label>
+                            <input type="text" id="payment-terms" value="100% Advance" placeholder="e.g. 100% Advance">
+                        </div>
+                        <div class="form-group">
+                            <label for="validity-period">Validity Period</label>
+                            <input type="text" id="validity-period" value="7 days" placeholder="e.g. 7 days">
+                        </div>
+                        <div class="form-group">
+                            <label for="destination">Destination</label>
+                            <input type="text" id="destination" value="Lucknow" placeholder="e.g. Lucknow">
                         </div>
                     </div>
                 </div>
@@ -105,6 +148,9 @@
                         <button class="btn btn-primary" onclick="generateIWO()">
                             <i class="fa-solid fa-file-export"></i> Generate IWO
                         </button>
+                        <button class="btn btn-success" onclick="generateInvoice()">
+                            <i class="fa-solid fa-file-invoice-dollar"></i> Generate Invoice
+                        </button>
                     </div>
                 </div>
                 
@@ -119,6 +165,7 @@
                                 <th style="width: 120px;">Body Color</th>
                                 <th style="width: 80px;">Qty</th>
                                 <th style="width: 80px;">Unit</th>
+                                <th style="width: 100px;">Rate (₹)</th>
                                 <th style="width: 160px;">Driver Details</th>
                                 <th style="width: 80px;">Driver Qty</th>
                                 <th style="width: 100px;">LED Details</th>
