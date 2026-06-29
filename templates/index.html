@@ -14,44 +14,21 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-        <div class="sidebar-logo-container">
-            <div class="gls-spa-logo-pill">
-                <span class="gls-text">GLS</span><span class="hyphen">-</span><span class="spa-text">SPA</span>
-            </div>
-        </div>
-        <nav class="sidebar-menu">
-            <button class="sidebar-item active" onclick="switchTab('overview')">
-                <i class="fa-solid fa-gauge-high"></i> Overview
-            </button>
-            <button class="sidebar-item" onclick="switchTab('upload')">
-                <i class="fa-solid fa-file-arrow-up"></i> BOQ Upload
-            </button>
-            <button class="sidebar-item" onclick="switchTab('calc')">
-                <i class="fa-solid fa-calculator"></i> Driver Calc
-            </button>
-        </nav>
-        <div class="sidebar-footer">
-            <button class="sidebar-btn" onclick="toggleSound()">
-                <i class="fa-solid fa-volume-xmark" id="sound-icon"></i> Sound: Off
-            </button>
-            <button class="sidebar-btn" onclick="toggleTheme(event)">
-                <i class="fa-solid fa-circle-half-stroke"></i> Theme: Light
-            </button>
-        </div>
-    </aside>
 
     <!-- Main Workspace Area -->
     <main class="main-content">
         <header class="dashboard-header">
-            <div class="header-title-wrap">
-                <h1 class="monospace-header">COMMAND CENTER</h1>
-                <p>Architecture & Engineering Work Order Dashboard</p>
+            <div class="header-left-wrap">
+                <div class="gls-spa-logo-pill" style="margin-bottom: 12px;">
+                    <span class="gls-text">GLS</span><span class="hyphen">-</span><span class="spa-text">SPA</span>
+                </div>
+                <div class="header-title-wrap">
+                    <h1 class="monospace-header">COMMAND CENTER</h1>
+                    <p>Architecture & Engineering Work Order Dashboard</p>
+                </div>
             </div>
-            <button class="btn" onclick="window.location.reload()">
-                <i class="fa-solid fa-arrows-rotate"></i> Refresh View
+            <button onclick="toggleTheme(event)" class="btn theme-toggle-btn">
+                <i class="fa-solid fa-circle-half-stroke"></i> Theme Mode
             </button>
         </header>
 
@@ -233,36 +210,6 @@
     <!-- Script assets -->
     <script src="/static/script.js"></script>
     <script>
-    // Tab controller
-    function switchTab(tab) {
-        document.querySelectorAll('.sidebar-item').forEach(btn => btn.classList.remove('active'));
-        
-        if (tab === 'overview') {
-            document.querySelector('[onclick="switchTab(\'overview\')"]').classList.add('active');
-        } else if (tab === 'upload') {
-            document.querySelector('[onclick="switchTab(\'upload\')"]').classList.add('active');
-            document.getElementById('file-input').click();
-        } else if (tab === 'calc') {
-            document.querySelector('[onclick="switchTab(\'calc\')"]').classList.add('active');
-            openDriverCalculator(0);
-        }
-    }
-
-    // Sound toggle state
-    let soundOn = false;
-    function toggleSound() {
-        soundOn = !soundOn;
-        const icon = document.getElementById('sound-icon');
-        const btn = icon.parentNode;
-        if (soundOn) {
-            icon.className = 'fa-solid fa-volume-high';
-            btn.innerHTML = `<i class="fa-solid fa-volume-high" id="sound-icon"></i> Sound: On`;
-        } else {
-            icon.className = 'fa-solid fa-volume-xmark';
-            btn.innerHTML = `<i class="fa-solid fa-volume-xmark" id="sound-icon"></i> Sound: Off`;
-        }
-    }
-
     // Radial view transitions
     function toggleTheme(event) {
         const x = event ? event.clientX : window.innerWidth / 2;
