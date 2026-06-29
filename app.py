@@ -592,5 +592,115 @@ def generate_iwo():
 def download_iwo(filename):
     return send_from_directory(GENERATED_FOLDER, filename, as_attachment=True)
 
+import csv
+
+@app.route("/api/database", methods=["GET"])
+def get_database():
+    csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GLS_SPA_Product_Database.csv")
+    if not os.path.exists(csv_path):
+        return jsonify({"error": "Database not found"}), 404
+    try:
+        products = []
+        with open(csv_path, "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                products.append(row)
+        return jsonify(products)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/database", methods=["POST"])
+def save_database():
+    data = request.json
+    if not isinstance(data, list):
+        return jsonify({"error": "Invalid data format"}), 400
+        
+    csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GLS_SPA_Product_Database.csv")
+    catalog_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GLS_SPA_catalog.json")
+    html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GLS_SPA_Product_Database.html")
+    html_copy_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "catlogues", "GLS_SPA_Product_Database.html")
+    
+    try:
+        # 1. Save to CSV
+        headers = [
+            "Product Name", "Product Code", "Size", "Lens", 
+            "Driver", "Beam Angle", "IP Rating", "Housing", 
+            "Driver Make", "Driver Wattage"
+        ]
+        with open(csv_path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(headers)
+            for p in data:
+                writer.writerow([
+                    p.get("Product Name", p.get("product_name", p.get("name", ""))),
+                    p.get("Product Code", p.get("code", "")),
+                    p.get("Size", p.get("size", "")),
+                    p.get("Lens", p.get("lens", "")),
+                    p.get("Driver", p.get("driver", "Yes")),
+                    p.get("Beam Angle", p.get("beam_angle", "")),
+                    p.get("IP Rating", p.get("ip_rating", "")),
+                    p.get("Housing", p.get("housing", "")),
+                    p.get("Driver Make", p.get("driver_make", "")),
+                    p.get("Driver Wattage", p.get("driver_wattage", ""))
+                ])
+                
+        # 2. Sync to GLS_SPA_catalog.json
+        existing_images = {}
+        if os.path.exists(catalog_path):
+            with open(catalog_path, "r", encoding="utf-8") as f:
+                cat_data = json.load(f)
+                for item in cat_data:
+                    code = item.get("code", "").strip().upper()
+                    if code and item.get("b64"):
+                        existing_images[code] = item.get("b64")
+                        
+        catalog_products = []
+        for p in data:
+            code = p.get("Product Code", p.get("code", "")).strip()
+            if not code:
+                continue
+            norm_code = code.upper()
+            b64 = existing_images.get(norm_code, "")
+            
+            # Retrieve page or fallback
+            page_val = p.get("page", p.get("pdf_page", 0))
+            try:
+                page = int(page_val)
+            except Exception:
+                page = 0
+                
+            catalog_products.append({
+                "product_code": code,
+                "code": code,
+                "pdf_page": page,
+                "page": page,
+                "catalog_name": p.get("catalog_name", "INDOOR SERIES 2026.pdf"),
+                "filename": p.get("filename", f"page_{page}.jpeg"),
+                "size": p.get("Size", p.get("size", "1000x1000")),
+                "b64": b64
+            })
+            
+        with open(catalog_path, "w", encoding="utf-8") as f:
+            json.dump(catalog_products, f, indent=2, ensure_ascii=False)
+            
+        # 3. Rebuild DATA array in HTML files
+        def update_html(p_path):
+            if not os.path.exists(p_path):
+                return
+            with open(p_path, "r", encoding="utf-8") as h_f:
+                html = h_f.read()
+            pattern = r'const\s+DATA\s*=\s*\[.*?\];'
+            js_array = json.dumps(catalog_products, ensure_ascii=False)
+            new_html = re.sub(pattern, f"const DATA = {js_array};", html, flags=re.DOTALL)
+            with open(p_path, "w", encoding="utf-8") as h_f:
+                h_f.write(new_html)
+                
+        update_html(html_path)
+        update_html(html_copy_path)
+        
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)
