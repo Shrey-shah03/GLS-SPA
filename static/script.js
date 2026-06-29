@@ -31,6 +31,13 @@ const d_mm = String(deliveryDay.getMonth() + 1).padStart(2, '0');
 const d_yy = String(deliveryDay.getFullYear()).slice(-2);
 deliveryDateInput.value = `${d_dd}/${d_mm}/${d_yy}`;
 
+// Click event listener to open file explorer
+dropZone.addEventListener('click', (e) => {
+    if (e.target !== fileInput) {
+        fileInput.click();
+    }
+});
+
 // Drag and drop event listeners
 dropZone.addEventListener('dragover', (e) => {
     e.preventDefault();
