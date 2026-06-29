@@ -706,23 +706,27 @@ function renderInvoiceTable() {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${idx + 1}</td>
-            <td style="font-family: monospace; font-size: 0.72rem; font-weight: 600; color: #ffffff;">${item.gls_code}</td>
-            <td style="font-size: 0.75rem;">${item.product_description}</td>
             <td>
-                <input type="text" class="table-input" style="width: 80px;" value="${hsn}" onchange="updateInvoiceItemField(${item.id}, 'hsn_code', this.value)">
+                <input type="text" class="table-input" style="width: 130px; font-family: monospace; font-weight: 600;" value="${item.gls_code || ''}" onchange="updateInvoiceItemField(${item.id}, 'gls_code', this.value)">
             </td>
             <td>
-                <input type="number" class="table-input" style="width: 70px;" value="${qty}" onchange="updateInvoiceItemField(${item.id}, 'boq_qty', this.value)">
+                <textarea class="table-input" style="width: 100%; height: 36px; font-size: 0.76rem; resize: none; text-align: left;" onchange="updateInvoiceItemField(${item.id}, 'product_description', this.value)">${item.product_description || ''}</textarea>
             </td>
             <td>
-                <select class="table-select" style="width: 80px;" onchange="updateInvoiceItemField(${item.id}, 'unit', this.value)">
+                <input type="text" class="table-input" style="width: 70px;" value="${hsn}" onchange="updateInvoiceItemField(${item.id}, 'hsn_code', this.value)">
+            </td>
+            <td>
+                <input type="number" class="table-input" style="width: 60px;" value="${qty}" onchange="updateInvoiceItemField(${item.id}, 'boq_qty', this.value)">
+            </td>
+            <td>
+                <select class="table-select" style="width: 70px;" onchange="updateInvoiceItemField(${item.id}, 'unit', this.value)">
                     <option value="Nos" ${item.unit === 'Nos' ? 'selected' : ''}>Nos</option>
                     <option value="Mtr" ${item.unit === 'Mtr' ? 'selected' : ''}>Mtr</option>
                     <option value="Set" ${item.unit === 'Set' ? 'selected' : ''}>Set</option>
                 </select>
             </td>
             <td>
-                <input type="number" class="table-input" style="width: 100px;" value="${rate}" onchange="updateInvoiceItemField(${item.id}, 'rate', this.value)">
+                <input type="number" class="table-input" style="width: 90px;" value="${rate}" onchange="updateInvoiceItemField(${item.id}, 'rate', this.value)">
             </td>
             <td style="font-weight: 500;">₹${lineAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             <td style="color: var(--color-text-muted);">₹${lineGst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
@@ -753,6 +757,51 @@ function deleteInvoiceItem(itemId) {
     }
 }
 
+function numberToWordsIndian(num) {
+    if (num === 0) return 'Zero Rupees Only';
+    const single = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+    const double = ['', 'Ten', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+    
+    function convertLessThanThousand(n) {
+        if (n === 0) return '';
+        let str = '';
+        if (n >= 100) {
+            str += single[Math.floor(n / 100)] + ' Hundred ';
+            n %= 100;
+        }
+        if (n >= 20) {
+            str += double[Math.floor(n / 10)] + ' ';
+            n %= 10;
+        }
+        if (n > 0) {
+            str += single[n] + ' ';
+        }
+        return str;
+    }
+    
+    let res = '';
+    let crore = Math.floor(num / 10000000);
+    num %= 10000000;
+    let lakh = Math.floor(num / 100000);
+    num %= 100000;
+    let thousand = Math.floor(num / 1000);
+    num %= 1000;
+    
+    if (crore > 0) {
+        res += convertLessThanThousand(crore) + 'Crore ';
+    }
+    if (lakh > 0) {
+        res += convertLessThanThousand(lakh) + 'Lakh ';
+    }
+    if (thousand > 0) {
+        res += convertLessThanThousand(thousand) + 'Thousand ';
+    }
+    if (num > 0) {
+        res += convertLessThanThousand(num);
+    }
+    return res.trim() + ' Rupees Only';
+}
+
 function updateInvoiceTotals() {
     let totalAmount = 0;
     let totalGst = 0;
@@ -773,6 +822,11 @@ function updateInvoiceTotals() {
     document.getElementById('inv-total-amount').innerText = `₹${totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     document.getElementById('inv-total-gst').innerText = `₹${totalGst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     document.getElementById('inv-total-grand').innerText = `₹${totalGrand.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    
+    const wordsEl = document.getElementById('inv-chargeable-words');
+    if (wordsEl) {
+        wordsEl.innerText = numberToWordsIndian(Math.floor(totalGrand));
+    }
 }
 
 function generateInvoicePDF() {
