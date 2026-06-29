@@ -27,8 +27,8 @@
                     <p>Architecture & Engineering Work Order Dashboard</p>
                 </div>
             </div>
-            <button onclick="toggleTheme(event)" class="btn theme-toggle-btn">
-                <i class="fa-solid fa-circle-half-stroke"></i> Theme Mode
+            <button onclick="toggleTheme(event)" class="btn theme-toggle-btn" id="theme-btn">
+                <i class="fa-solid fa-moon"></i> Dark Mode
             </button>
         </header>
 
@@ -210,6 +210,16 @@
     <!-- Script assets -->
     <script src="/static/script.js"></script>
     <script>
+    function updateThemeButtonText() {
+        const btn = document.getElementById('theme-btn');
+        const isLight = document.body.classList.contains('light-theme');
+        if (isLight) {
+            btn.innerHTML = `<i class="fa-solid fa-sun"></i> Light Mode`;
+        } else {
+            btn.innerHTML = `<i class="fa-solid fa-moon"></i> Dark Mode`;
+        }
+    }
+
     // Radial view transitions
     function toggleTheme(event) {
         const x = event ? event.clientX : window.innerWidth / 2;
@@ -221,11 +231,13 @@
 
         if (!document.startViewTransition) {
             document.body.classList.toggle('light-theme');
+            updateThemeButtonText();
             return;
         }
 
         const transition = document.startViewTransition(() => {
             document.body.classList.toggle('light-theme');
+            updateThemeButtonText();
         });
 
         transition.ready.then(() => {
