@@ -161,41 +161,28 @@
 
             <!-- View 2: Invoice Generator Workspace -->
             <div class="workspace-section hidden" id="invoice-generator-view">
-                
-                <!-- Action / Control bar -->
-                <div class="card" style="padding: 16px 24px; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; border-radius: 8px;">
-                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
-                        <!-- File Upload trigger -->
-                        <div class="compact-upload-widget">
-                            <input type="file" id="invoice-file-input" accept=".xlsx" style="display: none;">
-                            <button class="btn btn-secondary" onclick="document.getElementById('invoice-file-input').click()">
-                                <i class="fa-solid fa-file-arrow-up"></i> Upload BOQ / IWO
-                            </button>
-                        </div>
-                        
-                        <!-- Saved Buyers Loader -->
-                        <div class="select-container" style="margin-bottom: 0;">
-                            <select id="saved-buyer-select" class="table-select" style="min-width: 220px;" onchange="loadSavedBuyer(this.value)">
-                                <option value="">-- Load Saved Buyer --</option>
-                            </select>
-                        </div>
-                        
-                        <button class="btn btn-secondary" onclick="saveBuyerProfile()" title="Save buyer info to database">
-                            <i class="fa-solid fa-floppy-disk"></i> Save Buyer
-                        </button>
+                                <!-- Visual Attachment Drag and Drop Zone (PI) -->
+                <div class="card drop-zone" id="invoice-drop-zone" style="max-width: 950px; margin: 0 auto 20px auto; padding: 24px;">
+                    <input type="file" id="invoice-file-input" accept=".xlsx" style="display: none;">
+                    <div class="upload-icon" style="font-size: 2.2rem; margin-bottom: 8px;">
+                        <i class="fa-solid fa-file-excel"></i>
                     </div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 4px;">Drag & Drop BOQ Excel / IWO here</h3>
+                    <p style="font-size: 0.85rem; margin-bottom: 0;">or <span class="highlight-link">browse your files</span> to populate the invoice editor</p>
+                    <div class="supported-formats" style="font-size: 0.72rem; margin-top: 6px;">Supports .xlsx spreadsheets</div>
+                </div>
 
-                    <div style="display: flex; gap: 12px;">
-                        <button class="btn" onclick="addNewBOQRow()">
-                            <i class="fa-solid fa-plus"></i> Add Item
-                        </button>
-                        <button class="btn btn-primary" onclick="generateInvoicePDF()">
-                            <i class="fa-solid fa-file-pdf"></i> Export PDF
-                        </button>
-                        <button class="btn btn-success" onclick="generateInvoiceExcelLegacy()">
-                            <i class="fa-solid fa-file-excel"></i> Export Excel
-                        </button>
-                    </div>
+                <!-- Document Action Buttons -->
+                <div style="max-width: 950px; margin: 0 auto 12px auto; display: flex; justify-content: flex-end; gap: 12px;">
+                    <button class="btn" style="font-size: 0.82rem; padding: 8px 16px;" onclick="addNewBOQRow()">
+                        <i class="fa-solid fa-plus"></i> Add Item
+                    </button>
+                    <button class="btn btn-primary" style="font-size: 0.82rem; padding: 8px 16px;" onclick="generateInvoicePDF()">
+                        <i class="fa-solid fa-file-pdf"></i> Export PDF
+                    </button>
+                    <button class="btn btn-success" style="font-size: 0.82rem; padding: 8px 16px;" onclick="generateInvoiceExcelLegacy()">
+                        <i class="fa-solid fa-file-excel"></i> Export Excel
+                    </button>
                 </div>
 
                 <!-- Visual Paper Document Layout (Refrens Style) -->
@@ -248,7 +235,17 @@
                     <!-- Billing Grid -->
                     <div class="paper-billing-grid">
                         <div class="paper-bill-to">
-                            <h4 class="paper-sec-heading">Buyer (Bill to)</h4>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                                <h4 class="paper-sec-heading" style="margin-bottom: 0;">Buyer (Bill to)</h4>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <select id="saved-buyer-select" class="table-select" style="font-size: 0.76rem; padding: 4px 8px;" onchange="loadSavedBuyer(this.value)">
+                                        <option value="">-- Load Saved Buyer --</option>
+                                    </select>
+                                    <button class="btn btn-secondary" style="font-size: 0.72rem; padding: 4px 8px;" onclick="saveBuyerProfile()" title="Save billing info below to database">
+                                        <i class="fa-solid fa-floppy-disk"></i> Save Buyer
+                                    </button>
+                                </div>
+                            </div>
                             <div class="paper-bill-form">
                                 <input type="text" id="inv-buyer-name" class="paper-input paper-input-bold" placeholder="Buyer Name (e.g. Shahi lites)">
                                 <textarea id="inv-buyer-address" class="paper-input" style="height: 54px; resize: none; width: 100%;" placeholder="Billing Address"></textarea>
