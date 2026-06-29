@@ -569,7 +569,7 @@ def parse_product_code(text):
         "cct": cct
     }
 
-def lookup_catalog_database(parsed_info, catalog_json_path=None):
+def _lookup_catalog_database_impl(parsed_info, catalog_json_path=None):
     """
     Looks up specs in the catalog database.
     """
@@ -741,3 +741,62 @@ def lookup_catalog_database(parsed_info, catalog_json_path=None):
         "accessories": "Standard",
         "matched_by": "generic_fallback"
     }
+
+def double_verify_with_csv(matched_result, raw_code):
+    import csv
+    csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GLS_SPA_Product_Database.csv")
+    if not os.path.exists(csv_path) or not raw_code.strip():
+        return matched_result
+        
+    try:
+        query_clean = raw_code.strip().upper().replace(" ", "")
+        csv_match = None
+        with open(csv_path, "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                code_val = row.get("Product Code", "").strip().upper()
+                code_clean = code_val.replace(" ", "")
+                if query_clean == code_clean or query_clean in code_clean or code_clean in query_clean:
+                    csv_match = row
+                    break
+                    
+        if csv_match:
+            size = csv_match.get("Size", "")
+            lens = csv_match.get("Lens", "")
+            housing = csv_match.get("Housing", "")
+            ip = csv_match.get("IP Rating", "")
+            beam = csv_match.get("Beam Angle", "")
+            driver_make = csv_match.get("Driver Make", "")
+            driver_watt = csv_match.get("Driver Wattage", "")
+            
+            parts = []
+            if housing:
+                parts.append(f"Housing - {housing}")
+            if lens:
+                parts.append(lens)
+            if size:
+                parts.append(f"Dimensions - {size}")
+            if beam:
+                parts.append(f"Beam Angle - {beam}")
+            if ip:
+                parts.append(ip)
+                
+            if parts:
+                desc = ", ".join(parts) + "."
+                matched_result["product_description"] = desc
+                
+            if driver_make and driver_make != "NA" and driver_make.strip():
+                matched_result["driver_make"] = driver_make
+            if driver_watt and driver_watt != "NA" and driver_watt.strip():
+                matched_result["driver_wattage"] = driver_watt
+                
+            matched_result["matched_by"] = matched_result.get("matched_by", "") + "_csv_verified"
+            
+    except Exception as e:
+        print("Error during CSV double verification:", e)
+        
+    return matched_result
+
+def lookup_catalog_database(parsed_info, catalog_json_path=None):
+    res = _lookup_catalog_database_impl(parsed_info, catalog_json_path)
+    return double_verify_with_csv(res, parsed_info.get("raw_code", ""))
