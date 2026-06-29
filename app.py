@@ -281,6 +281,10 @@ def generate_description_from_boq(desc_str):
 def index():
     return render_template("index.html")
 
+@app.route("/database")
+def database():
+    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), "GLS_SPA_Product_Database.html")
+
 @app.route("/api/upload-boq", methods=["POST"])
 def upload_boq():
     if "file" not in request.files:

@@ -21,7 +21,5 @@ Thumbs.db
 .idea/
 
 # Exclude database HTML and cache files
-GLS_SPA_Product_Database.html
-GLS_SPA_catalog.json
 extracted_images/
 

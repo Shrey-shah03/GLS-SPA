@@ -655,7 +655,40 @@ def lookup_catalog_database(parsed_info, catalog_json_path=None):
             "accessories": specs["accessories"],
             "matched_by": "exact_catalog_specs"
         }
-        
+    # Check if we can search the newly mapped catalog database (GLS_SPA_catalog.json)
+    gls_catalog_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GLS_SPA_catalog.json")
+    if os.path.exists(gls_catalog_path):
+        try:
+            with open(gls_catalog_path, "r", encoding="utf-8") as f:
+                gls_catalog = json.load(f)
+            
+            query = raw_code.strip().upper().replace(" ", "")
+            best_match = None
+            
+            for item in gls_catalog:
+                prod_code = item.get("product_code", "").strip().upper()
+                prod_code_clean = prod_code.replace(" ", "")
+                if query == prod_code_clean or query in prod_code_clean or prod_code_clean in query:
+                    best_match = item
+                    break
+                    
+            if best_match:
+                page_num = best_match.get("pdf_page", 0)
+                code_matched = best_match.get("product_code", raw_code)
+                return {
+                    "page": page_num,
+                    "gls_code": code_matched,
+                    "product_description": f"GLS-SPA Luminaire, IP20.",
+                    "led_make": "Bridgelux",
+                    "driver_make": "Fulham",
+                    "driver_wattage": wattage or "10W",
+                    "unit": "Mtr" if "mtr" in original_text or "linear" in original_text else "Nos",
+                    "accessories": "Standard",
+                    "matched_by": f"gls_spa_catalog_json_page_{page_num}"
+                }
+        except Exception as e:
+            print("Error matching GLS_SPA_catalog.json:", e)
+
     # Check if we can search the raw text database
     if catalog_json_path and os.path.exists(catalog_json_path):
         try:
