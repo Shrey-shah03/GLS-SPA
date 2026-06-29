@@ -652,49 +652,15 @@ def lookup_catalog_database(parsed_info, catalog_json_path=None):
             "driver_make": specs["driver_make"],
             "driver_wattage": driver_watt,
             "unit": specs["unit"],
-            "accessories": specs["accessories"],
             "matched_by": "exact_catalog_specs"
         }
-    # Check if we can search the newly mapped catalog database (GLS_SPA_catalog.json)
-    gls_catalog_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GLS_SPA_catalog.json")
-    if os.path.exists(gls_catalog_path):
-        try:
-            with open(gls_catalog_path, "r", encoding="utf-8") as f:
-                gls_catalog = json.load(f)
-            
-            query = raw_code.strip().upper().replace(" ", "")
-            best_match = None
-            
-            for item in gls_catalog:
-                prod_code = item.get("product_code", "").strip().upper()
-                prod_code_clean = prod_code.replace(" ", "")
-                if query == prod_code_clean or query in prod_code_clean or prod_code_clean in query:
-                    best_match = item
-                    break
-                    
-            if best_match:
-                page_num = best_match.get("pdf_page", 0)
-                code_matched = best_match.get("product_code", raw_code)
-                return {
-                    "page": page_num,
-                    "gls_code": code_matched,
-                    "product_description": f"GLS-SPA Luminaire, IP20.",
-                    "led_make": "Bridgelux",
-                    "driver_make": "Fulham",
-                    "driver_wattage": wattage or "10W",
-                    "unit": "Mtr" if "mtr" in original_text or "linear" in original_text else "Nos",
-                    "accessories": "Standard",
-                    "matched_by": f"gls_spa_catalog_json_page_{page_num}"
-                }
-        except Exception as e:
-            print("Error matching GLS_SPA_catalog.json:", e)
-
-    # Check if we can search the raw text database
+        
+    # 2. Primary fallback: raw text page search in catalog_text.json
+    best_page = None
     if catalog_json_path and os.path.exists(catalog_json_path):
         try:
             with open(catalog_json_path, "r", encoding="utf-8") as f:
                 catalog = json.load(f)
-            best_page = None
             best_score = 0
             search_query = raw_code.lower()
             
@@ -707,26 +673,95 @@ def lookup_catalog_database(parsed_info, catalog_json_path=None):
                 if score > best_score:
                     best_score = score
                     best_page = page_num
-                    
-            if best_page:
-                page_text = catalog[str(best_page)]
-                driver_make = "Fulham" if "fulham" in page_text.lower() else "Constant Current"
-                led_make = "Bridgelux" if "bridgelux" in page_text.lower() else "SMD LED"
-                unit = "Mtr" if "mtr" in page_text.lower() or "linear" in page_text.lower() else "Nos"
-                
-                return {
-                    "page": int(best_page),
-                    "gls_code": raw_code,
-                    "product_description": f"GLS-SPA Luminaire, IP20.",
-                    "led_make": led_make,
-                    "driver_make": driver_make,
-                    "driver_wattage": wattage or "10W",
-                    "unit": unit,
-                    "accessories": "Standard",
-                    "matched_by": f"catalog_text_search_page_{best_page}"
-                }
         except Exception as e:
             print("Error matching catalog json:", e)
+
+    # 3. Double Verification & Enrichment using the new CSV database
+    import csv
+    csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GLS_SPA_Product_Database.csv")
+    csv_match = None
+    if os.path.exists(csv_path):
+        try:
+            query_clean = raw_code.strip().upper().replace(" ", "")
+            with open(csv_path, "r", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    code_val = row.get("Product Code", "").strip().upper()
+                    code_clean = code_val.replace(" ", "")
+                    if query_clean == code_clean or query_clean in code_clean or code_clean in query_clean:
+                        csv_match = row
+                        break
+        except Exception as e:
+            print("Error reading CSV for verification:", e)
+
+    # Resolve page from catalog JSON fallback if not found in text search
+    if not best_page:
+        catalog_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GLS_SPA_catalog.json")
+        if os.path.exists(catalog_path):
+            try:
+                query_clean = raw_code.strip().upper().replace(" ", "")
+                with open(catalog_path, "r", encoding="utf-8") as f:
+                    cat_data = json.load(f)
+                    for item in cat_data:
+                        item_code = item.get("code", "").strip().upper().replace(" ", "")
+                        if query_clean == item_code or query_clean in item_code or item_code in query_clean:
+                            best_page = item.get("page", 0)
+                            break
+            except Exception:
+                pass
+
+    if csv_match:
+        size = csv_match.get("Size", "")
+        lens = csv_match.get("Lens", "Reflector and Clear Glass")
+        housing = csv_match.get("Housing", "Die-Cast Aluminum")
+        ip = csv_match.get("IP Rating", "IP20")
+        beam = csv_match.get("Beam Angle", "")
+        driver_make = csv_match.get("Driver Make", "Fulham")
+        driver_watt = csv_match.get("Driver Wattage", wattage or "10W")
+        
+        parts = []
+        if housing:
+            parts.append(f"Housing - {housing}")
+        if lens:
+            parts.append(lens)
+        if size:
+            parts.append(f"Dimensions - {size}")
+        if beam:
+            parts.append(f"Beam Angle - {beam}")
+        if ip:
+            parts.append(ip)
+            
+        desc = ", ".join(parts) + "."
+        
+        return {
+            "page": int(best_page) if best_page else 0,
+            "gls_code": csv_match.get("Product Code", raw_code),
+            "product_description": desc,
+            "led_make": "Bridgelux",
+            "driver_make": driver_make,
+            "driver_wattage": driver_watt,
+            "unit": "Mtr" if "mtr" in original_text or "linear" in original_text else "Nos",
+            "accessories": "Standard",
+            "matched_by": f"csv_double_verified_page_{best_page}" if best_page else "csv_double_verified"
+        }
+
+    if best_page:
+        page_text = catalog[str(best_page)]
+        driver_make = "Fulham" if "fulham" in page_text.lower() else "Constant Current"
+        led_make = "Bridgelux" if "bridgelux" in page_text.lower() else "SMD LED"
+        unit = "Mtr" if "mtr" in page_text.lower() or "linear" in page_text.lower() else "Nos"
+        
+        return {
+            "page": int(best_page),
+            "gls_code": raw_code,
+            "product_description": f"GLS-SPA Luminaire, IP20.",
+            "led_make": led_make,
+            "driver_make": driver_make,
+            "driver_wattage": wattage or "10W",
+            "unit": unit,
+            "accessories": "Standard",
+            "matched_by": f"catalog_text_search_page_{best_page}"
+        }
             
     # Generic fallback
     return {

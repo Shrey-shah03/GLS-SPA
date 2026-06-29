@@ -3,21 +3,53 @@
    ========================================================================== */
 
 :root {
-    --bg-primary: #09090a;
-    --bg-card: #111113;
-    --border-glass: rgba(197, 168, 128, 0.15);
-    --color-primary: #c5a880;
-    --color-primary-glow: rgba(197, 168, 128, 0.2);
-    --color-success: #2ec4b6;
-    --color-success-glow: rgba(46, 196, 182, 0.15);
+    --bg-primary: #070812;
+    --bg-card: #151924;
+    --border-glass: rgba(255, 255, 255, 0.08);
+    --color-primary: #8BC34A;
+    --color-primary-glow: rgba(139, 195, 74, 0.2);
+    --color-success: #8BC34A;
+    --color-success-glow: rgba(139, 195, 74, 0.15);
     --color-warning: #ff9f1c;
     --color-warning-glow: rgba(255, 159, 28, 0.2);
     --color-danger: #ef4444;
-    --color-text-main: #e8e8e0;
-    --color-text-muted: #888;
+    --color-text-main: #f0f0f5;
+    --color-text-muted: #a1a7b5;
     --font-heading: 'Playfair Display', serif;
     --font-body: 'Inter', sans-serif;
     --shadow-premium: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+body.light-theme {
+    --bg-primary: #f4f5f8;
+    --bg-card: #ffffff;
+    --border-glass: rgba(7, 8, 18, 0.08);
+    --color-primary: #7cb342;
+    --color-primary-glow: rgba(124, 179, 66, 0.15);
+    --color-success: #7cb342;
+    --color-success-glow: rgba(124, 179, 66, 0.1);
+    --color-text-main: #070812;
+    --color-text-muted: #535b6d;
+    --shadow-premium: 0 10px 30px rgba(7, 8, 18, 0.05);
+}
+
+/* Custom view transition styles for circular clip-path theme ripple */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 9999;
+}
+.light-theme::view-transition-old(root) {
+  z-index: 9999;
+}
+.light-theme::view-transition-new(root) {
+  z-index: 1;
 }
 
 * {

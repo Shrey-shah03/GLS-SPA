@@ -24,7 +24,8 @@
         <div class="header-tagline">
             <i class="fa-solid fa-lightbulb icon-glow"></i> Architecture & Engineering Work Order Dashboard
         </div>
-    </header>
+        <button onclick="toggleTheme(event)" class="theme-toggle-btn" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:var(--color-primary); width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; outline:none; transition:all 0.2s;"><i class="fa-solid fa-circle-half-stroke"></i></button>
+</header>
 
     <main class="container">
         <!-- Upload Section -->
@@ -192,5 +193,48 @@
 
     <!-- Custom Script -->
     <script src="/static/script.js"></script>
+
+<script>
+function toggleTheme(event) {
+    const x = event ? event.clientX : window.innerWidth / 2;
+    const y = event ? event.clientY : window.innerHeight / 2;
+    const endRadius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+    );
+
+    if (!document.startViewTransition) {
+        document.body.classList.toggle('light-theme');
+        return;
+    }
+
+    const transition = document.startViewTransition(() => {
+        document.body.classList.toggle('light-theme');
+    });
+
+    transition.ready.then(() => {
+        const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`
+        ];
+        
+        document.documentElement.animate(
+            {
+                clipPath: document.body.classList.contains('light-theme')
+                    ? clipPath
+                    : [...clipPath].reverse(),
+            },
+            {
+                duration: 650,
+                easing: 'ease-in-out',
+                pseudoElement: document.body.classList.contains('light-theme')
+                    ? '::view-transition-new(root)'
+                    : '::view-transition-old(root)',
+            }
+        );
+    });
+}
+</script>
 </body>
+
 </html>
