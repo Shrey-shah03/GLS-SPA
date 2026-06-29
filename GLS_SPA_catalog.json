@@ -1,15 +1,23 @@
 [
   {
     "product_code": "GS-0609",
+    "code": "GS-0609",
     "pdf_page": 174,
+    "page": 174,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-0609.jpg",
-    "size": "943x501"
+    "size": "943x501",
+    "b64": ""
   },
   {
     "product_code": "GS-0709",
+    "code": "GS-0709",
     "pdf_page": 176,
+    "page": 176,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-0709.jpg",
-    "size": "960x505"
+    "size": "960x505",
+    "b64": ""
   },
   {
     "product_code": "GS-0726",
@@ -23,9 +31,13 @@
   },
   {
     "product_code": "GS-0818",
+    "code": "GS-0818",
     "pdf_page": 173,
+    "page": 173,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-0818.jpg",
-    "size": "960x509"
+    "size": "960x509",
+    "b64": ""
   },
   {
     "product_code": "GS-1000",
@@ -299,9 +311,13 @@
   },
   {
     "product_code": "GS-1236",
+    "code": "GS-1236",
     "pdf_page": 175,
+    "page": 175,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-1236.jpg",
-    "size": "959x505"
+    "size": "959x505",
+    "b64": ""
   },
   {
     "product_code": "GS-15MT-LDA",
@@ -345,15 +361,23 @@
   },
   {
     "product_code": "GS-1714",
+    "code": "GS-1714",
     "pdf_page": 178,
+    "page": 178,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-1714.jpg",
-    "size": "961x505"
+    "size": "961x505",
+    "b64": ""
   },
   {
     "product_code": "GS-1808",
+    "code": "GS-1808",
     "pdf_page": 177,
+    "page": 177,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-1808.jpg",
-    "size": "960x505"
+    "size": "960x505",
+    "b64": ""
   },
   {
     "product_code": "GS-1818",
@@ -1027,9 +1051,13 @@
   },
   {
     "product_code": "GS-AURUM",
+    "code": "GS-AURUM",
     "pdf_page": 54,
+    "page": 54,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-AURUM.jpg",
-    "size": "1004x500"
+    "size": "1004x500",
+    "b64": ""
   },
   {
     "product_code": "GS-BD-SQ",
@@ -2243,9 +2271,13 @@
   },
   {
     "product_code": "GS-CR-VIVID",
+    "code": "GS-CR-VIVID",
     "pdf_page": 22,
+    "page": 22,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-CR-VIVID.jpg",
-    "size": "1004x524"
+    "size": "1004x524",
+    "b64": ""
   },
   {
     "product_code": "GS-CS-0406",
@@ -3269,9 +3301,13 @@
   },
   {
     "product_code": "GS-DE-C* / GS-DE-SFM",
+    "code": "GS-DE-C* / GS-DE-SFM",
     "pdf_page": 79,
+    "page": 79,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-DE-C____GS-DE-SFM.jpg",
-    "size": "1004x428"
+    "size": "1004x428",
+    "b64": ""
   },
   {
     "product_code": "GS-DE-C-100",
@@ -3305,9 +3341,13 @@
   },
   {
     "product_code": "GS-DE-FDL",
+    "code": "GS-DE-FDL",
     "pdf_page": 69,
+    "page": 69,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-DE-FDL.jpg",
-    "size": "1004x451"
+    "size": "1004x451",
+    "b64": ""
   },
   {
     "product_code": "GS-DE-FDL-100",
@@ -3331,9 +3371,13 @@
   },
   {
     "product_code": "GS-DE-FDL-4E-100* / GS-DE-MDL-4E-100",
+    "code": "GS-DE-FDL-4E-100* / GS-DE-MDL-4E-100",
     "pdf_page": 71,
+    "page": 71,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-DE-FDL-4E-100____GS-DE-MDL-4E-100.jpg",
-    "size": "1004x420"
+    "size": "1004x420",
+    "b64": ""
   },
   {
     "product_code": "GS-DE-FDL-58",
@@ -3387,9 +3431,13 @@
   },
   {
     "product_code": "GS-DE-FGL",
+    "code": "GS-DE-FGL",
     "pdf_page": 72,
+    "page": 72,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-DE-FGL.jpg",
-    "size": "1004x388"
+    "size": "1004x388",
+    "b64": ""
   },
   {
     "product_code": "GS-DE-FGL-100",
@@ -3403,9 +3451,13 @@
   },
   {
     "product_code": "GS-DE-FGL-4E",
+    "code": "GS-DE-FGL-4E",
     "pdf_page": 73,
+    "page": 73,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-DE-FGL-4E.jpg",
-    "size": "1004x430"
+    "size": "1004x430",
+    "b64": ""
   },
   {
     "product_code": "GS-DE-FGL-4E-100",
@@ -3479,9 +3531,13 @@
   },
   {
     "product_code": "GS-DE-LDA",
+    "code": "GS-DE-LDA",
     "pdf_page": 34,
+    "page": 34,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-DE-LDA.jpg",
-    "size": "1004x524"
+    "size": "1004x524",
+    "b64": ""
   },
   {
     "product_code": "GS-DE-LDA-12",
@@ -3585,9 +3641,13 @@
   },
   {
     "product_code": "GS-DE-MDL",
+    "code": "GS-DE-MDL",
     "pdf_page": 70,
+    "page": 70,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-DE-MDL.jpg",
-    "size": "1004x444"
+    "size": "1004x444",
+    "b64": ""
   },
   {
     "product_code": "GS-DE-MDL-100",
@@ -3641,9 +3701,13 @@
   },
   {
     "product_code": "GS-DE-MGL",
+    "code": "GS-DE-MGL",
     "pdf_page": 74,
+    "page": 74,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-DE-MGL.jpg",
-    "size": "1004x396"
+    "size": "1004x396",
+    "b64": ""
   },
   {
     "product_code": "GS-DE-MGL-100",
@@ -3657,9 +3721,13 @@
   },
   {
     "product_code": "GS-DE-MGL-4E",
+    "code": "GS-DE-MGL-4E",
     "pdf_page": 75,
+    "page": 75,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-DE-MGL-4E.jpg",
-    "size": "1004x430"
+    "size": "1004x430",
+    "b64": ""
   },
   {
     "product_code": "GS-DE-MGL-4E-100",
@@ -3753,9 +3821,13 @@
   },
   {
     "product_code": "GS-DE-PO",
+    "code": "GS-DE-PO",
     "pdf_page": 80,
+    "page": 80,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-DE-PO.jpg",
-    "size": "1004x499"
+    "size": "1004x499",
+    "b64": ""
   },
   {
     "product_code": "GS-DE-PO-100",
@@ -3789,9 +3861,13 @@
   },
   {
     "product_code": "GS-DE-SF* / GS-DE-SUS",
+    "code": "GS-DE-SF* / GS-DE-SUS",
     "pdf_page": 78,
+    "page": 78,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-DE-SF____GS-DE-SUS.jpg",
-    "size": "1004x500"
+    "size": "1004x500",
+    "b64": ""
   },
   {
     "product_code": "GS-DE-SF-100",
@@ -4015,9 +4091,13 @@
   },
   {
     "product_code": "GS-DE-TLH-L* / GS-DE-TLH-I",
+    "code": "GS-DE-TLH-L* / GS-DE-TLH-I",
     "pdf_page": 76,
+    "page": 76,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-DE-TLH-L____GS-DE-TLH-I.jpg",
-    "size": "1004x593"
+    "size": "1004x593",
+    "b64": ""
   },
   {
     "product_code": "GS-DE-TLH-L-100",
@@ -4061,9 +4141,13 @@
   },
   {
     "product_code": "GS-DE-TLV* / GS-DE-INT",
+    "code": "GS-DE-TLV* / GS-DE-INT",
     "pdf_page": 77,
+    "page": 77,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-DE-TLV____GS-DE-INT.jpg",
-    "size": "1004x593"
+    "size": "1004x593",
+    "b64": ""
   },
   {
     "product_code": "GS-DE-TLV-100",
@@ -4117,9 +4201,13 @@
   },
   {
     "product_code": "GS-DL-COL-A",
+    "code": "GS-DL-COL-A",
     "pdf_page": 44,
+    "page": 44,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-DL-COL-A.jpg",
-    "size": "1004x398"
+    "size": "1004x398",
+    "b64": ""
   },
   {
     "product_code": "GS-DL-COL-A-15W",
@@ -4163,9 +4251,13 @@
   },
   {
     "product_code": "GS-DL-COL-B",
+    "code": "GS-DL-COL-B",
     "pdf_page": 45,
+    "page": 45,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-DL-COL-B.jpg",
-    "size": "1004x407"
+    "size": "1004x407",
+    "b64": ""
   },
   {
     "product_code": "GS-DL-COL-B-15W",
@@ -4209,9 +4301,13 @@
   },
   {
     "product_code": "GS-DL-COL-C* / GS-DL-COL-D",
+    "code": "GS-DL-COL-C* / GS-DL-COL-D",
     "pdf_page": 46,
+    "page": 46,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-DL-COL-C____GS-DL-COL-D.jpg",
-    "size": "1004x500"
+    "size": "1004x500",
+    "b64": ""
   },
   {
     "product_code": "GS-DL-COL-C-12W",
@@ -4285,9 +4381,13 @@
   },
   {
     "product_code": "GS-DL-COL-E",
+    "code": "GS-DL-COL-E",
     "pdf_page": 47,
+    "page": 47,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-DL-COL-E.jpg",
-    "size": "1004x407"
+    "size": "1004x407",
+    "b64": ""
   },
   {
     "product_code": "GS-DL-COL-E-15W",
@@ -4691,9 +4791,13 @@
   },
   {
     "product_code": "GS-ESSENTIA",
+    "code": "GS-ESSENTIA",
     "pdf_page": 58,
+    "page": 58,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-ESSENTIA.jpg",
-    "size": "1004x468"
+    "size": "1004x468",
+    "b64": ""
   },
   {
     "product_code": "GS-FC-1305",
@@ -5237,9 +5341,13 @@
   },
   {
     "product_code": "GS-FO-ABA",
+    "code": "GS-FO-ABA",
     "pdf_page": 60,
+    "page": 60,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-FO-ABA.jpg",
-    "size": "1004x546"
+    "size": "1004x546",
+    "b64": ""
   },
   {
     "product_code": "GS-FO-ABA-15W",
@@ -5253,9 +5361,13 @@
   },
   {
     "product_code": "GS-FO-ABA-PRO",
+    "code": "GS-FO-ABA-PRO",
     "pdf_page": 64,
+    "page": 64,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-FO-ABA-PRO.jpg",
-    "size": "1004x547"
+    "size": "1004x547",
+    "b64": ""
   },
   {
     "product_code": "GS-FO-ABA-PRO-15W",
@@ -5299,9 +5411,13 @@
   },
   {
     "product_code": "GS-FO-BEND-A/B",
+    "code": "GS-FO-BEND-A/B",
     "pdf_page": 61,
+    "page": 61,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-FO-BEND-A_B.jpg",
-    "size": "1004x594"
+    "size": "1004x594",
+    "b64": ""
   },
   {
     "product_code": "GS-FO-BEND-B-10W",
@@ -5325,9 +5441,13 @@
   },
   {
     "product_code": "GS-FO-BENDO",
+    "code": "GS-FO-BENDO",
     "pdf_page": 62,
+    "page": 62,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-FO-BENDO.jpg",
-    "size": "1004x518"
+    "size": "1004x518",
+    "b64": ""
   },
   {
     "product_code": "GS-FO-BENDO-10W",
@@ -5361,9 +5481,13 @@
   },
   {
     "product_code": "GS-FO-CUBA",
+    "code": "GS-FO-CUBA",
     "pdf_page": 52,
+    "page": 52,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-FO-CUBA.jpg",
-    "size": "1004x516"
+    "size": "1004x516",
+    "b64": ""
   },
   {
     "product_code": "GS-FO-CUBA-15W",
@@ -5467,9 +5591,13 @@
   },
   {
     "product_code": "GS-FO-DUO",
+    "code": "GS-FO-DUO",
     "pdf_page": 53,
+    "page": 53,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-FO-DUO.jpg",
-    "size": "1004x515"
+    "size": "1004x515",
+    "b64": ""
   },
   {
     "product_code": "GS-FO-DUO-2X15W",
@@ -5643,21 +5771,33 @@
   },
   {
     "product_code": "GS-FO-LD",
+    "code": "GS-FO-LD",
     "pdf_page": 56,
+    "page": 56,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-FO-LD.jpg",
-    "size": "1004x471"
+    "size": "1004x471",
+    "b64": ""
   },
   {
     "product_code": "GS-FO-MICRON",
+    "code": "GS-FO-MICRON",
     "pdf_page": 50,
+    "page": 50,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-FO-MICRON.jpg",
-    "size": "1004x484"
+    "size": "1004x484",
+    "b64": ""
   },
   {
     "product_code": "GS-FO-MINI",
+    "code": "GS-FO-MINI",
     "pdf_page": 51,
+    "page": 51,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-FO-MINI.jpg",
-    "size": "1004x471"
+    "size": "1004x471",
+    "b64": ""
   },
   {
     "product_code": "GS-FO-MINI-7W",
@@ -5671,9 +5811,13 @@
   },
   {
     "product_code": "GS-FO-MINIMO",
+    "code": "GS-FO-MINIMO",
     "pdf_page": 49,
+    "page": 49,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-FO-MINIMO.jpg",
-    "size": "1004x522"
+    "size": "1004x522",
+    "b64": ""
   },
   {
     "product_code": "GS-FO-MINIMO-10W",
@@ -5707,9 +5851,13 @@
   },
   {
     "product_code": "GS-FO-TL-DL",
+    "code": "GS-FO-TL-DL",
     "pdf_page": 65,
+    "page": 65,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-FO-TL-DL.jpg",
-    "size": "1004x594"
+    "size": "1004x594",
+    "b64": ""
   },
   {
     "product_code": "GS-FO-TL-DL-15W",
@@ -5793,9 +5941,13 @@
   },
   {
     "product_code": "GS-GALAXY",
+    "code": "GS-GALAXY",
     "pdf_page": 55,
+    "page": 55,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-GALAXY.jpg",
-    "size": "1004x476"
+    "size": "1004x476",
+    "b64": ""
   },
   {
     "product_code": "GS-GD003",
@@ -5969,15 +6121,23 @@
   },
   {
     "product_code": "GS-GRANOLA",
+    "code": "GS-GRANOLA",
     "pdf_page": 92,
+    "page": 92,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-GRANOLA.jpg",
-    "size": "1004x453"
+    "size": "1004x453",
+    "b64": ""
   },
   {
     "product_code": "GS-GRAVITAS",
+    "code": "GS-GRAVITAS",
     "pdf_page": 30,
+    "page": 30,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-GRAVITAS.jpg",
-    "size": "1004x460"
+    "size": "1004x460",
+    "b64": ""
   },
   {
     "product_code": "GS-GRAVITAS-6",
@@ -6211,9 +6371,13 @@
   },
   {
     "product_code": "GS-HELIOS",
+    "code": "GS-HELIOS",
     "pdf_page": 38,
+    "page": 38,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-HELIOS.jpg",
-    "size": "1004x500"
+    "size": "1004x500",
+    "b64": ""
   },
   {
     "product_code": "GS-HN-LINEAR",
@@ -6627,9 +6791,13 @@
   },
   {
     "product_code": "GS-IP54-LDA",
+    "code": "GS-IP54-LDA",
     "pdf_page": 37,
+    "page": 37,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-IP54-LDA.jpg",
-    "size": "1004x469"
+    "size": "1004x469",
+    "b64": ""
   },
   {
     "product_code": "GS-IP54-LDA-12",
@@ -7563,15 +7731,23 @@
   },
   {
     "product_code": "GS-JWEL-C STAND -802-D10-F",
+    "code": "GS-JWEL-C STAND -802-D10-F",
     "pdf_page": 251,
+    "page": 251,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-JWEL-C_STAND_-802-D10-F.jpg",
-    "size": "1004x499"
+    "size": "1004x499",
+    "b64": ""
   },
   {
     "product_code": "GS-JWEL-C STAND 802C-D15",
+    "code": "GS-JWEL-C STAND 802C-D15",
     "pdf_page": 252,
+    "page": 252,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-JWEL-C_STAND_802C-D15.jpg",
-    "size": "1004x499"
+    "size": "1004x499",
+    "b64": ""
   },
   {
     "product_code": "GS-JWEL-CONE-STAND-811-3",
@@ -7585,9 +7761,13 @@
   },
   {
     "product_code": "GS-JWEL-DFS",
+    "code": "GS-JWEL-DFS",
     "pdf_page": 253,
+    "page": 253,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-JWEL-DFS.jpg",
-    "size": "1004x499"
+    "size": "1004x499",
+    "b64": ""
   },
   {
     "product_code": "GS-JWEL-DFS-300",
@@ -7651,9 +7831,13 @@
   },
   {
     "product_code": "GS-LDA",
+    "code": "GS-LDA",
     "pdf_page": 31,
+    "page": 31,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-LDA.jpg",
-    "size": "1004x468"
+    "size": "1004x468",
+    "b64": ""
   },
   {
     "product_code": "GS-LDA-1",
@@ -7767,9 +7951,13 @@
   },
   {
     "product_code": "GS-LDA-40",
+    "code": "GS-LDA-40",
     "pdf_page": 40,
+    "page": 40,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-LDA-40.jpg",
-    "size": "1004x402"
+    "size": "1004x402",
+    "b64": ""
   },
   {
     "product_code": "GS-LDA-40-1",
@@ -7863,9 +8051,13 @@
   },
   {
     "product_code": "GS-LDA-PRO-SURFACE",
+    "code": "GS-LDA-PRO-SURFACE",
     "pdf_page": 36,
+    "page": 36,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-LDA-PRO-SURFACE.jpg",
-    "size": "1004x471"
+    "size": "1004x471",
+    "b64": ""
   },
   {
     "product_code": "GS-LDA-PRO-SURFACE-4",
@@ -7889,9 +8081,13 @@
   },
   {
     "product_code": "GS-LDA-TL",
+    "code": "GS-LDA-TL",
     "pdf_page": 32,
+    "page": 32,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-LDA-TL.jpg",
-    "size": "1004x492"
+    "size": "1004x492",
+    "b64": ""
   },
   {
     "product_code": "GS-LDA-TL-1",
@@ -9645,9 +9841,13 @@
   },
   {
     "product_code": "GS-MD3380* GS-MD3380-3* GS-MD3379",
+    "code": "GS-MD3380* GS-MD3380-3* GS-MD3379",
     "pdf_page": 240,
+    "page": 240,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-MD3380__GS-MD3380-3__GS-MD3379.jpg",
-    "size": "1004x391"
+    "size": "1004x391",
+    "b64": ""
   },
   {
     "product_code": "GS-MD3380-3",
@@ -9671,9 +9871,13 @@
   },
   {
     "product_code": "GS-MDL",
+    "code": "GS-MDL",
     "pdf_page": 234,
+    "page": 234,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-MDL_p234.jpg",
-    "size": "1004x391"
+    "size": "1004x391",
+    "b64": ""
   },
   {
     "product_code": "GS-MDL*GS-HALO-40W",
@@ -9827,15 +10031,23 @@
   },
   {
     "product_code": "GS-MICRO SPOT-M/F",
+    "code": "GS-MICRO SPOT-M/F",
     "pdf_page": 13,
+    "page": 13,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-MICRO_SPOT-M_F.jpg",
-    "size": "1004x593"
+    "size": "1004x593",
+    "b64": ""
   },
   {
     "product_code": "GS-MICRO-LDA",
+    "code": "GS-MICRO-LDA",
     "pdf_page": 28,
+    "page": 28,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-MICRO-LDA.jpg",
-    "size": "1004x452"
+    "size": "1004x452",
+    "b64": ""
   },
   {
     "product_code": "GS-MICRO-LDA-12",
@@ -9869,9 +10081,13 @@
   },
   {
     "product_code": "GS-MICRO-SPOT / GS-MINI-SPOT",
+    "code": "GS-MICRO-SPOT / GS-MINI-SPOT",
     "pdf_page": 26,
+    "page": 26,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-MICRO-SPOT___GS-MINI-SPOT.jpg",
-    "size": "1004x471"
+    "size": "1004x471",
+    "b64": ""
   },
   {
     "product_code": "GS-MICRO-SPOT-3W",
@@ -9915,9 +10131,13 @@
   },
   {
     "product_code": "GS-MINI-LDA",
+    "code": "GS-MINI-LDA",
     "pdf_page": 29,
+    "page": 29,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-MINI-LDA.jpg",
-    "size": "1004x482"
+    "size": "1004x482",
+    "b64": ""
   },
   {
     "product_code": "GS-MINI-LDA-12-20W",
@@ -10851,9 +11071,13 @@
   },
   {
     "product_code": "GS-MT-FLEXO-TL-DISK-004-10W GS-MT-FLEXO-TL-MOON-005-5W",
+    "code": "GS-MT-FLEXO-TL-DISK-004-10W GS-MT-FLEXO-TL-MOON-005-5W",
     "pdf_page": 278,
+    "page": 278,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-MT-FLEXO-TL-DISK-004-10W_GS-MT-FLEXO-TL-MOON-005-5W.jpg",
-    "size": "1004x406"
+    "size": "1004x406",
+    "b64": ""
   },
   {
     "product_code": "GS-MT-FLEXO-TL-LASER-009-12W",
@@ -10877,9 +11101,13 @@
   },
   {
     "product_code": "GS-MT-FLEXO-TL-LINEA-008-12W",
+    "code": "GS-MT-FLEXO-TL-LINEA-008-12W",
     "pdf_page": 275,
+    "page": 275,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-MT-FLEXO-TL-LINEA-008-12W.jpg",
-    "size": "1004x650"
+    "size": "1004x650",
+    "b64": ""
   },
   {
     "product_code": "GS-MT-FLEXO-TL-MOON-005-5W",
@@ -11692,16 +11920,6 @@
     "b64": ""
   },
   {
-    "product_code": "GS-NLED105",
-    "code": "GS-NLED105",
-    "pdf_page": 19,
-    "page": 19,
-    "catalog_name": "GLS-SPA 2023 - Copy.pdf",
-    "filename": "page_19.jpeg",
-    "size": "1000x1000",
-    "b64": ""
-  },
-  {
     "product_code": "GS-NMW-WX",
     "code": "GS-NMW-WX",
     "pdf_page": 28,
@@ -11743,9 +11961,13 @@
   },
   {
     "product_code": "GS-NYX-3",
+    "code": "GS-NYX-3",
     "pdf_page": 39,
+    "page": 39,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-NYX-3.jpg",
-    "size": "1004x484"
+    "size": "1004x484",
+    "b64": ""
   },
   {
     "product_code": "GS-OB-0900",
@@ -11959,27 +12181,43 @@
   },
   {
     "product_code": "GS-OZONE-F-TRIM",
+    "code": "GS-OZONE-F-TRIM",
     "pdf_page": 18,
+    "page": 18,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-OZONE-F-TRIM.jpg",
-    "size": "1004x593"
+    "size": "1004x593",
+    "b64": ""
   },
   {
     "product_code": "GS-OZONE-F-TRIMLESS",
+    "code": "GS-OZONE-F-TRIMLESS",
     "pdf_page": 19,
+    "page": 19,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-OZONE-F-TRIMLESS.jpg",
-    "size": "1004x594"
+    "size": "1004x594",
+    "b64": ""
   },
   {
     "product_code": "GS-OZONE-M-TRIM",
+    "code": "GS-OZONE-M-TRIM",
     "pdf_page": 20,
+    "page": 20,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-OZONE-M-TRIM.jpg",
-    "size": "1004x593"
+    "size": "1004x593",
+    "b64": ""
   },
   {
     "product_code": "GS-OZONE-M-TRIMLESS",
+    "code": "GS-OZONE-M-TRIMLESS",
     "pdf_page": 21,
+    "page": 21,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-OZONE-M-TRIMLESS.jpg",
-    "size": "1004x593"
+    "size": "1004x593",
+    "b64": ""
   },
   {
     "product_code": "GS-PA-2W",
@@ -12503,9 +12741,13 @@
   },
   {
     "product_code": "GS-PLUTO-S",
+    "code": "GS-PLUTO-S",
     "pdf_page": 41,
+    "page": 41,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-PLUTO-S.jpg",
-    "size": "1004x503"
+    "size": "1004x503",
+    "b64": ""
   },
   {
     "product_code": "GS-PLUTO-S-1",
@@ -12649,9 +12891,13 @@
   },
   {
     "product_code": "GS-PRIME-SPOT",
+    "code": "GS-PRIME-SPOT",
     "pdf_page": 24,
+    "page": 24,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-PRIME-SPOT.jpg",
-    "size": "1004x572"
+    "size": "1004x572",
+    "b64": ""
   },
   {
     "product_code": "GS-PRIME-SPPOT",
@@ -14904,16 +15150,6 @@
     "b64": ""
   },
   {
-    "product_code": "GS-SMART-BL-02-RD-18W",
-    "code": "GS-SMART-BL-02-RD-18W",
-    "pdf_page": 52,
-    "page": 52,
-    "catalog_name": "GLS-SPA 2023 - Copy.pdf",
-    "filename": "page_52.jpeg",
-    "size": "1000x1000",
-    "b64": ""
-  },
-  {
     "product_code": "GS-SMART-BL-02-RD-24W",
     "code": "GS-SMART-BL-02-RD-24W",
     "pdf_page": 52,
@@ -16035,9 +16271,13 @@
   },
   {
     "product_code": "GS-SORA",
+    "code": "GS-SORA",
     "pdf_page": 25,
+    "page": 25,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-SORA.jpg",
-    "size": "1004x435"
+    "size": "1004x435",
+    "b64": ""
   },
   {
     "product_code": "GS-SP-02",
@@ -16156,16 +16396,6 @@
     "page": 48,
     "catalog_name": "GLS-SPA 2023 - Copy.pdf",
     "filename": "page_48.jpeg",
-    "size": "1000x1000",
-    "b64": ""
-  },
-  {
-    "product_code": "GS-SP19-A",
-    "code": "GS-SP19-A",
-    "pdf_page": 69,
-    "page": 69,
-    "catalog_name": "GLS-SPA INDOOR SERIES 2025 (1) - Copy.pdf",
-    "filename": "page_69.jpeg",
     "size": "1000x1000",
     "b64": ""
   },
@@ -16351,9 +16581,13 @@
   },
   {
     "product_code": "GS-SPOT-DEGREE / GS-MINI-SPOT-M",
+    "code": "GS-SPOT-DEGREE / GS-MINI-SPOT-M",
     "pdf_page": 14,
+    "page": 14,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-SPOT-DEGREE___GS-MINI-SPOT-M.jpg",
-    "size": "1004x593"
+    "size": "1004x593",
+    "b64": ""
   },
   {
     "product_code": "GS-SPOT-DEGREE-3W/5W",
@@ -16597,9 +16831,13 @@
   },
   {
     "product_code": "GS-STYX-3 / GS-STEALTH-3",
+    "code": "GS-STYX-3 / GS-STEALTH-3",
     "pdf_page": 33,
+    "page": 33,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-STYX-3___GS-STEALTH-3.jpg",
-    "size": "1004x404"
+    "size": "1004x404",
+    "b64": ""
   },
   {
     "product_code": "GS-SUN-DL",
@@ -16778,16 +17016,6 @@
     "page": 161,
     "catalog_name": "GLS-SPA 2023 - Copy.pdf",
     "filename": "page_161.jpeg",
-    "size": "1000x1000",
-    "b64": ""
-  },
-  {
-    "product_code": "GS-T5PEARL",
-    "code": "GS-T5PEARL",
-    "pdf_page": 172,
-    "page": 172,
-    "catalog_name": "GLS-SPA INDOOR SERIES 2025 (1) - Copy.pdf",
-    "filename": "page_172.jpeg",
     "size": "1000x1000",
     "b64": ""
   },
@@ -17813,9 +18041,13 @@
   },
   {
     "product_code": "GS-UCHIT-FO-BW* / GS-UCHIT-FO-BTRG",
+    "code": "GS-UCHIT-FO-BW* / GS-UCHIT-FO-BTRG",
     "pdf_page": 57,
+    "page": 57,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-UCHIT-FO-BW____GS-UCHIT-FO-BTRG.jpg",
-    "size": "1004x537"
+    "size": "1004x537",
+    "b64": ""
   },
   {
     "product_code": "GS-UFO",
@@ -17949,9 +18181,13 @@
   },
   {
     "product_code": "GS-UPDOWN",
+    "code": "GS-UPDOWN",
     "pdf_page": 179,
+    "page": 179,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-UPDOWN.jpg",
-    "size": "960x509"
+    "size": "960x509",
+    "b64": ""
   },
   {
     "product_code": "GS-UPL-HN-TREE",
@@ -18295,9 +18531,13 @@
   },
   {
     "product_code": "GS-VENUS-SPOT",
+    "code": "GS-VENUS-SPOT",
     "pdf_page": 23,
+    "page": 23,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-VENUS-SPOT.jpg",
-    "size": "1004x505"
+    "size": "1004x505",
+    "b64": ""
   },
   {
     "product_code": "GS-VENUS-SPPOT",
@@ -18671,15 +18911,23 @@
   },
   {
     "product_code": "GS-VIVID-TRIM",
+    "code": "GS-VIVID-TRIM",
     "pdf_page": 16,
+    "page": 16,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-VIVID-TRIM.jpg",
-    "size": "1004x500"
+    "size": "1004x500",
+    "b64": ""
   },
   {
     "product_code": "GS-VIVID-TRIMLESS",
+    "code": "GS-VIVID-TRIMLESS",
     "pdf_page": 17,
+    "page": 17,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-VIVID-TRIMLESS.jpg",
-    "size": "1004x508"
+    "size": "1004x508",
+    "b64": ""
   },
   {
     "product_code": "GS-VP1200",
@@ -19683,9 +19931,13 @@
   },
   {
     "product_code": "GS-XTD-WW",
+    "code": "GS-XTD-WW",
     "pdf_page": 35,
+    "page": 35,
+    "catalog_name": "INDOOR SERIES 2026.pdf",
     "filename": "GS-XTD-WW.jpg",
-    "size": "1004x452"
+    "size": "1004x452",
+    "b64": ""
   },
   {
     "product_code": "GS-XTD-WW-05",

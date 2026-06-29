@@ -1,6 +1,6 @@
 # GLS-SPA Comprehensive Product Catalogue Index
 
-This file contains an index of all **2038 products** extracted from the catalogs. Use this to quickly find product codes, catalog pages, and filenames.
+This file contains an index of all **2034 products** extracted from the catalogs. Use this to quickly find product codes, catalog pages, and filenames.
 
 | Product Code | Catalog Source | Catalog Page | Image Available |
 | --- | --- | --- | --- |
@@ -1196,7 +1196,6 @@ This file contains an index of all **2038 products** extracted from the catalogs
 | `GS-NFLED302-970` | GLS-SPA 2023 - Copy.pdf | Page 223 | No |
 | `GS-NLED-105` | GLS-SPA 2023 - Copy.pdf | Page 19 | No |
 | `GS-NLED-105D` | GLS-SPA 2023 - Copy.pdf | Page 19 | No |
-| `GS-NLED105` | GLS-SPA 2023 - Copy.pdf | Page 19 | No |
 | `GS-NMW-WX` | Master Series New (2).pdf | Page 28 | No |
 | `GS-NMW-WX-100-10W` | Master Series New (2).pdf | Page 28 | No |
 | `GS-NMW-WX-170-30W` | Master Series New (2).pdf | Page 28 | No |
@@ -1520,7 +1519,6 @@ This file contains an index of all **2038 products** extracted from the catalogs
 | `GS-SMART-BL-02` | GLS-SPA 2023 - Copy.pdf | Page 52 | No |
 | `GS-SMART-BL-02-RD-12W` | GLS-SPA 2023 - Copy.pdf | Page 52 | No |
 | `GS-SMART-BL-02-RD-15W` | GLS-SPA 2023 - Copy.pdf | Page 52 | No |
-| `GS-SMART-BL-02-RD-18W` | GLS-SPA 2023 - Copy.pdf | Page 52 | No |
 | `GS-SMART-BL-02-RD-24W` | GLS-SPA 2023 - Copy.pdf | Page 52 | No |
 | `GS-SMART-BL-02-RD-8W` | GLS-SPA 2023 - Copy.pdf | Page 52 | No |
 | `GS-SMART-BL-02-SQ-12W` | GLS-SPA 2023 - Copy.pdf | Page 52 | No |
@@ -1646,7 +1644,6 @@ This file contains an index of all **2038 products** extracted from the catalogs
 | `GS-SP-20` | GLS-SPA 2023 - Copy.pdf | Page 48 | No |
 | `GS-SP-20R` | GLS-SPA 2023 - Copy.pdf | Page 48 | No |
 | `GS-SP-20S` | GLS-SPA 2023 - Copy.pdf | Page 48 | No |
-| `GS-SP19-A` | GLS-SPA INDOOR SERIES 2025 (1) - Copy.pdf | Page 69 | No |
 | `GS-SP19-A-15W` | Master Series New (2).pdf | Page 39 | No |
 | `GS-SP19-A-18W` | Master Series New (2).pdf | Page 39 | No |
 | `GS-SP19-A-30W` | Master Series New (2).pdf | Page 39 | No |
@@ -1709,7 +1706,6 @@ This file contains an index of all **2038 products** extracted from the catalogs
 | `GS-SUS-90X200` | GLS-SPA INDOOR SERIES 2025 (1) - Copy.pdf | Page 116 | No |
 | `GS-T5-PEARL` | GLS-SPA 2023 - Copy.pdf | Page 161 | No |
 | `GS-T5-PEARL*GS-LED-AL-T5` | GLS-SPA 2023 - Copy.pdf | Page 161 | No |
-| `GS-T5PEARL` | GLS-SPA INDOOR SERIES 2025 (1) - Copy.pdf | Page 172 | No |
 | `GS-T8-AL-PEARL` | GLS-SPA 2023 - Copy.pdf | Page 162 | No |
 | `GS-T8-AL-PEARL-1205` | GLS-SPA 2023 - Copy.pdf | Page 162 | No |
 | `GS-T8-AL-PEARL-605` | GLS-SPA 2023 - Copy.pdf | Page 162 | No |
