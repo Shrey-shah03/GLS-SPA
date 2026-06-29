@@ -14,227 +14,295 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="glass-bg"></div>
     
-    <header class="navbar">
-        <div class="logo">
-            <span class="brand-text">GLS <span class="light-text">SPA</span></span>
-            <span class="badge">Workspace v1.2</span>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-logo-container">
+            <div class="gls-spa-logo-pill">
+                <span class="gls-text">GLS</span><span class="hyphen">-</span><span class="spa-text">SPA</span>
+            </div>
         </div>
-        <div class="header-tagline">
-            <i class="fa-solid fa-lightbulb icon-glow"></i> Architecture & Engineering Work Order Dashboard
+        <nav class="sidebar-menu">
+            <button class="sidebar-item active" onclick="switchTab('overview')">
+                <i class="fa-solid fa-gauge-high"></i> Overview
+            </button>
+            <button class="sidebar-item" onclick="switchTab('upload')">
+                <i class="fa-solid fa-file-arrow-up"></i> BOQ Upload
+            </button>
+            <button class="sidebar-item" onclick="switchTab('calc')">
+                <i class="fa-solid fa-calculator"></i> Driver Calc
+            </button>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="sidebar-btn" onclick="toggleSound()">
+                <i class="fa-solid fa-volume-xmark" id="sound-icon"></i> Sound: Off
+            </button>
+            <button class="sidebar-btn" onclick="toggleTheme(event)">
+                <i class="fa-solid fa-circle-half-stroke"></i> Theme: Light
+            </button>
         </div>
-        <button onclick="toggleTheme(event)" class="theme-toggle-btn" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:var(--color-primary); width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; outline:none; transition:all 0.2s;"><i class="fa-solid fa-circle-half-stroke"></i></button>
-</header>
+    </aside>
 
-    <main class="container">
-        <!-- Upload Section -->
-        <section class="upload-section">
-            <div class="card glass-card" id="drop-zone">
-                <input type="file" id="file-input" accept=".xlsx" style="display: none;">
-                <div class="upload-icon">
-                    <i class="fa-solid fa-file-excel"></i>
-                </div>
-                <h3>Drag & Drop BOQ Excel here</h3>
-                <p>or <span class="highlight-link" onclick="document.getElementById('file-input').click()">browse your files</span></p>
-                <div class="supported-formats">Supports .xlsx spreadsheets</div>
+    <!-- Main Workspace Area -->
+    <main class="main-content">
+        <header class="dashboard-header">
+            <div class="header-title-wrap">
+                <h1 class="monospace-header">COMMAND CENTER</h1>
+                <p>Architecture & Engineering Work Order Dashboard</p>
             </div>
-            
-            <!-- Metadata Form Card -->
-            <div class="card glass-card metadata-card disabled" id="meta-card">
-                <h3><i class="fa-solid fa-file-invoice"></i> IWO Metadata</h3>
-                <div class="grid-form">
-                    <div class="form-group">
-                        <label for="client-name">Client / Project Name</label>
-                        <input type="text" id="client-name" placeholder="e.g. Food Square">
-                    </div>
-                    <div class="form-group">
-                        <label for="iwo-number">IWO Number</label>
-                        <input type="text" id="iwo-number" placeholder="e.g. P176">
-                    </div>
-                    <div class="form-group">
-                        <label for="iwo-date">IWO Date</label>
-                        <input type="text" id="iwo-date" placeholder="DD/MM/YY">
-                    </div>
-                    <div class="form-group">
-                        <label for="delivery-date">Delivery Date</label>
-                        <input type="text" id="delivery-date" placeholder="e.g. 24/06/26">
-                    </div>
-                    <div class="form-group">
-                        <label for="sales-name">Salesperson Name</label>
-                        <input type="text" id="sales-name" value="Sales-01" placeholder="e.g. Sales-01">
-                    </div>
-                </div>
-            </div>
-        </section>
+            <button class="btn" onclick="window.location.reload()">
+                <i class="fa-solid fa-arrows-rotate"></i> Refresh View
+            </button>
+        </header>
 
-        <!-- Stats Section -->
-        <section class="stats-section hidden" id="stats-area">
-            <div class="stat-card glass-card">
-                <div class="stat-num" id="stat-total-items">0</div>
-                <div class="stat-label">Total BOQ Items</div>
-            </div>
-            <div class="stat-card glass-card text-success">
-                <div class="stat-num" id="stat-exact-matches">0</div>
-                <div class="stat-label">Exact Catalog Matches</div>
-            </div>
-            <div class="stat-card glass-card text-warning">
-                <div class="stat-num" id="stat-search-matches">0</div>
-                <div class="stat-label">Fuzzy/Text Matches</div>
-            </div>
-            <div class="stat-card glass-card text-info">
-                <div class="stat-num" id="stat-total-qty">0</div>
-                <div class="stat-label">Total Fixtures Quantity</div>
-            </div>
-        </section>
-
-        <!-- Table Workspace -->
-        <section class="workspace-section hidden" id="workspace-area">
-            <div class="workspace-header">
-                <h2><i class="fa-solid fa-list-check"></i> Interactive Work Order Items</h2>
-                <div class="workspace-actions">
-                    <button class="btn btn-secondary" onclick="resetWorkspace()"><i class="fa-solid fa-arrow-rotate-left"></i> Reset</button>
-                    <button class="btn btn-primary" onclick="generateIWO()"><i class="fa-solid fa-file-export"></i> Export IWO Excel</button>
+        <div class="workspace-section">
+            <!-- Upload Section -->
+            <section class="upload-section">
+                <div class="card drop-zone" id="drop-zone">
+                    <input type="file" id="file-input" accept=".xlsx" style="display: none;">
+                    <div class="upload-icon">
+                        <i class="fa-solid fa-file-excel"></i>
+                    </div>
+                    <h3>Drag & Drop BOQ Excel here</h3>
+                    <p>or <span class="highlight-link" onclick="document.getElementById('file-input').click()">browse your files</span></p>
+                    <div class="supported-formats">Supports .xlsx spreadsheets</div>
                 </div>
-            </div>
-            
-            <div class="table-container glass-card">
-                <table class="data-table" id="items-table">
-                    <thead>
-                        <tr>
-                            <th>Sr.</th>
-                            <th>BOQ Raw Item</th>
-                            <th>GLS Code</th>
-                            <th>Matched Specs / Catalog Description</th>
-                            <th>Body Color</th>
-                            <th>Qty</th>
-                            <th>Unit</th>
-                            <th>Driver Make & Wattage</th>
-                            <th>Driver Qty</th>
-                            <th>LED Make & CCT</th>
-                            <th>Accessories</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-body">
-                        <!-- Loaded dynamically -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
+                
+                <!-- Metadata Form Card -->
+                <div class="card metadata-card disabled" id="meta-card">
+                    <h3>IWO Metadata</h3>
+                    <div class="grid-form">
+                        <div class="form-group">
+                            <label for="client-name">Client / Project Name</label>
+                            <input type="text" id="client-name" placeholder="e.g. Food Square">
+                        </div>
+                        <div class="form-group">
+                            <label for="iwo-number">IWO Number</label>
+                            <input type="text" id="iwo-number" placeholder="e.g. P176">
+                        </div>
+                        <div class="form-group">
+                            <label for="iwo-date">IWO Date</label>
+                            <input type="text" id="iwo-date" placeholder="DD/MM/YY">
+                        </div>
+                        <div class="form-group">
+                            <label for="delivery-date">Delivery Date</label>
+                            <input type="text" id="delivery-date" placeholder="e.g. 24/06/26">
+                        </div>
+                        <div class="form-group">
+                            <label for="sales-name">Salesperson Name</label>
+                            <input type="text" id="sales-name" value="Sales-01" placeholder="e.g. Sales-01">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats Section -->
+            <section class="stats-section hidden" id="stats-area">
+                <div class="card stat-card">
+                    <div class="stat-num" id="stat-total-items">0</div>
+                    <div class="stat-label">Total BOQ Items</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-num" id="stat-matched-exact">0</div>
+                    <div class="stat-label">Exact Specs Matches</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-num" id="stat-matched-fuzzy">0</div>
+                    <div class="stat-label">Fuzzy/Text Matches</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-num" id="stat-total-qty">0</div>
+                    <div class="stat-label">Total Quantities</div>
+                </div>
+            </section>
+
+            <!-- Table Workspace Area -->
+            <section class="card hidden" id="workspace-area">
+                <div class="workspace-header">
+                    <h2>Matched Workspace</h2>
+                    <div class="workspace-actions">
+                        <button class="btn" onclick="addNewBOQRow()">
+                            <i class="fa-solid fa-plus"></i> Add Row
+                        </button>
+                        <button class="btn btn-primary" onclick="generateIWOExcel()">
+                            <i class="fa-solid fa-file-export"></i> Generate IWO
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="data-table" id="boq-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sr.</th>
+                                <th>BOQ Description</th>
+                                <th style="width: 130px;">GLS Code</th>
+                                <th style="width: 250px;">Product Specification</th>
+                                <th style="width: 120px;">Body Color</th>
+                                <th style="width: 80px;">Qty</th>
+                                <th style="width: 80px;">Unit</th>
+                                <th style="width: 160px;">Driver Details</th>
+                                <th style="width: 80px;">Driver Qty</th>
+                                <th style="width: 100px;">LED Details</th>
+                                <th style="width: 120px;">Accessories</th>
+                                <th style="width: 120px;">Status</th>
+                                <th style="width: 120px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="boq-table-body">
+                            <!-- Injected by script.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
     </main>
 
-    <!-- Remap Catalog Page Modal -->
-    <div class="modal hidden" id="remap-modal">
-        <div class="modal-content glass-card">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-magnifying-glass"></i> Search PDF Catalogue Database</h3>
-                <span class="close-btn" onclick="closeModal('remap-modal')">&times;</span>
+    <!-- Remap Catalog Search Modal -->
+    <div class="modal-bg" id="remap-modal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeRemapModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3>Remap Catalog specs</h3>
+            <div class="modal-desc">Search page number or code pattern to manually bind specification block.</div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <input type="text" id="catalog-search-query" oninput="runCatalogModalSearch()" style="width: 100%;" placeholder="Search page text or product codes...">
             </div>
-            <div class="modal-body">
-                <p class="modal-desc">Search text keywords in the 325-page catalog to bind item spec sheet to this row.</p>
-                <div class="search-box-container">
-                    <input type="text" id="catalog-search-input" placeholder="Enter product series code (e.g. FDL, 1714, SK-15W)...">
-                    <button class="btn btn-primary" onclick="searchCatalog()"><i class="fa-solid fa-search"></i> Search</button>
-                </div>
-                <div class="search-results" id="search-results-list">
-                    <!-- Results dynamically loaded -->
-                    <div class="empty-state">Enter a term and click search to view pages</div>
-                </div>
+            <div style="max-height: 240px; overflow-y: auto; border: 1px solid var(--border-glass); border-radius: 6px;" id="catalog-search-results">
+                <!-- Injected results -->
             </div>
         </div>
     </div>
 
-    <!-- Driver Helper Modal -->
-    <div class="modal hidden" id="driver-modal">
-        <div class="modal-content glass-card small-modal">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-calculator"></i> Driver Splitter Helper</h3>
-                <span class="close-btn" onclick="closeModal('driver-modal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <p class="modal-desc">Calculate and split driver load for linear strip profiles.</p>
-                <input type="hidden" id="driver-helper-row-id">
+    <!-- Linear Strip Driver Calculator Modal -->
+    <div class="modal-bg" id="driver-modal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeDriverCalculator()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3>Linear Driver calculator</h3>
+            <div class="modal-desc">Configure driver split criteria for matched Linear Strip.</div>
+            <div class="grid-form">
                 <div class="form-group">
-                    <label>Total Length of Strip (meters)</label>
+                    <label for="driver-strip-length">Total Length (Mtr)</label>
                     <input type="number" id="driver-strip-length" step="0.1" value="20">
                 </div>
                 <div class="form-group">
-                    <label>Strip Wattage per Meter (Watts/m)</label>
-                    <input type="number" id="driver-strip-wattage" step="0.5" value="10">
-                </div>
-                <div class="form-group">
-                    <label>Select Driver Wattage Option</label>
-                    <select id="driver-split-wattage">
-                        <option value="75">24V / 75W (Max load 60W recommended)</option>
-                        <option value="100">24V / 100W (Max load 80W recommended)</option>
-                        <option value="150" selected>24V / 150W (Max load 120W recommended)</option>
+                    <label for="driver-strip-wattage">Wattage per Mtr</label>
+                    <select id="driver-strip-wattage">
+                        <option value="5">5W / Mtr</option>
+                        <option value="10" selected>10W / Mtr</option>
+                        <option value="15">15W / Mtr</option>
                     </select>
                 </div>
-                <div class="calculation-result" id="driver-calc-result">
-                    <!-- Calculated output -->
+                <div class="form-group">
+                    <label for="driver-efficiency">Driver Load Buffer (%)</label>
+                    <input type="number" id="driver-efficiency" value="80" title="Recommend 80% to preserve driver life cycle">
                 </div>
-                <button class="btn btn-primary btn-block" onclick="applyDriverCalculation()"><i class="fa-solid fa-check"></i> Apply Split Calculations</button>
+                <div class="form-group">
+                    <label for="driver-max-wattage">Max Driver Rating</label>
+                    <select id="driver-max-wattage">
+                        <option value="50">50W</option>
+                        <option value="100" selected>100W</option>
+                        <option value="150">150W</option>
+                        <option value="200">200W</option>
+                    </select>
+                </div>
+            </div>
+            <div class="calculation-result">
+                <div class="calc-row">
+                    <span>Total Power Load:</span>
+                    <strong id="calc-total-load">200W</strong>
+                </div>
+                <div class="calc-row">
+                    <span>Required Driver Power:</span>
+                    <strong id="calc-required-power">250W</strong>
+                </div>
+                <div class="calc-row calc-highlight">
+                    <span>Recommended split:</span>
+                    <strong id="calc-split-result">3x 100W Constant Voltage Drivers</strong>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <button class="btn btn-primary" onclick="applyDriverCalculation()">Apply Specs</button>
             </div>
         </div>
     </div>
 
-    <!-- Datalist for custom color selection with autocompletion -->
-    <datalist id="colors-list">
-        <option value="Black">
-        <option value="White">
-        <option value="Mil Finish">
-        <option value="Grey">
-    </datalist>
-
-    <footer class="app-footer">
-        <p>&copy; 2026 Speciality Value Lighting & Design. All rights reserved.</p>
-    </footer>
-
-    <!-- Custom Script -->
+    <!-- Script assets -->
     <script src="/static/script.js"></script>
-
-<script>
-function toggleTheme(event) {
-    const x = event ? event.clientX : window.innerWidth / 2;
-    const y = event ? event.clientY : window.innerHeight / 2;
-    const endRadius = Math.hypot(
-        Math.max(x, window.innerWidth - x),
-        Math.max(y, window.innerHeight - y)
-    );
-
-    if (!document.startViewTransition) {
-        document.body.classList.toggle('light-theme');
-        return;
+    <script>
+    // Tab controller
+    function switchTab(tab) {
+        document.querySelectorAll('.sidebar-item').forEach(btn => btn.classList.remove('active'));
+        
+        if (tab === 'overview') {
+            document.querySelector('[onclick="switchTab(\'overview\')"]').classList.add('active');
+        } else if (tab === 'upload') {
+            document.querySelector('[onclick="switchTab(\'upload\')"]').classList.add('active');
+            document.getElementById('file-input').click();
+        } else if (tab === 'calc') {
+            document.querySelector('[onclick="switchTab(\'calc\')"]').classList.add('active');
+            openDriverCalculator(0);
+        }
     }
 
-    const transition = document.startViewTransition(() => {
-        document.body.classList.toggle('light-theme');
-    });
+    // Sound toggle state
+    let soundOn = false;
+    function toggleSound() {
+        soundOn = !soundOn;
+        const icon = document.getElementById('sound-icon');
+        const btn = icon.parentNode;
+        if (soundOn) {
+            icon.className = 'fa-solid fa-volume-high';
+            btn.innerHTML = `<i class="fa-solid fa-volume-high" id="sound-icon"></i> Sound: On`;
+        } else {
+            icon.className = 'fa-solid fa-volume-xmark';
+            btn.innerHTML = `<i class="fa-solid fa-volume-xmark" id="sound-icon"></i> Sound: Off`;
+        }
+    }
 
-    transition.ready.then(() => {
-        const clipPath = [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${endRadius}px at ${x}px ${y}px)`
-        ];
-        
-        document.documentElement.animate(
-            {
-                clipPath: document.body.classList.contains('light-theme')
-                    ? clipPath
-                    : [...clipPath].reverse(),
-            },
-            {
-                duration: 650,
-                easing: 'ease-in-out',
-                pseudoElement: document.body.classList.contains('light-theme')
-                    ? '::view-transition-new(root)'
-                    : '::view-transition-old(root)',
-            }
+    // Radial view transitions
+    function toggleTheme(event) {
+        const x = event ? event.clientX : window.innerWidth / 2;
+        const y = event ? event.clientY : window.innerHeight / 2;
+        const endRadius = Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
         );
-    });
-}
-</script>
-</body>
 
+        if (!document.startViewTransition) {
+            document.body.classList.toggle('light-theme');
+            return;
+        }
+
+        const transition = document.startViewTransition(() => {
+            document.body.classList.toggle('light-theme');
+        });
+
+        transition.ready.then(() => {
+            const clipPath = [
+                `circle(0px at ${x}px ${y}px)`,
+                `circle(${endRadius}px at ${x}px ${y}px)`
+            ];
+            
+            document.documentElement.animate(
+                {
+                    clipPath: document.body.classList.contains('light-theme')
+                        ? clipPath
+                        : [...clipPath].reverse(),
+                },
+                {
+                    duration: 650,
+                    easing: 'ease-in-out',
+                    pseudoElement: document.body.classList.contains('light-theme')
+                        ? '::view-transition-new(root)'
+                        : '::view-transition-old(root)',
+                }
+            );
+        });
+    }
+    </script>
+</body>
 </html>
