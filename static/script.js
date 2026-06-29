@@ -115,7 +115,7 @@ function handleFileUpload(file) {
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('An error occurred while parsing the file.');
+        alert('An error occurred: ' + (error.message || error));
         resetDropZone();
     });
 }
