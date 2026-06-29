@@ -247,12 +247,18 @@ body.light-theme .sidebar-btn {
 
 .upload-section {
     display: grid;
-    grid-template-columns: 1.2fr 1fr 1.2fr;
     gap: 24px;
+}
+#boq-generator-view .upload-section {
+    grid-template-columns: 1.5fr 1fr;
+}
+#invoice-generator-view .upload-section {
+    grid-template-columns: 1.2fr 1fr 1.2fr;
 }
 
 @media (max-width: 1200px) {
-    .upload-section {
+    #boq-generator-view .upload-section,
+    #invoice-generator-view .upload-section {
         grid-template-columns: 1fr;
     }
 }

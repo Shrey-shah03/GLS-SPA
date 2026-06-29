@@ -31,46 +31,80 @@ const d_mm = String(deliveryDay.getMonth() + 1).padStart(2, '0');
 const d_yy = String(deliveryDay.getFullYear()).slice(-2);
 deliveryDateInput.value = `${d_dd}/${d_mm}/${d_yy}`;
 
-// Click event listener to open file explorer
+// Click event listener to open file explorer for BOQ to IWO
 dropZone.addEventListener('click', (e) => {
     if (e.target !== fileInput) {
         fileInput.click();
     }
 });
 
-// Drag and drop event listeners
+// Drag and drop event listeners for BOQ to IWO
 dropZone.addEventListener('dragover', (e) => {
     e.preventDefault();
     dropZone.classList.add('dragover');
 });
-
 dropZone.addEventListener('dragleave', () => {
     dropZone.classList.remove('dragover');
 });
-
 dropZone.addEventListener('drop', (e) => {
     e.preventDefault();
     dropZone.classList.remove('dragover');
     const files = e.dataTransfer.files;
     if (files.length > 0) {
-        handleFileUpload(files[0]);
+        handleFileUpload(files[0], 'boq');
     }
 });
 
 fileInput.addEventListener('change', (e) => {
     if (fileInput.files.length > 0) {
-        handleFileUpload(fileInput.files[0]);
+        handleFileUpload(fileInput.files[0], 'boq');
     }
 });
 
-function handleFileUpload(file) {
+// Click and drag-drop event listeners for Invoice
+const invoiceDropZone = document.getElementById('invoice-drop-zone');
+const invoiceFileInput = document.getElementById('invoice-file-input');
+
+if (invoiceDropZone && invoiceFileInput) {
+    invoiceDropZone.addEventListener('click', (e) => {
+        if (e.target !== invoiceFileInput) {
+            invoiceFileInput.click();
+        }
+    });
+    
+    invoiceFileInput.addEventListener('change', (e) => {
+        if (invoiceFileInput.files.length > 0) {
+            handleFileUpload(invoiceFileInput.files[0], 'invoice');
+        }
+    });
+    
+    invoiceDropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        invoiceDropZone.classList.add('dragover');
+    });
+    invoiceDropZone.addEventListener('dragleave', () => {
+        invoiceDropZone.classList.remove('dragover');
+    });
+    invoiceDropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        invoiceDropZone.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFileUpload(files[0], 'invoice');
+        }
+    });
+}
+
+function handleFileUpload(file, view = 'boq') {
     if (!file.name.endsWith('.xlsx')) {
         alert('Please upload a valid Excel spreadsheet (.xlsx)');
         return;
     }
     
+    const activeDropZone = view === 'boq' ? dropZone : invoiceDropZone;
+    
     // Show uploading visual state
-    dropZone.innerHTML = `
+    activeDropZone.innerHTML = `
         <div class="upload-icon"><i class="fa-solid fa-spinner fa-spin"></i></div>
         <h3>Parsing BOQ Spreadsheet...</h3>
         <p>Running matching heuristics against catalogue database...</p>
@@ -87,7 +121,7 @@ function handleFileUpload(file) {
     .then(data => {
         if (data.error) {
             alert(data.error);
-            resetDropZone();
+            resetDropZone(view);
             return;
         }
         
@@ -97,57 +131,91 @@ function handleFileUpload(file) {
             projectName: data.project_name
         };
         
-        // Prefill metadata
-        clientNameInput.value = data.project_name || 'Food Square';
-        // Auto-generate standard IWO code e.g. P176
         const randomNum = Math.floor(100 + Math.random() * 900);
+        
+        // Sync/populate metadata on both layouts
+        clientNameInput.value = data.project_name || 'Food Square';
         iwoNoInput.value = `P${randomNum}`;
         
-        // Update dashboard UI
+        // Invoice Details Form Fields in View 2
+        const invNoField = document.getElementById('inv-invoice-no');
+        const invDateField = document.getElementById('inv-invoice-date');
+        const invDestField = document.getElementById('inv-destination');
+        if (invNoField) invNoField.value = `SOR/26-27/00${randomNum}`;
+        if (invDateField) invDateField.value = `${dd}/${mm}/${yy}`;
+        if (invDestField) invDestField.value = data.project_name || '';
+        
+        // Update UI panels based on view
         metaCard.classList.remove('disabled');
-        const invoiceCard = document.getElementById('invoice-card');
-        if (invoiceCard) {
-            invoiceCard.classList.remove('disabled');
-            document.getElementById('invoice-date').value = `${dd}/${mm}/${yy}`;
-            document.getElementById('invoice-no').value = `SOR/26-27/00${randomNum}`;
-        }
         statsArea.classList.remove('hidden');
         workspaceArea.classList.remove('hidden');
         
-        // Render stats and table
+        const buyerCard = document.getElementById('buyer-profile-card');
+        const invMetaCard = document.getElementById('invoice-meta-card');
+        const invItemsArea = document.getElementById('invoice-items-area');
+        if (buyerCard) buyerCard.classList.remove('disabled');
+        if (invMetaCard) invMetaCard.classList.remove('disabled');
+        if (invItemsArea) invItemsArea.classList.remove('hidden');
+        
+        // Render stats & grids for both layouts
         updateStats();
         renderTable();
+        renderInvoiceTable();
+        updateInvoiceTotals();
         
         // Restore drop zone to mini state
-        dropZone.innerHTML = `
+        activeDropZone.innerHTML = `
             <div class="upload-icon" style="font-size: 2rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-circle-check" style="color: var(--color-success);"></i></div>
             <h3>File Uploaded Successfully</h3>
             <p>${file.name} (${workspaceItems.length} rows parsed)</p>
-            <div class="supported-formats" onclick="document.getElementById('file-input').click()">Upload Different File</div>
+            <div class="supported-formats" onclick="triggerFileInputClick('${view}')">Upload Different File</div>
         `;
     })
     .catch(error => {
         console.error('Error:', error);
         alert('An error occurred: ' + (error.message || error));
-        resetDropZone();
+        resetDropZone(view);
     });
 }
 
-function resetDropZone() {
-    dropZone.innerHTML = `
-        <input type="file" id="file-input" accept=".xlsx" style="display: none;">
-        <div class="upload-icon"><i class="fa-solid fa-file-excel"></i></div>
-        <h3>Drag & Drop BOQ Excel here</h3>
-        <p>or <span class="highlight-link" onclick="document.getElementById('file-input').click()">browse your files</span></p>
-        <div class="supported-formats">Supports .xlsx spreadsheets</div>
-    `;
-    // Rebind input listener since elements are replaced
-    const newInput = document.getElementById('file-input');
-    newInput.addEventListener('change', (e) => {
-        if (newInput.files.length > 0) {
-            handleFileUpload(newInput.files[0]);
-        }
-    });
+function triggerFileInputClick(view) {
+    if (view === 'boq') {
+        fileInput.click();
+    } else {
+        invoiceFileInput.click();
+    }
+}
+
+function resetDropZone(view = 'boq') {
+    if (view === 'boq') {
+        dropZone.innerHTML = `
+            <input type="file" id="file-input" accept=".xlsx" style="display: none;">
+            <div class="upload-icon"><i class="fa-solid fa-file-excel"></i></div>
+            <h3>Drag & Drop BOQ Excel here</h3>
+            <p>or <span class="highlight-link">browse your files</span></p>
+            <div class="supported-formats">Supports .xlsx spreadsheets</div>
+        `;
+        const newInput = document.getElementById('file-input');
+        newInput.addEventListener('change', (e) => {
+            if (newInput.files.length > 0) {
+                handleFileUpload(newInput.files[0], 'boq');
+            }
+        });
+    } else {
+        invoiceDropZone.innerHTML = `
+            <input type="file" id="invoice-file-input" accept=".xlsx" style="display: none;">
+            <div class="upload-icon"><i class="fa-solid fa-file-excel"></i></div>
+            <h3>Drag & Drop BOQ Excel here</h3>
+            <p>or <span class="highlight-link">browse your files</span></p>
+            <div class="supported-formats">Supports .xlsx spreadsheets</div>
+        `;
+        const newInput = document.getElementById('invoice-file-input');
+        newInput.addEventListener('change', (e) => {
+            if (newInput.files.length > 0) {
+                handleFileUpload(newInput.files[0], 'invoice');
+            }
+        });
+    }
 }
 
 function updateStats() {
