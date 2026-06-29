@@ -310,11 +310,45 @@ def upload_boq():
         desc_col_idx = None
         qty_col_idx = None
         
+        is_iwo = False
+        iwo_cols = {}
+        
         # Scan first 15 rows to find headers
         for r_idx in range(1, 16):
             row_vals = [sheet.cell(row=r_idx, column=c_idx).value for c_idx in range(1, sheet.max_column + 1)]
             row_str = " ".join([str(v).lower() for v in row_vals if v is not None])
-            if "qty" in row_str or "quantity" in row_str:
+            
+            # Check for IWO headers
+            if "gls code" in row_str or "gls-code" in row_str:
+                is_iwo = True
+                header_row_idx = r_idx
+                for idx, val in enumerate(row_vals):
+                    if not val:
+                        continue
+                    v_clean = str(val).lower().strip()
+                    if "boq description" in v_clean or "boq_description" in v_clean or "item" in v_clean:
+                        iwo_cols["boq_desc"] = idx + 1
+                    elif "gls code" in v_clean or "gls_code" in v_clean:
+                        iwo_cols["gls_code"] = idx + 1
+                    elif "specification" in v_clean or "product description" in v_clean:
+                        iwo_cols["spec"] = idx + 1
+                    elif "color" in v_clean:
+                        iwo_cols["color"] = idx + 1
+                    elif "qty" in v_clean or "quantity" in v_clean:
+                        iwo_cols["qty"] = idx + 1
+                    elif "unit" in v_clean:
+                        iwo_cols["unit"] = idx + 1
+                    elif "driver details" in v_clean or "driver_details" in v_clean:
+                        iwo_cols["driver"] = idx + 1
+                    elif "driver qty" in v_clean or "driver_qty" in v_clean:
+                        iwo_cols["driver_qty"] = idx + 1
+                    elif "led details" in v_clean or "led_details" in v_clean:
+                        iwo_cols["led"] = idx + 1
+                    elif "accessories" in v_clean:
+                        iwo_cols["accessories"] = idx + 1
+                break
+                
+            elif "qty" in row_str or "quantity" in row_str:
                 d_col, q_col = detect_columns(row_vals)
                 if d_col and q_col:
                     header_row_idx = r_idx
@@ -330,85 +364,132 @@ def upload_boq():
         items = []
         sr_no = 1
         
-        # Read data rows
-        for r_idx in range(header_row_idx + 1, sheet.max_row + 1):
-            desc_val = sheet.cell(row=r_idx, column=desc_col_idx).value
-            qty_val = sheet.cell(row=r_idx, column=qty_col_idx).value
-            
-            if desc_val is not None:
-                desc_str = str(desc_val).strip()
-                if desc_str == "" or desc_str.lower().startswith("sales team") or desc_str.lower().startswith("total"):
+        if is_iwo:
+            for r_idx in range(header_row_idx + 1, sheet.max_row + 1):
+                gls_code = sheet.cell(row=r_idx, column=iwo_cols.get("gls_code", 3)).value
+                if not gls_code:
+                    continue
+                gls_code_str = str(gls_code).strip()
+                if gls_code_str == "" or gls_code_str.lower().startswith("sales team") or gls_code_str.lower().startswith("total"):
                     continue
                 
-                # Parse Qty and Unit
-                qty = 0
-                unit = "Nos"
-                if qty_val is not None:
-                    qty_str = str(qty_val).strip()
-                    unit_match = re.search(r'(\d+)\s*[- ]*\s*([a-zA-Z]+)', qty_str)
-                    if unit_match:
-                        qty = int(unit_match.group(1))
-                        unit = unit_match.group(2).capitalize()
-                        if unit == "Nos" or unit == "No":
-                            unit = "Nos"
-                    else:
-                        try:
-                            qty = int(float(qty_str))
-                        except ValueError:
-                            qty = qty_str
-                            
-                if "mtr" in desc_str.lower():
-                    unit = "Mtr"
+                boq_desc = sheet.cell(row=r_idx, column=iwo_cols.get("boq_desc", 2)).value or ""
+                spec = sheet.cell(row=r_idx, column=iwo_cols.get("spec", 4)).value or ""
+                color = sheet.cell(row=r_idx, column=iwo_cols.get("color", 5)).value or "Black"
+                qty_val = sheet.cell(row=r_idx, column=iwo_cols.get("qty", 6)).value or 1
+                unit_val = sheet.cell(row=r_idx, column=iwo_cols.get("unit", 7)).value or "Nos"
+                driver = sheet.cell(row=r_idx, column=iwo_cols.get("driver", 9)).value or "Fulham"
+                driver_qty_val = sheet.cell(row=r_idx, column=iwo_cols.get("driver_qty", 10)).value or 1
+                led = sheet.cell(row=r_idx, column=iwo_cols.get("led", 11)).value or "Bridgelux"
+                accessories = sheet.cell(row=r_idx, column=iwo_cols.get("accessories", 12)).value or "Standard"
+                
+                try:
+                    qty = int(float(str(qty_val).strip()))
+                except Exception:
+                    qty = 1
+                
+                try:
+                    driver_qty = int(float(str(driver_qty_val).strip()))
+                except Exception:
+                    driver_qty = 1
                     
-                # Run matching engine
-                parsed_info = matching_engine.parse_product_code(desc_str)
-                specs = matching_engine.lookup_catalog_database(parsed_info, CATALOG_JSON_PATH)
-                
-                product_description = specs["product_description"]
-                if product_description == "GLS-SPA Luminaire, IP20.":
-                    product_description = generate_description_from_boq(desc_str)
-                
-                # Determine default body color
-                body_color = "Black"
-                if "white" in desc_str.lower() or "white" in product_description.lower():
-                    body_color = "White"
-                elif "mil finish" in desc_str.lower() or "mil finish" in product_description.lower() or "silver" in desc_str.lower():
-                    body_color = "Mil Finish"
-                    
-                # Calculate driver details
-                driver_make = specs["driver_make"]
-                driver_wattage = specs["driver_wattage"]
-                driver_qty = qty
-                
-                if unit.lower() == "mtr":
-                    driver_make = "Constant Voltage 24V"
-                    driver_wattage = "150W"
-                    try:
-                        meters = float(qty)
-                        driver_qty = max(1, int(meters / 12))
-                    except Exception:
-                        driver_qty = 1
-                
-                driver_details = f"{driver_make} - {driver_wattage}" if driver_make != "NA" else "NA"
-                led_details = f"{specs['led_make']} - {parsed_info.get('cct', '4000K')}" if specs["led_make"] != "NA" else "NA"
-                
                 items.append({
                     "id": sr_no,
-                    "boq_description": desc_str,
+                    "boq_description": str(boq_desc).strip(),
                     "boq_qty": qty,
-                    "unit": unit,
-                    "gls_code": clean_gls_code(desc_str, specs["gls_code"]),
-                    "product_description": product_description,
-                    "body_color": body_color,
-                    "driver_details": driver_details,
+                    "unit": str(unit_val).strip(),
+                    "gls_code": gls_code_str,
+                    "product_description": str(spec).strip(),
+                    "body_color": str(color).strip(),
+                    "driver_details": str(driver).strip(),
                     "driver_qty": driver_qty,
-                    "led_details": led_details,
-                    "accessories": specs["accessories"],
-                    "page": specs["page"],
-                    "matched_by": specs["matched_by"],
-                    "remarks": ""
+                    "led_details": str(led).strip(),
+                    "accessories": str(accessories).strip(),
+                    "rate": 1200,
+                    "page": 0,
+                    "matched_by": "iwo_upload_import"
                 })
                 sr_no += 1
+        else:
+            # Read data rows (normal BOQ mode)
+            for r_idx in range(header_row_idx + 1, sheet.max_row + 1):
+                desc_val = sheet.cell(row=r_idx, column=desc_col_idx).value
+                qty_val = sheet.cell(row=r_idx, column=qty_col_idx).value
+                
+                if desc_val is not None:
+                    desc_str = str(desc_val).strip()
+                    if desc_str == "" or desc_str.lower().startswith("sales team") or desc_str.lower().startswith("total"):
+                        continue
+                    
+                    # Parse Qty and Unit
+                    qty = 0
+                    unit = "Nos"
+                    if qty_val is not None:
+                        qty_str = str(qty_val).strip()
+                        unit_match = re.search(r'(\d+)\s*[- ]*\s*([a-zA-Z]+)', qty_str)
+                        if unit_match:
+                            qty = int(unit_match.group(1))
+                            unit = unit_match.group(2).capitalize()
+                            if unit == "Nos" or unit == "No":
+                                unit = "Nos"
+                        else:
+                            try:
+                                qty = int(float(qty_str))
+                            except ValueError:
+                                qty = qty_str
+                                
+                    if "mtr" in desc_str.lower():
+                        unit = "Mtr"
+                        
+                    # Run matching engine
+                    parsed_info = matching_engine.parse_product_code(desc_str)
+                    specs = matching_engine.lookup_catalog_database(parsed_info, CATALOG_JSON_PATH)
+                    
+                    product_description = specs["product_description"]
+                    if product_description == "GLS-SPA Luminaire, IP20.":
+                        product_description = generate_description_from_boq(desc_str)
+                    
+                    # Determine default body color
+                    body_color = "Black"
+                    if "white" in desc_str.lower() or "white" in product_description.lower():
+                        body_color = "White"
+                    elif "mil finish" in desc_str.lower() or "mil finish" in product_description.lower() or "silver" in desc_str.lower():
+                        body_color = "Mil Finish"
+                        
+                    # Calculate driver details
+                    driver_make = specs["driver_make"]
+                    driver_wattage = specs["driver_wattage"]
+                    driver_qty = qty
+                    
+                    if unit.lower() == "mtr":
+                        driver_make = "Constant Voltage 24V"
+                        driver_wattage = "150W"
+                        try:
+                            meters = float(qty)
+                            driver_qty = max(1, int(meters / 12))
+                        except Exception:
+                            driver_qty = 1
+                    
+                    driver_details = f"{driver_make} - {driver_wattage}" if driver_make != "NA" else "NA"
+                    led_details = f"{specs['led_make']} - {parsed_info.get('cct', '4000K')}" if specs["led_make"] != "NA" else "NA"
+                    
+                    items.append({
+                        "id": sr_no,
+                        "boq_description": desc_str,
+                        "boq_qty": qty,
+                        "unit": unit,
+                        "gls_code": clean_gls_code(desc_str, specs["gls_code"]),
+                        "product_description": product_description,
+                        "body_color": body_color,
+                        "driver_details": driver_details,
+                        "driver_qty": driver_qty,
+                        "led_details": led_details,
+                        "accessories": specs["accessories"],
+                        "page": specs["page"],
+                        "matched_by": specs["matched_by"],
+                        "remarks": ""
+                    })
+                    sr_no += 1
                 
         return jsonify({
             "filename": file.filename,
