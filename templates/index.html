@@ -411,12 +411,23 @@
 
     // Radial view transitions
     function toggleTheme(event) {
-        const x = event ? event.clientX : window.innerWidth / 2;
-        const y = event ? event.clientY : window.innerHeight / 2;
-        const endRadius = Math.hypot(
-            Math.max(x, window.innerWidth - x),
-            Math.max(y, window.innerHeight - y)
-        );
+        const toLight = !document.body.classList.contains('light-theme');
+        
+        let x, y, endRadius;
+        if (toLight) {
+            // Dark to Light: expands from button outwards
+            x = event ? event.clientX : window.innerWidth / 2;
+            y = event ? event.clientY : window.innerHeight / 2;
+            endRadius = Math.hypot(
+                Math.max(x, window.innerWidth - x),
+                Math.max(y, window.innerHeight - y)
+            );
+        } else {
+            // Light to Dark: expands from bottom center upwards
+            x = window.innerWidth / 2;
+            y = window.innerHeight;
+            endRadius = Math.hypot(window.innerWidth / 2, window.innerHeight);
+        }
 
         if (!document.startViewTransition) {
             document.body.classList.toggle('light-theme');
@@ -435,17 +446,14 @@
                 `circle(${endRadius}px at ${x}px ${y}px)`
             ];
             
-            const isLight = document.body.classList.contains('light-theme');
             document.documentElement.animate(
                 {
-                    clipPath: isLight ? clipPath : [...clipPath].reverse(),
+                    clipPath: clipPath,
                 },
                 {
                     duration: 650,
                     easing: 'ease-in-out',
-                    pseudoElement: isLight
-                        ? '::view-transition-new(root)'
-                        : '::view-transition-old(root)',
+                    pseudoElement: '::view-transition-new(root)',
                 }
             );
         });
