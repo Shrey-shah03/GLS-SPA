@@ -46,9 +46,15 @@
                         <p id="view-desc-header">Architecture & Engineering Work Order Dashboard</p>
                     </div>
                 </div>
-                <button onclick="toggleTheme(event)" class="btn theme-toggle-btn" id="theme-btn">
-                    <i class="fa-solid fa-moon"></i> Dark Mode
-                </button>
+                <div onclick="toggleTheme(event)" class="theme-switch" id="theme-btn" title="Toggle Light/Dark Theme">
+                    <div class="theme-switch-slider"></div>
+                    <div class="theme-switch-icon light-icon">
+                        <i class="fa-solid fa-sun"></i>
+                    </div>
+                    <div class="theme-switch-icon dark-icon">
+                        <i class="fa-solid fa-moon"></i>
+                    </div>
+                </div>
             </header>
 
             <div class="workspace-section" id="boq-generator-view">
@@ -400,13 +406,7 @@
     <script src="/static/script.js"></script>
     <script>
     function updateThemeButtonText() {
-        const btn = document.getElementById('theme-btn');
-        const isLight = document.body.classList.contains('light-theme');
-        if (isLight) {
-            btn.innerHTML = `<i class="fa-solid fa-sun"></i> Light Mode`;
-        } else {
-            btn.innerHTML = `<i class="fa-solid fa-moon"></i> Dark Mode`;
-        }
+        // Handled via CSS class toggling
     }
 
     // Radial view transitions

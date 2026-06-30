@@ -536,9 +536,61 @@ body.light-theme .data-table th {
 
 .hidden { display: none !important; }
 
-/* ===================== THEME BUTTON ===================== */
-.theme-toggle-btn {
-    font-family: var(--font-body);
+/* ===================== THEME SWITCH SLIDER ===================== */
+.theme-switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    background: #161616;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 3px;
+    cursor: pointer;
+    user-select: none;
+    width: 78px;
+    height: 38px;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+body.light-theme .theme-switch {
+    background: #e0e0e0;
+    border-color: #ccc;
+}
+
+.theme-switch-slider {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 34px;
+    height: 30px;
+    background: #000000;
+    border-radius: 3px;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s;
+    transform: translateX(38px); /* Default to right (Dark mode active) */
+}
+body.light-theme .theme-switch-slider {
+    transform: translateX(0px); /* Light mode active (left) */
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.theme-switch-icon {
+    position: relative;
+    width: 36px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    z-index: 2;
+    color: #555;
+    transition: color 0.2s;
+}
+/* Highlight active icons */
+body.light-theme .theme-switch-icon.light-icon {
+    color: #1a1a1a;
+}
+body:not(.light-theme) .theme-switch-icon.dark-icon {
+    color: #ffffff;
 }
 
 /* ===================== FORM ITEMS ===================== */
