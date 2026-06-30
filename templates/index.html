@@ -421,60 +421,8 @@
 
     // Radial view transitions
     function toggleTheme(event) {
-        const toLight = !document.body.classList.contains('light-theme');
-        
-        let x, y, endRadius;
-        if (toLight) {
-            // Dark to Light: rises from the bottom center like a dome wave
-            x = window.innerWidth / 2;
-            y = window.innerHeight + 250; // offset below screen to flatten the arc
-            endRadius = Math.hypot(window.innerWidth / 2, window.innerHeight + 250);
-        } else {
-            // Light to Dark: expands outwards from the button cursor position
-            x = event ? event.clientX : window.innerWidth / 2;
-            y = event ? event.clientY : window.innerHeight / 2;
-            endRadius = Math.hypot(
-                Math.max(x, window.innerWidth - x),
-                Math.max(y, window.innerHeight - y)
-            );
-        }
-
-        if (!document.startViewTransition) {
-            document.body.classList.toggle('light-theme');
-            updateThemeButtonText();
-            return;
-        }
-
-        // Set the origin coords for the CSS mask
-        document.documentElement.style.setProperty('--transition-x', `${x}px`);
-        document.documentElement.style.setProperty('--transition-y', `${y}px`);
-        document.documentElement.style.setProperty('--transition-radius', '0px');
-
-        const transition = document.startViewTransition(() => {
-            document.body.classList.toggle('light-theme');
-            updateThemeButtonText();
-        });
-
-        transition.ready.then(() => {
-            const startTime = performance.now();
-            const duration = 650; // faster, snappier duration matching Transition 4
-
-            function animateMask(time) {
-                const progress = Math.min((time - startTime) / duration, 1);
-                // Cubic ease-in-out: starts smooth, accelerates quickly, decelerates gently
-                const ease = progress < 0.5
-                    ? 4 * progress * progress * progress
-                    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-
-                const currentRadius = ease * (endRadius + 150);
-                document.documentElement.style.setProperty('--transition-radius', `${currentRadius}px`);
-
-                if (progress < 1) {
-                    requestAnimationFrame(animateMask);
-                }
-            }
-            requestAnimationFrame(animateMask);
-        });
+        document.body.classList.toggle('light-theme');
+        updateThemeButtonText();
     }
     </script>
 </body>

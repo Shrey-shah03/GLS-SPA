@@ -37,22 +37,6 @@ body.light-theme {
     --shadow-card: 0 1px 3px rgba(0,0,0,0.08);
 }
 
-/* View transitions */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-::view-transition-old(root) { z-index: 1; }
-::view-transition-new(root) {
-  z-index: 9999;
-  mask-image: radial-gradient(circle at var(--transition-x, 50%) var(--transition-y, 50%), black 0%, black var(--transition-radius, 0px), transparent calc(var(--transition-radius, 0px) + 150px));
-  -webkit-mask-image: radial-gradient(circle at var(--transition-x, 50%) var(--transition-y, 50%), black 0%, black var(--transition-radius, 0px), transparent calc(var(--transition-radius, 0px) + 150px));
-  mask-size: 100% 100%;
-  -webkit-mask-size: 100% 100%;
-  mask-repeat: no-repeat;
-  -webkit-mask-repeat: no-repeat;
-}
 
 * {
     box-sizing: border-box;
