@@ -411,12 +411,23 @@
 
     // Radial view transitions
     function toggleTheme(event) {
-        const x = event ? event.clientX : window.innerWidth / 2;
-        const y = event ? event.clientY : window.innerHeight / 2;
-        const endRadius = Math.hypot(
-            Math.max(x, window.innerWidth - x),
-            Math.max(y, window.innerHeight - y)
-        );
+        const toLight = !document.body.classList.contains('light-theme');
+        
+        let x, y, endRadius;
+        if (toLight) {
+            // Dark to Light: rises from the bottom center like a dome wave
+            x = window.innerWidth / 2;
+            y = window.innerHeight + 250; // offset below screen to flatten the arc
+            endRadius = Math.hypot(window.innerWidth / 2, window.innerHeight + 250);
+        } else {
+            // Light to Dark: expands outwards from the button cursor position
+            x = event ? event.clientX : window.innerWidth / 2;
+            y = event ? event.clientY : window.innerHeight / 2;
+            endRadius = Math.hypot(
+                Math.max(x, window.innerWidth - x),
+                Math.max(y, window.innerHeight - y)
+            );
+        }
 
         if (!document.startViewTransition) {
             document.body.classList.toggle('light-theme');
@@ -436,14 +447,14 @@
 
         transition.ready.then(() => {
             const startTime = performance.now();
-            const duration = 850; // slightly slower for the slow start to feel dramatic
+            const duration = 650; // faster, snappier duration matching Transition 4
 
             function animateMask(time) {
                 const progress = Math.min((time - startTime) / duration, 1);
-                // Quintic ease-in-out (very slow start, fast acceleration, smooth landing)
+                // Cubic ease-in-out: starts smooth, accelerates quickly, decelerates gently
                 const ease = progress < 0.5
-                    ? 16 * Math.pow(progress, 5)
-                    : 1 - Math.pow(-2 * progress + 2, 5) / 2;
+                    ? 4 * progress * progress * progress
+                    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
 
                 const currentRadius = ease * (endRadius + 150);
                 document.documentElement.style.setProperty('--transition-radius', `${currentRadius}px`);
