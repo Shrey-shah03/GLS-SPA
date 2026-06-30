@@ -437,16 +437,12 @@
             
             document.documentElement.animate(
                 {
-                    clipPath: document.body.classList.contains('light-theme')
-                        ? clipPath
-                        : [...clipPath].reverse(),
+                    clipPath: clipPath,
                 },
                 {
                     duration: 650,
                     easing: 'ease-in-out',
-                    pseudoElement: document.body.classList.contains('light-theme')
-                        ? '::view-transition-new(root)'
-                        : '::view-transition-old(root)',
+                    pseudoElement: '::view-transition-new(root)',
                 }
             );
         });

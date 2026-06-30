@@ -45,8 +45,6 @@ body.light-theme {
 }
 ::view-transition-old(root) { z-index: 1; }
 ::view-transition-new(root) { z-index: 9999; }
-.light-theme::view-transition-old(root) { z-index: 9999; }
-.light-theme::view-transition-new(root) { z-index: 1; }
 
 * {
     box-sizing: border-box;
