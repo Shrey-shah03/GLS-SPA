@@ -1252,7 +1252,7 @@ def generate_invoice_pdf():
             parent=styles['Normal'],
             fontName='Helvetica-Bold',
             fontSize=8,
-            textColor=colors.HexColor('#8BC34A'),
+            textColor=colors.white,
             alignment=1
         )
         style_table_cell = ParagraphStyle(
@@ -1280,7 +1280,7 @@ def generate_invoice_pdf():
         story = []
         
         # Company Info Header
-        story.append(Paragraph("GLS-SPA LIGHTING", style_title))
+        story.append(Paragraph('<font color="#8BC34A">GLS</font><font color="#888888">-</font><font color="#2196F3">SPA LIGHTING</font>', style_title))
         story.append(Paragraph("Gala No. 202, Bliss Nirman Industrial Estate, Building No. 5, Gokhiware, Vasai East, Palghar, Maharashtra - 401208 | enquiry@svldpl.net", style_subtitle))
         story.append(Paragraph("PROFORMA INVOICE", style_section_title))
         
