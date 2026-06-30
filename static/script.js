@@ -707,26 +707,26 @@ function renderInvoiceTable() {
         tr.innerHTML = `
             <td>${idx + 1}</td>
             <td>
-                <input type="text" class="table-input" style="width: 130px; font-family: monospace; font-weight: 600;" value="${item.gls_code || ''}" onchange="updateInvoiceItemField(${item.id}, 'gls_code', this.value)">
+                <input type="text" class="modern-input" style="width: 130px; font-family: monospace; font-weight: 600;" value="${item.gls_code || ''}" onchange="updateInvoiceItemField(${item.id}, 'gls_code', this.value)">
             </td>
             <td>
-                <textarea class="table-input" style="width: 100%; height: 36px; font-size: 0.76rem; resize: none; text-align: left;" onchange="updateInvoiceItemField(${item.id}, 'product_description', this.value)">${item.product_description || ''}</textarea>
+                <textarea class="modern-input" style="width: 100%; height: 36px; font-size: 0.76rem; resize: none; text-align: left;" onchange="updateInvoiceItemField(${item.id}, 'product_description', this.value)">${item.product_description || ''}</textarea>
             </td>
             <td>
-                <input type="text" class="table-input" style="width: 70px;" value="${hsn}" onchange="updateInvoiceItemField(${item.id}, 'hsn_code', this.value)">
+                <input type="text" class="modern-input" style="width: 70px;" value="${hsn}" onchange="updateInvoiceItemField(${item.id}, 'hsn_code', this.value)">
             </td>
             <td>
-                <input type="number" class="table-input" style="width: 60px;" value="${qty}" onchange="updateInvoiceItemField(${item.id}, 'boq_qty', this.value)">
+                <input type="number" class="modern-input" style="width: 60px;" value="${qty}" onchange="updateInvoiceItemField(${item.id}, 'boq_qty', this.value)">
             </td>
             <td>
-                <select class="table-select" style="width: 70px;" onchange="updateInvoiceItemField(${item.id}, 'unit', this.value)">
+                <select class="modern-input" style="width: 70px;" onchange="updateInvoiceItemField(${item.id}, 'unit', this.value)">
                     <option value="Nos" ${item.unit === 'Nos' ? 'selected' : ''}>Nos</option>
                     <option value="Mtr" ${item.unit === 'Mtr' ? 'selected' : ''}>Mtr</option>
                     <option value="Set" ${item.unit === 'Set' ? 'selected' : ''}>Set</option>
                 </select>
             </td>
             <td>
-                <input type="number" class="table-input" style="width: 90px;" value="${rate}" onchange="updateInvoiceItemField(${item.id}, 'rate', this.value)">
+                <input type="number" class="modern-input" style="width: 90px;" value="${rate}" onchange="updateInvoiceItemField(${item.id}, 'rate', this.value)">
             </td>
             <td style="font-weight: 500;">₹${lineAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             <td style="color: var(--color-text-muted);">₹${lineGst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>

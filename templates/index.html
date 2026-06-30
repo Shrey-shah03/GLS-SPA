@@ -171,23 +171,70 @@
                     <div class="supported-formats" style="font-size: 0.72rem; margin-top: 6px;">Supports .xlsx spreadsheets</div>
                 </div>
 
-                <!-- Document Action Buttons -->
-                <div style="max-width: 950px; margin: 0 auto 12px auto; display: flex; justify-content: flex-end; gap: 12px;">
-                    <button class="btn btn-primary" style="font-size: 0.82rem; padding: 8px 16px;" onclick="generateInvoicePDF()">
-                        <i class="fa-solid fa-file-pdf"></i> Export PDF
-                    </button>
-                </div>
-
-                <!-- Visual Paper Document Layout (Refrens Style) -->
-                <div class="invoice-paper">
+                <!-- Visual Paper Document Layout (Modern UI) -->
+                <div class="invoice-paper modern-invoice">
                     
-                    <!-- Paper Header -->
-                    <div class="paper-header-grid">
-                        <div class="paper-header-left">
+                    <!-- Paper Header (Logo Left, Meta Right) -->
+                    <div class="modern-header-grid">
+                        <div class="modern-header-left">
                             <div class="paper-logo">
                                 <span class="gls-text">GLS</span><span class="hyphen">-</span><span class="spa-text">SPA</span>
                             </div>
-                            <div class="paper-company-details">
+                        </div>
+                        <div class="modern-header-right">
+                            <div class="modern-meta-form">
+                                <div class="modern-meta-row">
+                                    <span class="modern-meta-lbl">INVOICE</span>
+                                    <input type="text" id="inv-invoice-no" class="modern-input" placeholder="SOR/26-27/001">
+                                </div>
+                                <div class="modern-meta-row">
+                                    <span class="modern-meta-lbl">DATE</span>
+                                    <input type="text" id="inv-invoice-date" class="modern-input" placeholder="DD/MM/YY">
+                                </div>
+                                <div class="modern-meta-row">
+                                    <span class="modern-meta-lbl">PAYMENT TERMS</span>
+                                    <input type="text" id="inv-payment-terms" class="modern-input" value="100% Advance">
+                                </div>
+                                <div class="modern-meta-row">
+                                    <span class="modern-meta-lbl">VALIDITY</span>
+                                    <input type="text" id="inv-validity-period" class="modern-input" value="7 days">
+                                </div>
+                                <div class="modern-meta-row">
+                                    <span class="modern-meta-lbl">DESTINATION</span>
+                                    <input type="text" id="inv-destination" class="modern-input" placeholder="City name">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- To and From Grid -->
+                    <div class="modern-to-from-grid">
+                        <div class="modern-to-col">
+                            <div class="modern-sec-label">To</div>
+                            <div class="modern-bill-form">
+                                <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                                    <select id="saved-buyer-select" class="table-select modern-select" onchange="loadSavedBuyer(this.value)">
+                                        <option value="">-- Load Saved Buyer --</option>
+                                    </select>
+                                    <button class="btn btn-secondary modern-save-btn" onclick="saveBuyerProfile()" title="Save billing info below to database">
+                                        <i class="fa-solid fa-floppy-disk"></i>
+                                    </button>
+                                </div>
+                                <input type="text" id="inv-buyer-name" class="modern-input modern-input-bold" placeholder="Buyer Name (e.g. Shahi lites)">
+                                <textarea id="inv-buyer-address" class="modern-input" style="height: 48px; resize: none; width: 100%;" placeholder="Billing Address"></textarea>
+                                <div class="modern-bill-row">
+                                    <span class="modern-meta-lbl" style="width: 50px; text-align: left;">GSTIN:</span>
+                                    <input type="text" id="inv-buyer-gstin" class="modern-input" style="width: 100%;" placeholder="09AEQPM4658E1Z1">
+                                </div>
+                                <div class="modern-bill-row">
+                                    <span class="modern-meta-lbl" style="width: 50px; text-align: left;">Contact:</span>
+                                    <input type="text" id="inv-buyer-contact" class="modern-input" style="width: 100%;" placeholder="Name - Phone">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modern-from-col">
+                            <div class="modern-sec-label text-right">From</div>
+                            <div class="modern-company-details text-right">
                                 <strong>GLS-SPA LIGHTING</strong><br>
                                 Gala No. 202, Bliss Nirman Industrial Estate,<br>
                                 Building No. 5, Gokhiware, Vasai East,<br>
@@ -195,129 +242,89 @@
                                 Email: enquiry@svldpl.net
                             </div>
                         </div>
-                        
-                        <div class="paper-header-right">
-                            <div class="paper-title">PROFORMA INVOICE</div>
-                            <div class="paper-meta-form">
-                                <div class="paper-meta-row">
-                                    <span class="paper-meta-lbl">Voucher No:</span>
-                                    <input type="text" id="inv-invoice-no" class="paper-input" placeholder="SOR/26-27/001">
-                                </div>
-                                <div class="paper-meta-row">
-                                    <span class="paper-meta-lbl">Date:</span>
-                                    <input type="text" id="inv-invoice-date" class="paper-input" placeholder="DD/MM/YY">
-                                </div>
-                                <div class="paper-meta-row">
-                                    <span class="paper-meta-lbl">Payment Terms:</span>
-                                    <input type="text" id="inv-payment-terms" class="paper-input" value="100% Advance">
-                                </div>
-                                <div class="paper-meta-row">
-                                    <span class="paper-meta-lbl">Validity:</span>
-                                    <input type="text" id="inv-validity-period" class="paper-input" value="7 days">
-                                </div>
-                                <div class="paper-meta-row">
-                                    <span class="paper-meta-lbl">Destination:</span>
-                                    <input type="text" id="inv-destination" class="paper-input" placeholder="City name">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr class="paper-divider">
-
-                    <!-- Billing Grid -->
-                    <div class="paper-billing-grid">
-                        <div class="paper-bill-to">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-                                <h4 class="paper-sec-heading" style="margin-bottom: 0;">Buyer (Bill to)</h4>
-                                <div style="display: flex; gap: 8px; align-items: center;">
-                                    <select id="saved-buyer-select" class="table-select" style="font-size: 0.76rem; padding: 4px 8px;" onchange="loadSavedBuyer(this.value)">
-                                        <option value="">-- Load Saved Buyer --</option>
-                                    </select>
-                                    <button class="btn btn-secondary" style="font-size: 0.72rem; padding: 4px 8px;" onclick="saveBuyerProfile()" title="Save billing info below to database">
-                                        <i class="fa-solid fa-floppy-disk"></i> Save Buyer
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="paper-bill-form">
-                                <input type="text" id="inv-buyer-name" class="paper-input paper-input-bold" placeholder="Buyer Name (e.g. Shahi lites)">
-                                <textarea id="inv-buyer-address" class="paper-input" style="height: 54px; resize: none; width: 100%;" placeholder="Billing Address"></textarea>
-                                <div class="paper-bill-row" style="margin-top: 4px;">
-                                    <span class="paper-meta-lbl" style="min-width: 60px; text-align: left;">GSTIN:</span>
-                                    <input type="text" id="inv-buyer-gstin" class="paper-input" style="width: 100%;" placeholder="09AEQPM4658E1Z1">
-                                </div>
-                                <div class="paper-bill-row">
-                                    <span class="paper-meta-lbl" style="min-width: 60px; text-align: left;">Contact:</span>
-                                    <input type="text" id="inv-buyer-contact" class="paper-input" style="width: 100%;" placeholder="Name - Phone">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="paper-bank-details">
-                            <h4 class="paper-sec-heading">Bank Details & Terms</h4>
-                            <div class="paper-company-details" style="font-size: 0.82rem; line-height: 1.5; padding-left: 12px; border-left: 2px solid var(--color-primary);">
-                                <strong>Bank Name:</strong> HDFC Bank Ltd<br>
-                                <strong>A/c No:</strong> 50200034798292<br>
-                                <strong>IFSC Code:</strong> HDFC0000038<br>
-                                <strong>Branch:</strong> Vasai East, Palghar
-                            </div>
-                            <div style="margin-top: 14px; font-size: 0.74rem; color: var(--color-text-muted); line-height: 1.4;">
-                                <strong>Terms and Conditions:</strong><br>
-                                1. 2 years warranty on manufacturing defects.<br>
-                                2. Cancellation of custom orders not allowed.
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Items Table -->
-                    <div style="margin-top: 28px; overflow-x: auto;">
-                        <table class="paper-table" id="invoice-table">
+                    <div class="modern-table-wrapper">
+                        <table class="modern-table" id="invoice-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 40px;">Sr.</th>
-                                    <th style="width: 140px;">Item / GLS Code</th>
-                                    <th>Product Specification</th>
-                                    <th style="width: 80px;">HSN</th>
-                                    <th style="width: 65px;">Qty</th>
-                                    <th style="width: 75px;">Unit</th>
-                                    <th style="width: 110px;">Rate (₹)</th>
-                                    <th style="width: 110px;">Amount</th>
-                                    <th style="width: 95px;">GST (18%)</th>
-                                    <th style="width: 120px;">Grand Total</th>
-                                    <th style="width: 45px;"></th>
+                                    <th style="width: 40px; border-radius: 8px 0 0 8px;">Sr.</th>
+                                    <th style="width: 120px; text-align: left;">Item / GLS Code</th>
+                                    <th style="text-align: left;">Description</th>
+                                    <th style="width: 65px;">HSN</th>
+                                    <th style="width: 55px;">Qty</th>
+                                    <th style="width: 60px;">Unit</th>
+                                    <th style="width: 90px;">Rate (₹)</th>
+                                    <th style="width: 90px;">Amount</th>
+                                    <th style="width: 80px;">GST(18%)</th>
+                                    <th style="width: 95px;">Total</th>
+                                    <th style="width: 40px; border-radius: 0 8px 8px 0;"></th>
                                 </tr>
                             </thead>
                             <tbody id="invoice-table-body">
                                 <!-- Dynamic rows -->
                             </tbody>
                         </table>
+                        
+                        <!-- Add Item Button embedded inside table flow -->
+                        <div class="modern-add-item-row" onclick="addNewBOQRow()">
+                            Add new item
+                        </div>
                     </div>
 
                     <!-- Totals Block -->
-                    <div class="paper-totals-container">
-                        <div class="paper-totals-left">
-                            <div style="font-size: 0.8rem; color: var(--color-text-muted); line-height: 1.4;">
+                    <div class="modern-totals-container">
+                        <div class="modern-totals-left">
+                            <div class="modern-chargeable-words">
                                 <strong>Amount Chargeable (in words):</strong><br>
-                                <span id="inv-chargeable-words" style="color: var(--color-primary); font-weight: 600;">Zero Rupees Only</span>
+                                <span id="inv-chargeable-words">Zero Rupees Only</span>
                             </div>
                         </div>
                         
-                        <div class="paper-totals-right">
-                            <div class="paper-total-row">
-                                <span>Subtotal (Net):</span>
-                                <span id="inv-total-amount" style="font-weight: 500; color: var(--color-text-main);">₹0.00</span>
+                        <div class="modern-totals-right">
+                            <div class="modern-total-row">
+                                <span>Subtotal</span>
+                                <span id="inv-total-amount">₹0.00</span>
                             </div>
-                            <div class="paper-total-row">
-                                <span>GST (18%):</span>
-                                <span id="inv-total-gst" style="font-weight: 500; color: var(--color-text-main);">₹0.00</span>
+                            <div class="modern-total-row">
+                                <span>GST (18%)</span>
+                                <span id="inv-total-gst">₹0.00</span>
                             </div>
-                            <div class="paper-total-row paper-total-grand-row">
-                                <span>Total Invoice Bill:</span>
-                                <span id="inv-total-grand" style="font-weight: 700; color: var(--color-primary);">₹0.00</span>
+                            <div class="modern-total-row modern-total-grand-row">
+                                <span>Amount due</span>
+                                <span id="inv-total-grand">₹0.00</span>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Footer Embedded Action Bar -->
+                    <div class="modern-action-bar">
+                        <div class="action-spacer"></div>
+                        <button class="btn btn-primary modern-export-btn" onclick="generateInvoicePDF()">
+                            Export PDF
+                        </button>
+                    </div>
+
+                    <!-- Footer Notes & Terms -->
+                    <div class="modern-footer-grid">
+                        <div class="modern-notes-col">
+                            <div class="modern-sec-label">Bank Details</div>
+                            <div class="modern-footer-text">
+                                <strong>Bank Name:</strong> HDFC Bank Ltd<br>
+                                <strong>A/c No:</strong> 50200034798292<br>
+                                <strong>IFSC Code:</strong> HDFC0000038<br>
+                                <strong>Branch:</strong> Vasai East, Palghar
+                            </div>
+                        </div>
+                        <div class="modern-terms-col">
+                            <div class="modern-sec-label">Terms & conditions</div>
+                            <div class="modern-footer-text">
+                                1. 2 years warranty on manufacturing defects.<br>
+                                2. Cancellation of custom orders not allowed.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

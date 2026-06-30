@@ -631,180 +631,246 @@ body.light-theme .nav-item.active {
     margin-bottom: 12px;
 }
 
-/* Invoice Paper Visual styling */
-.invoice-paper {
+/* Modern Invoice UI Styling */
+.modern-invoice {
     background-color: var(--bg-card);
-    border: 1px solid var(--border-glass);
-    border-radius: 12px;
-    padding: 40px;
-    margin: 20px auto 0 auto;
+    border-radius: 16px;
+    padding: 48px 56px;
+    margin: 20px auto 40px auto;
     max-width: 950px;
     width: 100%;
-    box-shadow: var(--shadow-premium);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
     font-family: var(--font-sans);
     transition: background-color 0.3s, box-shadow 0.3s;
+    color: var(--color-text-main);
 }
-body.light-theme .invoice-paper {
+body.light-theme .modern-invoice {
     background-color: #ffffff;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    border-color: #e2e8f0;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.08);
 }
-.paper-header-grid {
+
+/* Header */
+.modern-header-grid {
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 40px;
+    margin-bottom: 48px;
+}
+.modern-header-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 .paper-logo {
     font-family: var(--font-heading);
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 800;
-    margin-bottom: 12px;
 }
-.paper-company-details {
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
-    line-height: 1.5;
-}
-.paper-title {
-    font-family: var(--font-heading);
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: var(--color-primary);
-    text-align: right;
-    margin-bottom: 16px;
-    letter-spacing: 0.5px;
-}
-.paper-meta-form {
+.modern-header-right {
     display: flex;
     flex-direction: column;
-    gap: 8px;
     align-items: flex-end;
 }
-.paper-meta-row {
+.modern-meta-form {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-end;
+}
+.modern-meta-row {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     gap: 12px;
-    width: 100%;
 }
-.paper-meta-lbl {
+.modern-meta-lbl {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* To / From Section */
+.modern-to-from-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 48px;
+}
+.modern-sec-label {
     font-size: 0.8rem;
     color: var(--color-text-muted);
-    font-weight: 600;
+    margin-bottom: 12px;
+}
+.text-right {
     text-align: right;
 }
-.paper-input {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px dashed rgba(255, 255, 255, 0.15);
+.modern-company-details {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-text-main);
+}
+.modern-bill-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.modern-bill-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Inputs */
+.modern-input {
+    background: transparent;
+    border: 1px dashed transparent;
     border-radius: 4px;
-    padding: 6px 10px;
+    padding: 4px 0;
     color: var(--color-text-main);
     font-family: var(--font-sans);
     font-size: 0.85rem;
-    width: 200px;
     transition: all 0.2s;
-}
-body.light-theme .paper-input {
-    background: rgba(0, 0, 0, 0.02);
-    border: 1px dashed rgba(0, 0, 0, 0.1);
-    color: #333333;
-}
-.paper-input:focus {
-    background: transparent;
-    border: 1px solid var(--color-primary);
     outline: none;
 }
-.paper-input-bold {
+.modern-input-bold {
     font-weight: 700;
     font-size: 1.1rem;
-    width: 100%;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
-.paper-divider {
-    border: 0;
-    height: 1px;
-    background: var(--border-glass);
-    margin: 24px 0;
-}
-body.light-theme .paper-divider {
-    background: #e2e8f0;
-}
-.paper-billing-grid {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 40px;
-}
-.paper-sec-heading {
-    font-size: 0.9rem;
+.modern-meta-row .modern-input {
+    text-align: right;
+    width: 140px;
+    font-weight: 600;
     color: var(--color-primary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 12px;
-    font-weight: 700;
 }
-.paper-bill-form {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+.modern-input:focus, .modern-input:hover {
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(255,255,255,0.15);
+    padding: 4px 8px;
 }
-.paper-bill-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+body.light-theme .modern-input:focus, body.light-theme .modern-input:hover {
+    background: rgba(0,0,0,0.02);
+    border-color: rgba(0,0,0,0.1);
 }
-.paper-table {
+
+/* Table Design */
+.modern-table-wrapper {
+    margin-bottom: 40px;
+}
+.modern-table {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 16px;
+    border-collapse: separate;
+    border-spacing: 0;
 }
-.paper-table th {
-    background-color: #070812;
-    color: var(--color-primary);
-    font-size: 0.8rem;
+.modern-table th {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
-    padding: 10px 12px;
+    padding: 14px 12px;
     text-align: center;
-    border: 1px solid var(--border-glass);
+    border: none;
 }
-body.light-theme .paper-table th {
-    background-color: #f7f7f9;
-    border-color: #e2e8f0;
-}
-.paper-table td {
-    padding: 8px 6px;
-    border: 1px solid var(--border-glass);
+.modern-table td {
+    padding: 12px 6px;
+    border-bottom: 1px solid var(--border-glass);
     text-align: center;
     font-size: 0.85rem;
+    vertical-align: middle;
 }
-body.light-theme .paper-table td {
-    border-color: #e2e8f0;
+body.light-theme .modern-table td {
+    border-bottom-color: #e2e8f0;
 }
-.paper-totals-container {
+
+/* Add Item Row inside table flow */
+.modern-add-item-row {
+    width: 100%;
+    padding: 16px;
+    margin-top: 12px;
+    text-align: center;
+    border: 1px dashed var(--color-primary);
+    border-radius: 8px;
+    color: var(--color-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.modern-add-item-row:hover {
+    background: rgba(139, 195, 74, 0.05); /* GLS green alpha */
+}
+
+/* Totals */
+.modern-totals-container {
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 40px;
-    margin-top: 28px;
-    align-items: start;
+    margin-bottom: 48px;
+    align-items: end;
 }
-.paper-totals-right {
+.modern-chargeable-words {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+}
+.modern-chargeable-words span {
+    font-size: 0.95rem;
+    color: var(--color-primary);
+    font-weight: 600;
+}
+.modern-totals-right {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
 }
-.paper-total-row {
+.modern-total-row {
     display: flex;
     justify-content: space-between;
     font-size: 0.9rem;
+    font-weight: 600;
     color: var(--color-text-muted);
 }
-.paper-total-grand-row {
-    border-top: 1px solid var(--border-glass);
-    padding-top: 8px;
-    font-size: 1.15rem;
-    color: var(--color-primary);
+.modern-total-grand-row {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--color-text-main);
+    padding-top: 12px;
+    border-top: 2px solid var(--border-glass);
 }
-body.light-theme .paper-total-grand-row {
+body.light-theme .modern-total-grand-row {
     border-top-color: #e2e8f0;
+}
+
+/* Action Bar inside Invoice */
+.modern-action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #070812;
+    border-radius: 12px;
+    padding: 12px 24px;
+    margin-bottom: 48px;
+}
+body.light-theme .modern-action-bar {
+    background: #f7f7f9;
+}
+.modern-export-btn {
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+/* Footer Notes & Terms */
+.modern-footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+.modern-footer-text {
+    color: var(--color-text-muted);
 }
 
