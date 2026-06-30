@@ -405,7 +405,7 @@ def upload_boq():
                     "driver_qty": driver_qty,
                     "led_details": str(led).strip(),
                     "accessories": str(accessories).strip(),
-                    "rate": 1200,
+                    "rate": 0,
                     "page": 0,
                     "matched_by": "iwo_upload_import"
                 })

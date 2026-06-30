@@ -288,7 +288,7 @@ function renderTable() {
                 </select>
             </td>
             <td style="width: 100px;">
-                <input type="number" class="table-input" value="${item.rate || 1200}" onchange="updateItemField(${item.id}, 'rate', this.value)">
+                <input type="number" class="table-input" value="${item.rate || 0}" onchange="updateItemField(${item.id}, 'rate', this.value)">
             </td>
             <td>
                 <input type="text" class="table-input" value="${item.driver_details || ''}" onchange="updateItemField(${item.id}, 'driver_details', this.value)">
@@ -527,7 +527,7 @@ function addNewBOQRow() {
         body_color: "Black",
         boq_qty: 1,
         unit: "Nos",
-        rate: 1200,
+        rate: 0,
         driver_details: "Fulham - 10W",
         driver_qty: 1,
         led_details: "Bridgelux - 4000K",
@@ -695,7 +695,7 @@ function renderInvoiceTable() {
     }
     
     workspaceItems.forEach((item, idx) => {
-        const rate = parseFloat(item.rate) || 1200;
+        const rate = parseFloat(item.rate) || 0;
         const qty = parseInt(item.boq_qty) || 0;
         const hsn = item.hsn_code || '9405';
         
@@ -808,7 +808,7 @@ function updateInvoiceTotals() {
     let totalGrand = 0;
     
     workspaceItems.forEach(item => {
-        const rate = parseFloat(item.rate) || 1200;
+        const rate = parseFloat(item.rate) || 0;
         const qty = parseInt(item.boq_qty) || 0;
         const amount = qty * rate;
         const gst = amount * 0.18;
@@ -848,10 +848,11 @@ function generateInvoicePDF() {
         items: workspaceItems
     };
     
-    const exportBtn = document.querySelector('#invoice-items-area .btn-primary');
-    const originalText = exportBtn.innerHTML;
-    exportBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generating PDF...`;
-    exportBtn.disabled = true;
+    const exportBtn = document.querySelector('#invoice-generator-view .btn-primary');
+    if (exportBtn) {
+        exportBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generating PDF...`;
+        exportBtn.disabled = true;
+    }
     
     fetch('/api/generate-invoice-pdf', {
         method: 'POST',
@@ -860,8 +861,10 @@ function generateInvoicePDF() {
     })
     .then(r => r.json())
     .then(data => {
-        exportBtn.innerHTML = originalText;
-        exportBtn.disabled = false;
+        if (exportBtn) {
+            exportBtn.innerHTML = `<i class="fa-solid fa-file-pdf"></i> Export PDF`;
+            exportBtn.disabled = false;
+        }
         if (data.error) {
             alert(data.error);
             return;
