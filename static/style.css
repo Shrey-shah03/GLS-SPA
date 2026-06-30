@@ -43,8 +43,11 @@ body.light-theme {
   animation: none;
   mix-blend-mode: normal;
 }
-::view-transition-old(root) { z-index: 1; }
-::view-transition-new(root) { z-index: 9999; }
+/* View transitions: outgoing Light view is on top during Light->Dark; incoming Light view is on top during Dark->Light */
+::view-transition-old(root) { z-index: 9999; }
+::view-transition-new(root) { z-index: 1; }
+.light-theme::view-transition-old(root) { z-index: 1; }
+.light-theme::view-transition-new(root) { z-index: 9999; }
 
 * {
     box-sizing: border-box;

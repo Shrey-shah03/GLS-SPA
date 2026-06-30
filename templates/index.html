@@ -435,14 +435,17 @@
                 `circle(${endRadius}px at ${x}px ${y}px)`
             ];
             
+            const isLight = document.body.classList.contains('light-theme');
             document.documentElement.animate(
                 {
-                    clipPath: clipPath,
+                    clipPath: isLight ? clipPath : [...clipPath].reverse(),
                 },
                 {
                     duration: 650,
                     easing: 'ease-in-out',
-                    pseudoElement: '::view-transition-new(root)',
+                    pseudoElement: isLight
+                        ? '::view-transition-new(root)'
+                        : '::view-transition-old(root)',
                 }
             );
         });
