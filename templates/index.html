@@ -436,14 +436,14 @@
 
         transition.ready.then(() => {
             const startTime = performance.now();
-            const duration = 750; // slightly slower for a premium flow feel
+            const duration = 850; // slightly slower for the slow start to feel dramatic
 
             function animateMask(time) {
                 const progress = Math.min((time - startTime) / duration, 1);
-                // Cubic ease-in-out
+                // Quintic ease-in-out (very slow start, fast acceleration, smooth landing)
                 const ease = progress < 0.5
-                    ? 4 * progress * progress * progress
-                    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+                    ? 16 * Math.pow(progress, 5)
+                    : 1 - Math.pow(-2 * progress + 2, 5) / 2;
 
                 const currentRadius = ease * (endRadius + 150);
                 document.documentElement.style.setProperty('--transition-radius', `${currentRadius}px`);
