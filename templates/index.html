@@ -7,7 +7,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom Style -->
@@ -15,57 +15,58 @@
     <link rel="icon" type="image/png" href="/static/favicon.png">
 </head>
 <body>
-    <div id="global-loader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center; color:white; font-size:1.2rem;">
-        <i class="fa-solid fa-spinner fa-spin"></i> &nbsp; Processing...
-    </div>
 
     <div class="app-layout">
-        <!-- Top Navigation Bar -->
-        <header class="top-navbar" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border-glass); background: var(--surface); position: sticky; top: 0; z-index: 100;">
-            <div class="navbar-left" style="display: flex; align-items: center; gap: 32px;">
-                <div class="brand-logo" style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 800; letter-spacing: 0.5px; color: var(--color-primary);">
-                    GLS-SPA Workspace
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="gls-spa-logo-pill">
+                    <span class="gls-text">GLS</span><span class="hyphen">-</span><span class="spa-text">SPA</span>
                 </div>
-                
-                <nav class="top-nav-links" style="display: flex; gap: 24px;">
-                    <a href="#" class="nav-item active" id="nav-boq" onclick="switchView('boq')" style="text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 0.9rem; padding-bottom: 4px; border-bottom: 2px solid transparent; transition: all 0.2s;">
-                        BOQ &rarr; IWO
-                    </a>
-                    <a href="#" class="nav-item" id="nav-invoice" onclick="switchView('invoice')" style="text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 0.9rem; padding-bottom: 4px; border-bottom: 2px solid transparent; transition: all 0.2s;">
-                        Invoice
-                    </a>
-                </nav>
             </div>
-            
-            <div class="navbar-right" style="display: flex; align-items: center; gap: 16px;">
-                <button onclick="toggleTheme(event)" class="btn-icon" id="theme-btn" title="Toggle Dark Mode" style="background: transparent; border: none; color: var(--text-muted); font-size: 1.1rem; cursor: pointer;">
-                    <i class="fa-solid fa-moon"></i>
-                </button>
-                <button class="btn-icon" title="Help" style="background: transparent; border: none; color: var(--text-muted); font-size: 1.1rem; cursor: pointer;">
-                    <i class="fa-solid fa-circle-question"></i>
-                </button>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" id="nav-boq" onclick="switchView('boq')">
+                    <i class="fa-solid fa-file-excel"></i> BOQ to IWO
+                </a>
+                <a href="#" class="nav-item" id="nav-invoice" onclick="switchView('invoice')">
+                    <i class="fa-solid fa-file-invoice-dollar"></i> Invoice Generator
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                Command Center v2.1
             </div>
-        </header>
+        </aside>
 
         <!-- Main Workspace Area -->
         <main class="main-content">
+            <header class="dashboard-header">
+                <div class="header-left-wrap">
+                    <div class="header-title-wrap">
+                        <h1 class="monospace-header" id="view-title-header">COMMAND CENTER</h1>
+                        <p id="view-desc-header">Architecture & Engineering Work Order Dashboard</p>
+                    </div>
+                </div>
+                <button onclick="toggleTheme(event)" class="btn theme-toggle-btn" id="theme-btn">
+                    <i class="fa-solid fa-moon"></i> Dark Mode
+                </button>
+            </header>
 
             <div class="workspace-section" id="boq-generator-view">
-            <!-- Upload Section / Empty State -->
-            <section class="upload-section" id="boq-upload-section">
-                <div class="card drop-zone" id="drop-zone" style="grid-column: 1 / -1; padding: 60px 20px;">
+            <!-- Upload Section -->
+            <section class="upload-section">
+                <div class="card drop-zone" id="drop-zone">
                     <input type="file" id="file-input" accept=".xlsx" style="display: none;">
                     <div class="upload-icon">
                         <i class="fa-solid fa-file-excel"></i>
                     </div>
-                    <h3 style="font-family: var(--font-heading); font-size: 1.25rem;">Drop a BOQ spreadsheet to begin</h3>
-                    <p style="font-size: 0.95rem; margin-top: 8px;">or <span class="highlight-link" onclick="document.getElementById('file-input').click()">browse your files</span></p>
-                    <div class="supported-formats" style="margin-top: 16px;">Supports .xlsx formats</div>
+                    <h3>Drag & Drop BOQ Excel here</h3>
+                    <p>or <span class="highlight-link">browse your files</span></p>
+                    <div class="supported-formats">Supports .xlsx spreadsheets</div>
                 </div>
                 
-                <!-- Metadata Form Card (IWO) - Initially hidden -->
-                <div class="card metadata-card hidden" id="meta-card">
-                    <h3>IWO Metadata</h3>
+                <!-- Metadata Form Card (IWO) -->
+                <div class="card metadata-card disabled" id="meta-card">
+                    <h3>IWO</h3>
                     <div class="grid-form">
                         <div class="form-group">
                             <label for="client-name">Client / Project Name</label>
@@ -89,19 +90,27 @@
                         </div>
                     </div>
                 </div>
+
             </section>
 
-            <!-- Metric Strip -->
-            <section class="metric-strip hidden" id="stats-area" style="display: flex; gap: 16px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--hairline); border-radius: 8px; font-size: 0.85rem; font-weight: 500; align-items: center;">
-                <div><span id="stat-total-items" style="font-family: var(--font-mono); font-weight: 600;">0</span> items</div>
-                <div style="color: var(--hairline);">·</div>
-                <div style="color: var(--match);"><span id="stat-exact-matches" style="font-family: var(--font-mono); font-weight: 600;">0</span> exact</div>
-                <div style="color: var(--hairline);">·</div>
-                <div style="color: var(--fuzzy);"><span id="stat-search-matches" style="font-family: var(--font-mono); font-weight: 600;">0</span> fuzzy</div>
-                <div style="color: var(--hairline);">·</div>
-                <div style="color: var(--miss);"><span id="stat-unmatched" style="font-family: var(--font-mono); font-weight: 600;">0</span> unmatched</div>
-                <div style="color: var(--hairline);">·</div>
-                <div><span id="stat-total-qty" style="font-family: var(--font-mono); font-weight: 600;">0</span> qty</div>
+            <!-- Stats Section -->
+            <section class="stats-section hidden" id="stats-area">
+                <div class="card stat-card">
+                    <div class="stat-num" id="stat-total-items">0</div>
+                    <div class="stat-label">Total BOQ Items</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-num" id="stat-exact-matches">0</div>
+                    <div class="stat-label">Exact Specs Matches</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-num" id="stat-search-matches">0</div>
+                    <div class="stat-label">Fuzzy/Text Matches</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-num" id="stat-total-qty">0</div>
+                    <div class="stat-label">Total Quantities</div>
+                </div>
             </section>
 
             <!-- Table Workspace Area -->
@@ -110,13 +119,13 @@
                     <h2>Matched Workspace</h2>
                     <div class="workspace-actions">
                         <button class="btn" onclick="addNewBOQRow()">
-                            <i class="fa-solid fa-plus"></i> Add item
+                            <i class="fa-solid fa-plus"></i> Add Row
                         </button>
                         <button class="btn btn-primary" onclick="generateIWO()">
-                            <i class="fa-solid fa-file-export"></i> Export IWO (Excel)
+                            <i class="fa-solid fa-file-export"></i> Generate IWO
                         </button>
                         <button class="btn btn-success" onclick="generateInvoice()">
-                            <i class="fa-solid fa-file-invoice-dollar"></i> Send to Invoice
+                            <i class="fa-solid fa-file-invoice-dollar"></i> Generate Invoice
                         </button>
                     </div>
                 </div>
@@ -125,16 +134,20 @@
                     <table class="data-table" id="boq-table">
                         <thead>
                             <tr>
-                                <th style="width: 60px;">Sr.</th>
-                                <th style="width: 100px;">Status</th>
-                                <th style="width: 140px;">GLS Code</th>
+                                <th style="width: 50px;">Sr.</th>
                                 <th>BOQ Description</th>
-                                <th style="width: 280px;">Product Specification (Expand for more)</th>
-                                <th style="width: 100px;">Color</th>
-                                <th style="width: 80px; text-align: right;">Qty</th>
+                                <th style="width: 130px;">GLS Code</th>
+                                <th style="width: 250px;">Product Specification</th>
+                                <th style="width: 120px;">Body Color</th>
+                                <th style="width: 80px;">Qty</th>
                                 <th style="width: 80px;">Unit</th>
-                                <th style="width: 100px; text-align: right;">Rate (₹)</th>
-                                <th style="width: 80px; text-align: center;">Actions</th>
+                                <th style="width: 100px;">Rate (₹)</th>
+                                <th style="width: 160px;">Driver Details</th>
+                                <th style="width: 80px;">Driver Qty</th>
+                                <th style="width: 100px;">LED Details</th>
+                                <th style="width: 120px;">Accessories</th>
+                                <th style="width: 120px;">Status</th>
+                                <th style="width: 120px;">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="table-body">
@@ -201,7 +214,7 @@
                             <div class="modern-bill-form">
                                 <div style="display: flex; gap: 8px; margin-bottom: 8px;">
                                     <select id="saved-buyer-select" class="table-select modern-select" onchange="loadSavedBuyer(this.value)">
-                                        <option value="">Load saved buyer...</option>
+                                        <option value="">-- Load Saved Buyer --</option>
                                     </select>
                                     <button class="btn btn-secondary modern-save-btn" onclick="saveBuyerProfile()" title="Save billing info below to database">
                                         <i class="fa-solid fa-floppy-disk"></i>
@@ -244,8 +257,7 @@
                                     <th style="width: 60px;">Unit</th>
                                     <th style="width: 90px;">Rate (₹)</th>
                                     <th style="width: 90px;">Amount</th>
-                                    <th style="width: 60px;">GST(%)</th>
-                                    <th style="width: 80px;">Tax Val</th>
+                                    <th style="width: 80px;">GST(18%)</th>
                                     <th style="width: 95px;">Total</th>
                                     <th style="width: 40px; border-radius: 0 8px 8px 0;"></th>
                                 </tr>
@@ -257,7 +269,7 @@
                         
                         <!-- Add Item Button embedded inside table flow -->
                         <div class="modern-add-item-row" onclick="addNewBOQRow()">
-                            Add item
+                            Add new item
                         </div>
                     </div>
 
@@ -276,7 +288,7 @@
                                 <span id="inv-total-amount">₹0.00</span>
                             </div>
                             <div class="modern-total-row">
-                                <span>Total GST</span>
+                                <span>GST (18%)</span>
                                 <span id="inv-total-gst">₹0.00</span>
                             </div>
                             <div class="modern-total-row modern-total-grand-row">
@@ -385,7 +397,7 @@
                 </div>
             </div>
             <div style="text-align: right;">
-                <button class="btn btn-primary" onclick="applyDriverCalculation()">Apply driver split</button>
+                <button class="btn btn-primary" onclick="applyDriverCalculation()">Apply Specs</button>
             </div>
         </div>
     </div>

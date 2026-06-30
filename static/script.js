@@ -1,28 +1,7 @@
 // Global workspace state
 let workspaceItems = [];
-try {
-    const saved = localStorage.getItem('workspaceItems');
-    if (saved) {
-        workspaceItems = JSON.parse(saved);
-    }
-} catch (e) {
-    console.error("Failed to load workspaceItems from localStorage");
-}
-
-function saveWorkspaceState() {
-    localStorage.setItem('workspaceItems', JSON.stringify(workspaceItems));
-}
-
-function showLoader() {
-    const el = document.getElementById('global-loader');
-    if (el) el.style.display = 'flex';
-}
-function hideLoader() {
-    const el = document.getElementById('global-loader');
-    if (el) el.style.display = 'none';
-}
-
 let uploadFileInfo = {};
+
 // Elements
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
@@ -134,14 +113,12 @@ function handleFileUpload(file, view = 'boq') {
     const formData = new FormData();
     formData.append('file', file);
     
-    showLoader();
     fetch('/api/upload-boq', {
         method: 'POST',
         body: formData
     })
     .then(response => response.json())
     .then(data => {
-        hideLoader();
         if (data.error) {
             alert(data.error);
             resetDropZone(view);
@@ -149,7 +126,6 @@ function handleFileUpload(file, view = 'boq') {
         }
         
         workspaceItems = data.items;
-        saveWorkspaceState();
         uploadFileInfo = {
             filename: data.filename,
             projectName: data.project_name
@@ -187,20 +163,15 @@ function handleFileUpload(file, view = 'boq') {
         renderInvoiceTable();
         updateInvoiceTotals();
         
-        // Restore drop zone to mini state or hide it entirely
-        if (view === 'boq' && workspaceItems.length > 0) {
-            document.getElementById('boq-upload-section').classList.add('hidden');
-        } else {
-            activeDropZone.innerHTML = `
-                <div class="upload-icon" style="font-size: 2rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-circle-check" style="color: var(--color-success);"></i></div>
-                <h3>File Uploaded Successfully</h3>
-                <p>${file.name} (${workspaceItems.length} rows parsed)</p>
-                <div class="supported-formats" onclick="triggerFileInputClick('${view}')">Upload Different File</div>
-            `;
-        }
+        // Restore drop zone to mini state
+        activeDropZone.innerHTML = `
+            <div class="upload-icon" style="font-size: 2rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-circle-check" style="color: var(--color-success);"></i></div>
+            <h3>File Uploaded Successfully</h3>
+            <p>${file.name} (${workspaceItems.length} rows parsed)</p>
+            <div class="supported-formats" onclick="triggerFileInputClick('${view}')">Upload Different File</div>
+        `;
     })
     .catch(error => {
-        hideLoader();
         console.error('Error:', error);
         alert('An error occurred: ' + (error.message || error));
         resetDropZone(view);
@@ -271,25 +242,21 @@ function renderTable() {
         const tr = document.createElement('tr');
         tr.id = `row-${item.id}`;
         
-        let matchClass = 'status-fallback';
+        // Build status badge
         let statusBadge = '';
         if (item.matched_by === 'exact_catalog_specs') {
-            matchClass = 'status-exact';
-            statusBadge = `<span class="status-badge status-exact" title="Exact match from catalog database"><i class="fa-solid fa-circle-check"></i> Exact</span>`;
+            statusBadge = `<span class="status-badge status-exact" title="Exact match from catalog database"><i class="fa-solid fa-circle-check"></i> pg ${item.page}</span>`;
         } else if (item.matched_by.startsWith('catalog_text_search')) {
-            matchClass = 'status-fuzzy';
-            statusBadge = `<span class="status-badge status-fuzzy" title="Page matched using text indexing"><i class="fa-solid fa-circle-notch"></i> Fuzzy</span>`;
+            statusBadge = `<span class="status-badge status-fuzzy" title="Page matched using text indexing"><i class="fa-solid fa-circle-notch"></i> pg ${item.page}</span>`;
         } else {
-            statusBadge = `<span class="status-badge status-fallback" title="Generic specs fallback"><i class="fa-solid fa-circle-question"></i> Unmatched</span>`;
+            statusBadge = `<span class="status-badge status-fallback" title="Generic specs fallback"><i class="fa-solid fa-circle-question"></i> fb</span>`;
         }
-        
-        tr.className = `table-row ${matchClass}`;
         
         // Build actions
         let calculatorBtn = '';
         if (item.unit.toLowerCase() === 'mtr') {
             calculatorBtn = `
-                <button class="btn-icon-subtle" onclick="openDriverCalculator(${item.id})" title="Calculate Drivers for Linear Strip">
+                <button class="btn btn-secondary btn-action" onclick="openDriverCalculator(${item.id})" title="Calculate Drivers for Linear Strip">
                     <i class="fa-solid fa-calculator"></i>
                 </button>
             `;
@@ -297,63 +264,50 @@ function renderTable() {
         
         tr.innerHTML = `
             <td>${item.id}</td>
-            <td style="text-align: center;">${statusBadge}</td>
-            <td>
-                <input type="text" class="table-input" style="font-family: var(--font-mono); font-weight: 600; color: var(--color-primary);" value="${item.gls_code || ''}" onchange="updateItemField(${item.id}, 'gls_code', this.value)">
-            </td>
-            <td style="font-size: 0.8rem;">
-                ${item.boq_description}
+            <td style="font-size: 0.72rem; white-space: nowrap; vertical-align: middle;">
+                <div style="font-family: monospace; font-weight: 600; color: #ffffff;">${item.boq_description}</div>
+                <div style="margin-top: 0.25rem;">${statusBadge}</div>
             </td>
             <td>
-                <details>
-                    <summary style="cursor: pointer; font-weight: 500; margin-bottom: 4px; font-size: 0.8rem; color: var(--color-primary);">Main Specs & Accessories</summary>
-                    <textarea class="table-input" rows="2" style="resize:vertical; min-width:220px; margin-bottom: 8px;" onchange="updateItemField(${item.id}, 'product_description', this.value)">${item.product_description || ''}</textarea>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(0,0,0,0.1); padding: 8px; border-radius: 4px;">
-                        <div>
-                            <label style="font-size: 0.7rem; color: var(--muted);">Driver Details</label>
-                            <input type="text" class="table-input" value="${item.driver_details || ''}" onchange="updateItemField(${item.id}, 'driver_details', this.value)">
-                        </div>
-                        <div>
-                            <label style="font-size: 0.7rem; color: var(--muted);">Driver Qty</label>
-                            <input type="number" class="table-input" value="${item.driver_qty || 0}" onchange="updateItemField(${item.id}, 'driver_qty', this.value)">
-                        </div>
-                        <div>
-                            <label style="font-size: 0.7rem; color: var(--muted);">LED Details</label>
-                            <input type="text" class="table-input" value="${item.led_details || ''}" onchange="updateItemField(${item.id}, 'led_details', this.value)">
-                        </div>
-                        <div>
-                            <label style="font-size: 0.7rem; color: var(--muted);">Accessories</label>
-                            <input type="text" class="table-input" value="${item.accessories || ''}" onchange="updateItemField(${item.id}, 'accessories', this.value)">
-                        </div>
-                    </div>
-                </details>
+                <input type="text" class="table-input" value="${item.gls_code || ''}" onchange="updateItemField(${item.id}, 'gls_code', this.value)">
+            </td>
+            <td>
+                <textarea class="table-input" rows="2" style="resize:vertical; min-width:220px;" onchange="updateItemField(${item.id}, 'product_description', this.value)">${item.product_description || ''}</textarea>
             </td>
             <td>
                 <input type="text" class="table-input" list="colors-list" value="${item.body_color || ''}" onchange="updateItemField(${item.id}, 'body_color', this.value)">
             </td>
-            <td>
-                <input type="number" class="table-input" style="text-align: right; font-family: var(--font-mono);" value="${item.boq_qty || 0}" onchange="updateItemField(${item.id}, 'boq_qty', this.value); updateStats();">
+            <td style="width: 100px;">
+                <input type="number" class="table-input" value="${item.boq_qty || 0}" onchange="updateItemField(${item.id}, 'boq_qty', this.value); updateStats();">
             </td>
-            <td>
+            <td style="width: 110px;">
                 <select class="table-select" onchange="updateItemField(${item.id}, 'unit', this.value); renderTable();">
                     <option value="Nos" ${item.unit === 'Nos' ? 'selected' : ''}>Nos</option>
                     <option value="Mtr" ${item.unit === 'Mtr' ? 'selected' : ''}>Mtr</option>
                     <option value="Set" ${item.unit === 'Set' ? 'selected' : ''}>Set</option>
                 </select>
             </td>
-            <td>
-                <input type="number" class="table-input" style="text-align: right; font-family: var(--font-mono);" value="${item.rate || 0}" onchange="updateItemField(${item.id}, 'rate', this.value)">
+            <td style="width: 100px;">
+                <input type="number" class="table-input" value="${item.rate || 0}" onchange="updateItemField(${item.id}, 'rate', this.value)">
             </td>
-            <td style="text-align: center; vertical-align: middle;">
-                <div class="action-group row-actions" style="display: flex; gap: 8px; justify-content: center; opacity: 0.3; transition: opacity 0.2s;">
-                    <button class="btn-icon-subtle" onclick="openRemapModal(${item.id})" title="Search Catalog to Remap Specs" style="background:transparent; border:none; color:var(--text-main); cursor:pointer;">
+            <td>
+                <input type="text" class="table-input" value="${item.driver_details || ''}" onchange="updateItemField(${item.id}, 'driver_details', this.value)">
+            </td>
+            <td style="width: 90px;">
+                <input type="number" class="table-input" value="${item.driver_qty || 0}" onchange="updateItemField(${item.id}, 'driver_qty', this.value)">
+            </td>
+            <td>
+                <input type="text" class="table-input" value="${item.led_details || ''}" onchange="updateItemField(${item.id}, 'led_details', this.value)">
+            </td>
+            <td>
+                <input type="text" class="table-input" value="${item.accessories || ''}" onchange="updateItemField(${item.id}, 'accessories', this.value)">
+            </td>
+            <td>
+                <div class="action-group">
+                    <button class="btn btn-secondary btn-action" onclick="openRemapModal(${item.id})" title="Search Catalog to Remap Specs">
                         <i class="fa-solid fa-search"></i>
                     </button>
                     ${calculatorBtn}
-                    <button class="btn-icon-subtle" onclick="deleteRow(${item.id})" title="Delete Row" style="background:transparent; border:none; color:var(--miss); cursor:pointer;">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
                 </div>
             </td>
         `;
@@ -365,7 +319,6 @@ function updateItemField(itemId, field, value) {
     const item = workspaceItems.find(i => i.id === itemId);
     if (item) {
         item[field] = value;
-        saveWorkspaceState();
     }
 }
 
@@ -499,7 +452,6 @@ function applyDriverCalculation() {
         item.driver_details = `Constant Voltage 24V - ${wattage}`;
         item.driver_qty = qty;
         
-        saveWorkspaceState();
         renderTable();
         closeModal('driver-modal');
     }
@@ -531,7 +483,11 @@ function generateIWO() {
         items: workspaceItems
     };
     
-    showLoader();
+    // Change button to spinner
+    const exportBtn = document.querySelector('.workspace-actions .btn-primary');
+    const originalText = exportBtn.innerHTML;
+    exportBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generating Excel...`;
+    exportBtn.disabled = true;
     
     fetch('/api/generate-iwo', {
         method: 'POST',
@@ -542,7 +498,8 @@ function generateIWO() {
     })
     .then(r => r.json())
     .then(data => {
-        hideLoader();
+        exportBtn.innerHTML = originalText;
+        exportBtn.disabled = false;
         
         if (data.error) {
             alert(data.error);
@@ -553,8 +510,9 @@ function generateIWO() {
         window.location.href = data.download_url;
     })
     .catch(err => {
-        hideLoader();
         console.error(err);
+        exportBtn.innerHTML = originalText;
+        exportBtn.disabled = false;
         alert('Failed to generate IWO workbook.');
     });
 }
@@ -578,7 +536,6 @@ function addNewBOQRow() {
         matched_by: "manual_entry"
     };
     workspaceItems.push(newItem);
-    saveWorkspaceState();
     renderTable();
     updateStats();
 }
@@ -741,10 +698,9 @@ function renderInvoiceTable() {
         const rate = parseFloat(item.rate) || 0;
         const qty = parseInt(item.boq_qty) || 0;
         const hsn = item.hsn_code || '9405';
-        const gstPercent = item.gst_percent !== undefined ? parseFloat(item.gst_percent) : 18;
         
         const lineAmount = qty * rate;
-        const lineGst = lineAmount * (gstPercent / 100);
+        const lineGst = lineAmount * 0.18;
         const lineGrand = lineAmount + lineGst;
         
         const tr = document.createElement('tr');
@@ -773,9 +729,6 @@ function renderInvoiceTable() {
                 <input type="number" class="modern-input" style="width: 90px;" value="${rate}" onchange="updateInvoiceItemField(${item.id}, 'rate', this.value)">
             </td>
             <td style="font-weight: 500;">₹${lineAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            <td>
-                <input type="number" class="modern-input" style="width: 45px; text-align: center;" value="${gstPercent}" onchange="updateInvoiceItemField(${item.id}, 'gst_percent', this.value)">
-            </td>
             <td style="color: var(--color-text-muted);">₹${lineGst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             <td style="font-weight: 600; color: var(--color-primary);">₹${lineGrand.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             <td>
@@ -797,7 +750,6 @@ function updateInvoiceItemField(itemId, field, value) {
 function deleteInvoiceItem(itemId) {
     if (confirm('Remove this item from invoice?')) {
         workspaceItems = workspaceItems.filter(i => i.id !== itemId);
-        saveWorkspaceState();
         renderInvoiceTable();
         updateInvoiceTotals();
         renderTable();
@@ -807,10 +759,6 @@ function deleteInvoiceItem(itemId) {
 
 function numberToWordsIndian(num) {
     if (num === 0) return 'Zero Rupees Only';
-    
-    let rupees = Math.floor(num);
-    let paise = Math.round((num - rupees) * 100);
-    
     const single = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
     const double = ['', 'Ten', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
     
@@ -831,29 +779,27 @@ function numberToWordsIndian(num) {
         return str;
     }
     
-    function getParts(n) {
-        if (n === 0) return 'Zero';
-        let res = '';
-        let crore = Math.floor(n / 10000000);
-        n %= 10000000;
-        let lakh = Math.floor(n / 100000);
-        n %= 100000;
-        let thousand = Math.floor(n / 1000);
-        n %= 1000;
-        
-        if (crore > 0) res += convertLessThanThousand(crore) + 'Crore ';
-        if (lakh > 0) res += convertLessThanThousand(lakh) + 'Lakh ';
-        if (thousand > 0) res += convertLessThanThousand(thousand) + 'Thousand ';
-        if (n > 0) res += convertLessThanThousand(n);
-        return res.trim();
-    }
+    let res = '';
+    let crore = Math.floor(num / 10000000);
+    num %= 10000000;
+    let lakh = Math.floor(num / 100000);
+    num %= 100000;
+    let thousand = Math.floor(num / 1000);
+    num %= 1000;
     
-    let rupeesText = rupees > 0 ? getParts(rupees) + ' Rupees' : 'Zero Rupees';
-    if (paise > 0) {
-        let paiseText = getParts(paise) + ' Paise';
-        return rupeesText + ' and ' + paiseText + ' Only';
+    if (crore > 0) {
+        res += convertLessThanThousand(crore) + 'Crore ';
     }
-    return rupeesText + ' Only';
+    if (lakh > 0) {
+        res += convertLessThanThousand(lakh) + 'Lakh ';
+    }
+    if (thousand > 0) {
+        res += convertLessThanThousand(thousand) + 'Thousand ';
+    }
+    if (num > 0) {
+        res += convertLessThanThousand(num);
+    }
+    return res.trim() + ' Rupees Only';
 }
 
 function updateInvoiceTotals() {
@@ -864,9 +810,8 @@ function updateInvoiceTotals() {
     workspaceItems.forEach(item => {
         const rate = parseFloat(item.rate) || 0;
         const qty = parseInt(item.boq_qty) || 0;
-        const gstPercent = item.gst_percent !== undefined ? parseFloat(item.gst_percent) : 18;
         const amount = qty * rate;
-        const gst = amount * (gstPercent / 100);
+        const gst = amount * 0.18;
         const grand = amount + gst;
         
         totalAmount += amount;
@@ -880,7 +825,7 @@ function updateInvoiceTotals() {
     
     const wordsEl = document.getElementById('inv-chargeable-words');
     if (wordsEl) {
-        wordsEl.innerText = numberToWordsIndian(totalGrand);
+        wordsEl.innerText = numberToWordsIndian(Math.floor(totalGrand));
     }
 }
 
@@ -903,7 +848,11 @@ function generateInvoicePDF() {
         items: workspaceItems
     };
     
-    showLoader();
+    const exportBtn = document.querySelector('#invoice-generator-view .btn-primary');
+    if (exportBtn) {
+        exportBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generating PDF...`;
+        exportBtn.disabled = true;
+    }
     
     fetch('/api/generate-invoice-pdf', {
         method: 'POST',
@@ -912,7 +861,10 @@ function generateInvoicePDF() {
     })
     .then(r => r.json())
     .then(data => {
-        hideLoader();
+        if (exportBtn) {
+            exportBtn.innerHTML = `<i class="fa-solid fa-file-pdf"></i> Export PDF`;
+            exportBtn.disabled = false;
+        }
         if (data.error) {
             alert(data.error);
             return;
@@ -920,8 +872,9 @@ function generateInvoicePDF() {
         window.location.href = data.download_url;
     })
     .catch(err => {
-        hideLoader();
         console.error(err);
+        exportBtn.innerHTML = originalText;
+        exportBtn.disabled = false;
         alert('Failed to generate PDF Invoice.');
     });
 }
@@ -978,21 +931,3 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSavedBuyersDropdown();
 });
 
-// Initialize UI from localStorage if data exists
-document.addEventListener('DOMContentLoaded', () => {
-    if (workspaceItems && workspaceItems.length > 0) {
-        metaCard.classList.remove('disabled');
-        statsArea.classList.remove('hidden');
-        workspaceArea.classList.remove('hidden');
-        const boqUpload = document.getElementById('boq-upload-section');
-        if (boqUpload) boqUpload.classList.add('hidden');
-        
-        renderTable();
-        updateStats();
-        
-        if (typeof renderInvoiceTable === 'function') {
-            renderInvoiceTable();
-            updateInvoiceTotals();
-        }
-    }
-});
