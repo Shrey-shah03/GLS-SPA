@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory, render_template
+from flask import Flask, request, jsonify, send_from_directory, render_template, Response
 import os
 import re
 import json
@@ -14,12 +14,37 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 from reportlab.lib.units import inch
+import shutil
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Support for Render mounted disks or other persistent volumes
+DATA_DIR = os.environ.get("DATA_DIR", BASE_DIR)
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
+@app.before_request
+def require_auth():
+    admin_password = os.environ.get("ADMIN_PASSWORD")
+    if admin_password:
+        auth = request.authorization
+        if not auth or auth.username != 'admin' or auth.password != admin_password:
+            return Response('Login Required', 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
 GENERATED_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "generated")
-CATALOG_JSON_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "catalog_text.json")
+CATALOG_JSON_PATH = os.path.join(DATA_DIR, "catalog_text.json")
+BUYERS_DB_PATH = os.path.join(DATA_DIR, "buyers_db.json")
+
+# Initialize persistent data on first boot if using a mounted volume
+def init_persistent_data():
+    os.makedirs(DATA_DIR, exist_ok=True)
+    for filename in ["catalog_text.json", "buyers_db.json", "GLS_SPA_Product_Database.csv", "catalog_specs.json"]:
+        src = os.path.join(BASE_DIR, filename)
+        dst = os.path.join(DATA_DIR, filename)
+        if os.path.exists(src) and not os.path.exists(dst):
+            shutil.copy2(src, dst)
+
+init_persistent_data()
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(GENERATED_FOLDER, exist_ok=True)
@@ -790,12 +815,15 @@ def save_database():
 def num_to_words_indian(num):
     if num == 0:
         return "Zero Only"
+    rupees = int(num)
+    paise = int(round((num - rupees) * 100))
     
     under_20 = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
                 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen']
     tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety']
     
     def helper(n):
+        if n == 0: return ""
         if n < 20:
             return under_20[int(n)]
         elif n < 100:
@@ -807,25 +835,32 @@ def num_to_words_indian(num):
             rem = n % 100
             return under_20[hundreds_digit] + ' Hundred' + (' ' + helper(rem) if rem else '')
             
-    crore = int(num / 10000000)
-    num %= 10000000
-    lakh = int(num / 100000)
-    num %= 100000
-    thousand = int(num / 1000)
-    num %= 1000
-    hundred = int(num)
-    
-    parts = []
-    if crore:
-        parts.append(helper(crore) + " Crore")
-    if lakh:
-        parts.append(helper(lakh) + " Lakh")
-    if thousand:
-        parts.append(helper(thousand) + " Thousand")
-    if hundred:
-        parts.append(helper(hundred))
+    def get_parts(n):
+        if n == 0: return "Zero"
+        crore = int(n / 10000000)
+        n %= 10000000
+        lakh = int(n / 100000)
+        n %= 100000
+        thousand = int(n / 1000)
+        n %= 1000
+        hundred = int(n)
         
-    return " ".join(parts) + " Only"
+        parts = []
+        if crore:
+            parts.append(helper(crore) + " Crore")
+        if lakh:
+            parts.append(helper(lakh) + " Lakh")
+        if thousand:
+            parts.append(helper(thousand) + " Thousand")
+        if hundred:
+            parts.append(helper(hundred))
+        return " ".join(parts).strip()
+        
+    rupees_text = get_parts(rupees) + " Rupees" if rupees > 0 else "Zero Rupees"
+    if paise > 0:
+        paise_text = get_parts(paise) + " Paise"
+        return rupees_text + " and " + paise_text + " Only"
+    return rupees_text + " Only"
 
 @app.route("/api/generate-invoice", methods=["POST"])
 def generate_invoice():
@@ -1090,7 +1125,6 @@ def generate_invoice():
         traceback.print_exc()
         return jsonify({"error": f"Failed to generate Invoice: {str(e)}"}), 500
 
-BUYERS_DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "buyers_db.json")
 
 @app.route("/api/buyers", methods=["GET", "POST"])
 def manage_buyers():
@@ -1324,7 +1358,14 @@ def generate_invoice_pdf():
                 pass
                 
             amount_val = qty_val * rate_val
-            gst_val = amount_val * 0.18
+            
+            gst_percent = 18.0
+            try:
+                gst_percent = float(item.get("gst_percent", 18.0))
+            except Exception:
+                pass
+                
+            gst_val = amount_val * (gst_percent / 100)
             grand_val = amount_val + gst_val
             
             total_qty += qty_val
@@ -1341,7 +1382,7 @@ def generate_invoice_pdf():
                 Paragraph(str(qty_val), style_table_cell),
                 Paragraph(f"Rs. {rate_val:,.2f}", style_table_cell),
                 Paragraph(f"Rs. {amount_val:,.2f}", style_table_cell),
-                Paragraph("18%", style_table_cell),
+                Paragraph(f"{int(gst_percent) if gst_percent.is_integer() else gst_percent}%", style_table_cell),
                 Paragraph(f"Rs. {gst_val:,.2f}", style_table_cell),
                 Paragraph(f"Rs. {grand_val:,.2f}", style_table_cell)
             ])
@@ -1371,7 +1412,7 @@ def generate_invoice_pdf():
         
         # Grand Total in words & Bank & Terms KeepTogether block
         lower_block = []
-        lower_block.append(Paragraph(f"<b>Amount Chargeable (in words):</b> {num_to_words_indian(int(total_grand))}", style_val))
+        lower_block.append(Paragraph(f"<b>Amount Chargeable (in words):</b> {num_to_words_indian(total_grand)}", style_val))
         lower_block.append(Spacer(1, 15))
         
         # Bank & Signature & Terms grid
@@ -1433,4 +1474,5 @@ def generate_invoice_pdf():
         return jsonify({"error": f"Failed to generate PDF Invoice: {str(e)}"}), 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    port = int(os.environ.get("PORT", 8000))
+    app.run(host="0.0.0.0", port=port, debug=True)
