@@ -71,8 +71,18 @@ body {
     width: 100%;
 }
 
-/* Sidebar hidden */
-.sidebar { display: none; }
+.sidebar {
+    width: 260px;
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border-glass);
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    height: 100vh;
+    z-index: 10;
+    flex-shrink: 0;
+    transition: background-color 0.2s, border-color 0.2s;
+}
 
 .main-content {
     flex-grow: 1;
