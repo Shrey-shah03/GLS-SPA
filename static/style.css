@@ -54,6 +54,15 @@ body {
     line-height: 1.5;
 }
 
+/* Smooth fade transition for all theme colors */
+body, .main-content, .sidebar, .card, .drop-zone, 
+.form-group input, .form-group select, .stat-card, .btn, 
+.table-container, .data-table, .data-table th, .data-table td, 
+.table-input, .table-select, .modal, .modal-close, 
+.calculation-result, .nav-item, .gls-spa-logo-pill, .theme-toggle-btn-circular {
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
 /* ===================== LAYOUT ===================== */
 .app-layout {
     display: flex;
