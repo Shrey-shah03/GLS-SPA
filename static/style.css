@@ -528,7 +528,7 @@ body.light-theme .data-table th {
 
 .hidden { display: none !important; }
 
-/* ===================== THEME TOGGLE BUTTON (SVG MORPHING) ===================== */
+/* ===================== THEME TOGGLE BUTTON (STATIC SWAP) ===================== */
 .theme-toggle-btn-circular {
     background: transparent;
     border: 1px solid var(--border-glass);
@@ -540,7 +540,6 @@ body.light-theme .data-table th {
     justify-content: center;
     cursor: pointer;
     color: var(--color-text-main);
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
     outline: none;
     padding: 0;
 }
@@ -549,50 +548,18 @@ body.light-theme .data-table th {
     color: var(--color-primary);
 }
 
-.sun-moon-svg {
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+.theme-toggle-btn-circular .light-icon {
+    display: none;
+}
+.theme-toggle-btn-circular .dark-icon {
+    display: block;
 }
 
-/* Default state: Dark mode (Moon is active) */
-body:not(.light-theme) .sun-moon-svg {
-    transform: rotate(40deg);
+body.light-theme .theme-toggle-btn-circular .light-icon {
+    display: block;
 }
-body:not(.light-theme) .sun-moon-svg .sun-center {
-    r: 9px;
-    transition: r 0.4s ease;
-}
-body:not(.light-theme) .sun-moon-svg .moon-cutter {
-    cx: 17px;
-    cy: 7px;
-    r: 7.5px;
-    transition: cx 0.4s ease, cy 0.4s ease;
-}
-body:not(.light-theme) .sun-moon-svg .sun-rays {
-    opacity: 0;
-    transform: scale(0.3);
-    transition: transform 0.4s ease, opacity 0.4s ease;
-    transform-origin: center;
-}
-
-/* Light mode state: Sun is active */
-body.light-theme .sun-moon-svg {
-    transform: rotate(90deg);
-}
-body.light-theme .sun-moon-svg .sun-center {
-    r: 5px;
-    transition: r 0.4s ease;
-}
-body.light-theme .sun-moon-svg .moon-cutter {
-    cx: 24px;
-    cy: 4px;
-    r: 7.5px;
-    transition: cx 0.4s ease, cy 0.4s ease;
-}
-body.light-theme .sun-moon-svg .sun-rays {
-    opacity: 1;
-    transform: scale(1);
-    transition: transform 0.4s ease, opacity 0.4s ease;
-    transform-origin: center;
+body.light-theme .theme-toggle-btn-circular .dark-icon {
+    display: none;
 }
 
 /* ===================== FORM ITEMS ===================== */
