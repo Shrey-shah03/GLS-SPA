@@ -44,23 +44,26 @@
         "GS-DE-INT": {
             "page": 77,
             "name": "Deep Recessed Intersecting / Adjustable Downlight",
-            "description_template": "Housing - Die-Cast Aluminum, Reflector and Clear Glass, Dimensions - Cutout - {C}mm, Height - {H}mm, IP20.",
+            "description_template": "Housing - Die-Cast Aluminum, Reflector and Clear Glass, Dimensions - Dia - {D}mm, Height - {H}mm, Cutout - {C}mm, IP20.",
             "led_make": "Bridgelux",
             "driver_make": "Fulham",
             "unit": "Nos",
             "accessories": "Toggle clips",
             "variants": {
                 "84": {
+                    "D": 100,
                     "C": 84,
                     "H": 89,
                     "wattage": "30W"
                 },
                 "100": {
+                    "D": 120,
                     "C": 100,
                     "H": 85,
                     "wattage": "40W"
                 },
                 "4E-100": {
+                    "D": 120,
                     "C": 100,
                     "H": 50,
                     "wattage": "20W"

@@ -262,34 +262,42 @@ def generate_description_from_boq(desc_str):
         beam = "Beam Angle - 30°"
         
     # Extract Dimensions (Dia, Height, Cutout)
-    dimensions = ""
-    # Check for D - XX X H - YY
-    d_h_match = re.search(r'd\s*[-:\s]*\s*(\d+)\s*mm\s*[xX]\s*h\s*[-:\s]*\s*(\d+)', desc_lower)
-    if d_h_match:
-        dimensions = f"Dimensions - Dia - {d_h_match.group(1)}mm, Height - {d_h_match.group(2)}mm"
+    cutout = ""
+    cutout_match = re.search(r'cut\s*out\s*(?:size)?\s*[-:\s]*\s*(\d+(?:\s*[\*xX]\s*\d+)?)', desc_lower)
+    if cutout_match:
+        cutout = cutout_match.group(1).replace(" ", "").upper()
+
+    height = ""
+    height_match = re.search(r'\b(?:height|h)\s*[-:\s]*\s*(\d+)\b', desc_lower)
+    if height_match:
+        height = height_match.group(1)
+
+    dia = ""
+    dia_match = re.search(r'\b(?:dia|diameter|d)\s*[-:\s]*\s*(\d+(?:\s*[\*xX]\s*\d+)?)\b', desc_lower)
+    if dia_match:
+        dia = dia_match.group(1).replace(" ", "").upper()
     else:
-        # Check cut out size
-        cutout_match = re.search(r'cut\s*out\s*size\s*[-:\s]*\s*(\d+)', desc_lower)
-        height_match = re.search(r'height\s*[-:\s]*\s*(\d+)', desc_lower)
-        if cutout_match and height_match:
-            dimensions = f"Dimensions - Cutout - {cutout_match.group(1)}mm, Height - {height_match.group(1)}mm"
-        elif cutout_match:
-            dimensions = f"Dimensions - Cutout - {cutout_match.group(1)}mm"
-            
-    if not dimensions:
-        # Try generic size match: size - A: 63 x B: 150
-        size_match = re.search(r'size\s*[-:\s]*\s*a:\s*(\d+)\s*x\s*b:\s*(\d+)', desc_lower)
+        size_match = re.search(r'size\s*[-:\s]*\b(?:a:\s*(\d+)\s*x\s*b:\s*(\d+)|(\d+(?:\s*[\*xX]\s*\d+)?))', desc_lower)
         if size_match:
-            dimensions = f"Dimensions - {size_match.group(1)} x {size_match.group(2)}mm"
-        else:
-            # Check dia match
-            dia_match = re.search(r'dia\s*[-:\s]*\s*(\d+)\s*[x*]\s*(\d+)', desc_lower)
-            if dia_match:
-                dimensions = f"Dimensions - Dia - {dia_match.group(1)} x {dia_match.group(2)}mm"
+            if size_match.group(1) and size_match.group(2):
+                dia = f"{size_match.group(1)}x{size_match.group(2)}"
             else:
-                dia_match_2 = re.search(r'dia\s*[-:\s]*\s*(\d+)\s*mm', desc_lower)
-                if dia_match_2:
-                    dimensions = f"Dimensions - Dia - {dia_match_2.group(1)}mm"
+                dia = size_match.group(3).replace(" ", "").upper()
+
+    dim_parts = []
+    if dia:
+        if "dia" in desc_lower or "diameter" in desc_lower or re.match(r'^D\b', desc_clean, re.IGNORECASE):
+            dim_parts.append(f"Dia - {dia}mm")
+        else:
+            dim_parts.append(f"{dia}mm")
+    if height:
+        dim_parts.append(f"Height - {height}mm")
+    if cutout:
+        dim_parts.append(f"Cutout - {cutout}mm")
+
+    dimensions = ""
+    if dim_parts:
+        dimensions = "Dimensions - " + ", ".join(dim_parts)
                     
     # Construct premium description
     parts = []
