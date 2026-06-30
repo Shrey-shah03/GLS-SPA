@@ -631,22 +631,37 @@ body.light-theme .nav-item.active {
     margin-bottom: 12px;
 }
 
-/* Modern Invoice UI Styling */
+/* ====================================================================
+   INVOICE VIEW — Clean Paper Document Skin
+   CSS-only. No logic changes. BOQ tab untouched.
+   ==================================================================== */
+
+/* Force the invoice paper to always be white with dark text,
+   regardless of dark/light theme — it's a document, not a dashboard. */
 .modern-invoice {
-    background-color: var(--bg-card);
-    border-radius: 16px;
+    background-color: #ffffff;
+    border-radius: 6px;
     padding: 48px 56px;
     margin: 20px auto 40px auto;
     max-width: 950px;
     width: 100%;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-    font-family: var(--font-sans);
-    transition: background-color 0.3s, box-shadow 0.3s;
-    color: var(--color-text-main);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+    font-family: 'Inter', sans-serif;
+    color: #1a1a1a;
 }
 body.light-theme .modern-invoice {
     background-color: #ffffff;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+}
+
+/* Give the invoice-generator-view a neutral desk background */
+#invoice-generator-view {
+    background: #e9e9e9;
+    border-radius: 8px;
+    padding: 24px;
+}
+body.light-theme #invoice-generator-view {
+    background: #e9e9e9;
 }
 
 /* Header */
@@ -654,7 +669,7 @@ body.light-theme .modern-invoice {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 40px;
-    margin-bottom: 48px;
+    margin-bottom: 40px;
 }
 .modern-header-left {
     display: flex;
@@ -662,10 +677,16 @@ body.light-theme .modern-invoice {
     justify-content: flex-start;
 }
 .paper-logo {
-    font-family: var(--font-heading);
-    font-size: 2rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.6rem;
     font-weight: 800;
+    color: #1a1a1a;
+    letter-spacing: -0.5px;
 }
+.paper-logo .gls-text { color: #1a1a1a; }
+.paper-logo .hyphen { color: #1a1a1a; }
+.paper-logo .spa-text { color: #1a1a1a; }
+
 .modern-header-right {
     display: flex;
     flex-direction: column;
@@ -674,7 +695,7 @@ body.light-theme .modern-invoice {
 .modern-meta-form {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
     align-items: flex-end;
 }
 .modern-meta-row {
@@ -685,8 +706,8 @@ body.light-theme .modern-invoice {
 }
 .modern-meta-lbl {
     font-size: 0.75rem;
-    color: var(--color-text-muted);
-    font-weight: 700;
+    color: #666;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -696,20 +717,23 @@ body.light-theme .modern-invoice {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 40px;
-    margin-bottom: 48px;
+    margin-bottom: 40px;
 }
 .modern-sec-label {
-    font-size: 0.8rem;
-    color: var(--color-text-muted);
-    margin-bottom: 12px;
+    font-size: 0.75rem;
+    color: #888;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
 }
 .text-right {
     text-align: right;
 }
 .modern-company-details {
     font-size: 0.85rem;
-    line-height: 1.6;
-    color: var(--color-text-main);
+    line-height: 1.7;
+    color: #333;
 }
 .modern-bill-form {
     display: flex;
@@ -722,42 +746,79 @@ body.light-theme .modern-invoice {
     gap: 8px;
 }
 
-/* Inputs */
-.modern-input {
-    background: transparent;
-    border: 1px dashed transparent;
+/* Inputs — clean visible borders like the reference */
+.modern-invoice .modern-input {
+    background: #ffffff;
+    border: 1px solid #d0d0d0;
     border-radius: 4px;
-    padding: 4px 0;
-    color: var(--color-text-main);
-    font-family: var(--font-sans);
+    padding: 6px 10px;
+    color: #1a1a1a;
+    font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
-    transition: all 0.2s;
+    transition: border-color 0.2s;
     outline: none;
 }
-.modern-input-bold {
+.modern-invoice .modern-input-bold {
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     margin-bottom: 4px;
 }
-.modern-meta-row .modern-input {
+.modern-invoice .modern-meta-row .modern-input {
     text-align: right;
-    width: 140px;
+    width: 150px;
     font-weight: 600;
-    color: var(--color-primary);
+    color: #1a1a1a;
+    background: #f7f7f7;
 }
-.modern-input:focus, .modern-input:hover {
-    background: rgba(255,255,255,0.03);
-    border-color: rgba(255,255,255,0.15);
-    padding: 4px 8px;
+.modern-invoice .modern-input:focus {
+    border-color: #3d9b8f;
+    box-shadow: 0 0 0 2px rgba(61, 155, 143, 0.1);
+    background: #ffffff;
 }
-body.light-theme .modern-input:focus, body.light-theme .modern-input:hover {
-    background: rgba(0,0,0,0.02);
-    border-color: rgba(0,0,0,0.1);
+.modern-invoice .modern-input:hover {
+    border-color: #aaa;
+    background: #fafafa;
+    padding: 6px 10px;
 }
 
-/* Table Design */
+/* Override select inside invoice */
+.modern-invoice .table-select,
+.modern-invoice .modern-select {
+    background: #ffffff;
+    border: 1px solid #d0d0d0;
+    color: #1a1a1a;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+}
+.modern-invoice .table-select:focus,
+.modern-invoice .modern-select:focus {
+    border-color: #3d9b8f;
+}
+
+/* Override textarea inside invoice */
+.modern-invoice textarea.modern-input {
+    background: #ffffff;
+    border: 1px solid #d0d0d0;
+    color: #1a1a1a;
+    resize: none;
+}
+
+/* Save buyer button inside invoice */
+.modern-invoice .modern-save-btn {
+    background: #f0f0f0;
+    border: 1px solid #d0d0d0;
+    color: #333;
+}
+.modern-invoice .modern-save-btn:hover {
+    background: #e0e0e0;
+    border-color: #bbb;
+    color: #1a1a1a;
+}
+
+/* Table Design — clean teal header */
 .modern-table-wrapper {
-    margin-bottom: 40px;
+    margin-bottom: 32px;
 }
 .modern-table {
     width: 100%;
@@ -765,42 +826,70 @@ body.light-theme .modern-input:focus, body.light-theme .modern-input:hover {
     border-spacing: 0;
 }
 .modern-table th {
-    background-color: var(--color-primary);
+    background-color: #3d9b8f;
     color: #ffffff;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
-    padding: 14px 12px;
+    letter-spacing: 0.3px;
+    padding: 12px 10px;
     text-align: center;
     border: none;
 }
+.modern-table th:first-child { border-radius: 6px 0 0 6px; }
+.modern-table th:last-child { border-radius: 0 6px 6px 0; }
+
 .modern-table td {
-    padding: 12px 6px;
-    border-bottom: 1px solid var(--border-glass);
+    padding: 10px 6px;
+    border-bottom: 1px solid #e8e8e8;
     text-align: center;
     font-size: 0.85rem;
     vertical-align: middle;
+    color: #1a1a1a;
+}
+/* Override input inside invoice table cells */
+.modern-invoice .modern-table .table-input {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #1a1a1a;
+    font-size: 0.82rem;
+    padding: 4px 6px;
+    border-radius: 3px;
+}
+.modern-invoice .modern-table .table-input:hover {
+    border-color: #d0d0d0;
+    background: #fafafa;
+}
+.modern-invoice .modern-table .table-input:focus {
+    border-color: #3d9b8f;
+    background: #ffffff;
+    box-shadow: 0 0 0 2px rgba(61, 155, 143, 0.1);
 }
 body.light-theme .modern-table td {
-    border-bottom-color: #e2e8f0;
+    border-bottom-color: #e8e8e8;
 }
 
-/* Add Item Row inside table flow */
+/* Add Item Row — teal accent */
 .modern-add-item-row {
     width: 100%;
-    padding: 16px;
-    margin-top: 12px;
-    text-align: center;
-    border: 1px dashed var(--color-primary);
-    border-radius: 8px;
-    color: var(--color-primary);
+    padding: 12px;
+    margin-top: 8px;
+    text-align: left;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: #3d9b8f;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     cursor: pointer;
     transition: background-color 0.2s;
 }
 .modern-add-item-row:hover {
-    background: rgba(139, 195, 74, 0.05); /* GLS green alpha */
+    background: rgba(61, 155, 143, 0.06);
+}
+.modern-add-item-row::before {
+    content: "+ ";
+    font-weight: 700;
 }
 
 /* Totals */
@@ -808,58 +897,72 @@ body.light-theme .modern-table td {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 40px;
-    margin-bottom: 48px;
+    margin-bottom: 40px;
     align-items: end;
 }
 .modern-chargeable-words {
     font-size: 0.8rem;
-    color: var(--color-text-muted);
+    color: #888;
     line-height: 1.5;
+}
+.modern-chargeable-words strong {
+    color: #555;
 }
 .modern-chargeable-words span {
     font-size: 0.95rem;
-    color: var(--color-primary);
+    color: #1a1a1a;
     font-weight: 600;
 }
 .modern-totals-right {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
 }
 .modern-total-row {
     display: flex;
     justify-content: space-between;
     font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--color-text-muted);
+    font-weight: 500;
+    color: #666;
 }
 .modern-total-grand-row {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     font-weight: 800;
-    color: var(--color-text-main);
-    padding-top: 12px;
-    border-top: 2px solid var(--border-glass);
+    color: #1a1a1a;
+    padding-top: 10px;
+    border-top: 2px solid #1a1a1a;
 }
 body.light-theme .modern-total-grand-row {
-    border-top-color: #e2e8f0;
+    border-top-color: #1a1a1a;
 }
 
-/* Action Bar inside Invoice */
+/* Action Bar — clean, minimal */
 .modern-action-bar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    background: #070812;
-    border-radius: 12px;
-    padding: 12px 24px;
-    margin-bottom: 48px;
+    justify-content: flex-end;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    margin-bottom: 40px;
 }
 body.light-theme .modern-action-bar {
-    background: #f7f7f9;
+    background: transparent;
 }
 .modern-export-btn {
     border-radius: 6px;
     font-weight: 600;
+    background: #3d9b8f !important;
+    border-color: #3d9b8f !important;
+    color: #ffffff !important;
+    padding: 10px 28px !important;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.modern-export-btn:hover {
+    background: #358a7f !important;
+    border-color: #358a7f !important;
 }
 
 /* Footer Notes & Terms */
@@ -869,8 +972,16 @@ body.light-theme .modern-action-bar {
     gap: 40px;
     font-size: 0.8rem;
     line-height: 1.6;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 24px;
 }
-.modern-footer-text {
-    color: var(--color-text-muted);
+.modern-invoice .modern-footer-text {
+    color: #888;
+}
+.modern-invoice .modern-footer-text strong {
+    color: #555;
+}
+.modern-invoice .modern-sec-label {
+    color: #888;
 }
 
