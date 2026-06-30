@@ -678,21 +678,28 @@ body.light-theme #invoice-generator-view {
 }
 
 /* Invoice Inputs */
-.modern-invoice .modern-input {
+.modern-invoice .modern-input,
+.modern-invoice .table-select,
+.modern-invoice .modern-select {
     background: #fff;
     border: 1px solid #d0d0d0;
     border-radius: var(--radius);
-    padding: 6px 10px;
+    padding: 8px 12px;
     color: #1a1a1a;
     font-family: var(--font-body);
-    font-size: 0.82rem;
+    font-size: 0.85rem;
+    height: 36px;
+    line-height: 1.4;
     transition: border-color 0.15s;
     outline: none;
+    width: 100%;
+}
+.modern-invoice textarea.modern-input {
+    height: 64px;
+    resize: none;
 }
 .modern-invoice .modern-input-bold {
-    font-weight: 700;
-    font-size: 1rem;
-    margin-bottom: 2px;
+    font-weight: 600;
 }
 .modern-invoice .modern-meta-row .modern-input {
     text-align: right;
@@ -701,44 +708,46 @@ body.light-theme #invoice-generator-view {
     color: #1a1a1a;
     background: #f7f7f7;
 }
-.modern-invoice .modern-input:focus {
-    border-color: #8BC34A;
-    box-shadow: 0 0 0 2px rgba(139, 195, 74, 0.12);
-}
-.modern-invoice .modern-input:hover {
-    border-color: #aaa;
-    padding: 6px 10px;
-}
-
-/* Invoice selects/textareas */
-.modern-invoice .table-select,
-.modern-invoice .modern-select {
-    background: #fff;
-    border: 1px solid #d0d0d0;
-    color: #1a1a1a;
-    border-radius: var(--radius);
-    padding: 5px 8px;
-    font-size: 0.8rem;
-    font-family: var(--font-body);
-}
+.modern-invoice .modern-input:focus,
 .modern-invoice .table-select:focus,
 .modern-invoice .modern-select:focus {
     border-color: #8BC34A;
+    box-shadow: 0 0 0 2px rgba(139, 195, 74, 0.12);
 }
-.modern-invoice textarea.modern-input {
-    background: #fff;
-    border: 1px solid #d0d0d0;
-    color: #1a1a1a;
-    resize: none;
+.modern-invoice .modern-input:hover,
+.modern-invoice .table-select:hover,
+.modern-invoice .modern-select:hover {
+    border-color: #aaa;
 }
+
+/* Save buyer button alignment */
 .modern-invoice .modern-save-btn {
     background: #f0f0f0;
     border: 1px solid #d0d0d0;
     color: #333;
+    height: 36px;
+    padding: 0 14px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 .modern-invoice .modern-save-btn:hover {
     background: #e0e0e0;
     color: #1a1a1a;
+}
+
+/* Align To labels like GSTIN and Contact */
+.modern-bill-row .modern-meta-lbl {
+    font-size: 0.75rem;
+    color: #555;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    width: 70px;
+    flex-shrink: 0;
+    text-align: left;
 }
 
 /* Invoice Table — brand green header */
